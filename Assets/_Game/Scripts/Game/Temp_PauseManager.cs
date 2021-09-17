@@ -6,12 +6,6 @@ public class Temp_PauseManager : ScriptableObject
 {
     private bool _isPaused;
 
-    private void Awake()
-    {
-        // Start the game un-paused
-        PauseGame(false);
-    }
-
     // Called by scripts that reference this scriptable object. Currently only Player Input
     public void Pause()
     {
