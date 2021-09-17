@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1552332398830980121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6728132942592493119}
+  m_Layer: 0
+  m_Name: Camera Holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6728132942592493119
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1552332398830980121}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5994795831583482220}
+  - {fileID: 5994795832995915946}
+  m_Father: {fileID: 5994795831878283763}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &5994795831583482192
 GameObject:
   m_ObjectHideFlags: 0
@@ -26,11 +58,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5994795831583482192}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5994795831878283763}
+  m_Father: {fileID: 6728132942592493119}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &5994795831583482223
@@ -221,8 +253,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5994795831583482220}
-  - {fileID: 5994795832995915946}
+  - {fileID: 6728132942592493119}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -303,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 10
 --- !u!114 &5017576894680153714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +347,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72fc1c50dcb4e92498f4c8965c60294d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 5994795831583482223}
+  cam: {fileID: 6728132942592493119}
+  sensitivity: 10
 --- !u!114 &5994795833423906256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +406,21 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: edc23cfb-793a-4a59-822d-6ab669c38649
     m_ActionName: Standard/Pause[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5017576894680153714}
+        m_MethodName: MoveCamera
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: de7b2796-216b-42b8-baaf-8b39be921d69
+    m_ActionName: Standard/Camera[/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard Mouse
   m_DefaultActionMap: Standard
@@ -390,7 +438,7 @@ GameObject:
   - component: {fileID: 5994795832816616922}
   - component: {fileID: 5994795832816616925}
   m_Layer: 0
-  m_Name: Arm
+  m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -467,7 +515,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5994795832995915946}
   m_Layer: 0
-  m_Name: Art
+  m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -480,11 +528,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5994795832995915949}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5994795832816616927}
-  m_Father: {fileID: 5994795831878283763}
+  m_Father: {fileID: 6728132942592493119}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

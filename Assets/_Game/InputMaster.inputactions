@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Camera",
+                    "type": "PassThrough",
+                    "id": "de7b2796-216b-42b8-baaf-8b39be921d69",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "e2e35a86-aebe-49b0-bb7f-b477014c2ecf",
@@ -148,6 +157,17 @@
                     "processors": "",
                     "groups": "Keyboard Mouse",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a80f5ef9-c1bd-48c3-8f1f-567485465a14",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard Mouse",
+                    "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
