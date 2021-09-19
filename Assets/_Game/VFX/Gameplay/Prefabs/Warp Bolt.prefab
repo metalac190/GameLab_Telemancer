@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914316274}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.589}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.684}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7830911415055248351}
@@ -96,7 +96,7 @@ VisualEffect:
       - m_Value: {x: 336.8647, y: 151.71916, z: 242.36664}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.303, y: 0.818, z: -12.313}
+      - m_Value: {x: 0.303, y: 0.818, z: -11.408}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Property:
     m_Name: TargetTransform
   Target: {fileID: 914316275}
---- !u!1 &823575717778159579
+--- !u!1 &1128586375081218361
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -252,57 +252,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3715326917835196542}
-  - component: {fileID: 5684795156542203451}
-  m_Layer: 0
-  m_Name: Lightning Parent (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3715326917835196542
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823575717778159579}
-  m_LocalRotation: {x: 0, y: 0, z: 0.86602545, w: 0.49999994}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 5034670037497017799}
-  - {fileID: 4731248198834558851}
-  m_Father: {fileID: 7701506834379150216}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 120}
---- !u!114 &5684795156542203451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823575717778159579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b4f4476891e9c14b93ae12d6d16b3a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rotateSpeed: 200
---- !u!1 &2177776950671519576
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5034670037497017799}
-  - component: {fileID: 4324627564600521964}
-  - component: {fileID: 6729292210834442298}
-  - component: {fileID: 6179125617471644482}
-  - component: {fileID: 9201615433593304424}
+  - component: {fileID: 3813767866369022078}
+  - component: {fileID: 5839271329245747031}
+  - component: {fileID: 6029641809683648292}
+  - component: {fileID: 1587931327761178840}
+  - component: {fileID: 2433030038429499486}
   m_Layer: 0
   m_Name: Lightning
   m_TagString: Untagged
@@ -310,27 +264,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5034670037497017799
+--- !u!4 &3813767866369022078
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2177776950671519576}
+  m_GameObject: {fileID: 1128586375081218361}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3715326917835196542}
+  m_Father: {fileID: 8985960511452646219}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!2083052967 &4324627564600521964
+--- !u!2083052967 &5839271329245747031
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2177776950671519576}
+  m_GameObject: {fileID: 1128586375081218361}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: 299f790831377264b89458662ef2a39a, type: 3}
   m_InitialEventName: OnPlay
@@ -356,7 +310,7 @@ VisualEffect:
       - m_Value: {x: 349.57968, y: 214.57393, z: 113.21175}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.1377435, y: 1.1934109, z: -12.313}
+      - m_Value: {x: 0.1377435, y: 1.1934109, z: -11.408}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -434,13 +388,13 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!73398921 &6729292210834442298
+--- !u!73398921 &6029641809683648292
 VFXRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2177776950671519576}
+  m_GameObject: {fileID: 1128586375081218361}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -473,13 +427,13 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6179125617471644482
+--- !u!114 &1587931327761178840
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2177776950671519576}
+  m_GameObject: {fileID: 1128586375081218361}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
@@ -487,15 +441,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ExecuteInEditor: 1
   m_Bindings:
-  - {fileID: 9201615433593304424}
-  m_VisualEffect: {fileID: 4324627564600521964}
---- !u!114 &9201615433593304424
+  - {fileID: 2433030038429499486}
+  m_VisualEffect: {fileID: 5839271329245747031}
+--- !u!114 &2433030038429499486
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2177776950671519576}
+  m_GameObject: {fileID: 1128586375081218361}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
@@ -503,8 +457,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Property:
     m_Name: TargetTransform
-  Target: {fileID: 4731248198834558851}
---- !u!1 &2680404114516627254
+  Target: {fileID: 5157810820651200961}
+--- !u!1 &2145834031721915863
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -512,11 +466,89 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2860351563706458599}
-  - component: {fileID: 1719355070464243297}
-  - component: {fileID: 1069813221954887312}
-  - component: {fileID: 8793623448468845169}
-  - component: {fileID: 5007938744775214176}
+  - component: {fileID: 4742872441381630694}
+  - component: {fileID: 7685887277921162590}
+  m_Layer: 0
+  m_Name: Lightning Parent (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4742872441381630694
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145834031721915863}
+  m_LocalRotation: {x: 0, y: -0, z: 0.8660254, w: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1415864646918806506}
+  - {fileID: 1087662126641221491}
+  m_Father: {fileID: 7701506834379150216}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 240}
+--- !u!114 &7685887277921162590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145834031721915863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4f4476891e9c14b93ae12d6d16b3a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotateSpeed: 80
+  _lightningTarget: {fileID: 2988043514980007990}
+  _LTRotSpeed: -100
+--- !u!1 &2988043514980007990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1087662126641221491}
+  m_Layer: 0
+  m_Name: WorldSpaceTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1087662126641221491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2988043514980007990}
+  m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.684}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4742872441381630694}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 203.135, y: -28.281006, z: 62.366997}
+--- !u!1 &3001327858957500825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1415864646918806506}
+  - component: {fileID: 1064805010995598156}
+  - component: {fileID: 3548059455119302336}
+  - component: {fileID: 1238924879271346756}
+  - component: {fileID: 5535797522079392192}
   m_Layer: 0
   m_Name: Lightning
   m_TagString: Untagged
@@ -524,27 +556,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2860351563706458599
+--- !u!4 &1415864646918806506
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2680404114516627254}
+  m_GameObject: {fileID: 3001327858957500825}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3665199153943087040}
+  m_Father: {fileID: 4742872441381630694}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!2083052967 &1719355070464243297
+--- !u!2083052967 &1064805010995598156
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2680404114516627254}
+  m_GameObject: {fileID: 3001327858957500825}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: 299f790831377264b89458662ef2a39a, type: 3}
   m_InitialEventName: OnPlay
@@ -570,7 +602,7 @@ VisualEffect:
       - m_Value: {x: 35.013645, y: 171.40373, z: 353.7467}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -0.104743555, y: 0.8625891, z: -12.313}
+      - m_Value: {x: -0.104743555, y: 0.8625891, z: -11.408}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -648,13 +680,13 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!73398921 &1069813221954887312
+--- !u!73398921 &3548059455119302336
 VFXRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2680404114516627254}
+  m_GameObject: {fileID: 3001327858957500825}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -687,13 +719,13 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8793623448468845169
+--- !u!114 &1238924879271346756
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2680404114516627254}
+  m_GameObject: {fileID: 3001327858957500825}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
@@ -701,15 +733,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ExecuteInEditor: 1
   m_Bindings:
-  - {fileID: 5007938744775214176}
-  m_VisualEffect: {fileID: 1719355070464243297}
---- !u!114 &5007938744775214176
+  - {fileID: 5535797522079392192}
+  m_VisualEffect: {fileID: 1064805010995598156}
+--- !u!114 &5535797522079392192
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2680404114516627254}
+  m_GameObject: {fileID: 3001327858957500825}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
@@ -717,8 +749,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Property:
     m_Name: TargetTransform
-  Target: {fileID: 7675380176514611630}
---- !u!1 &4812377287608972543
+  Target: {fileID: 1087662126641221491}
+--- !u!1 &4404471019699935701
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -726,44 +758,76 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3665199153943087040}
-  - component: {fileID: 2659342083454638375}
+  - component: {fileID: 5157810820651200961}
   m_Layer: 0
-  m_Name: Lightning Parent (2)
+  m_Name: WorldSpaceTarget
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3665199153943087040
+--- !u!4 &5157810820651200961
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4812377287608972543}
-  m_LocalRotation: {x: 0, y: -0, z: 0.8660254, w: -0.5}
+  m_GameObject: {fileID: 4404471019699935701}
+  m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.684}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8985960511452646219}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 203.135, y: -28.281006, z: 62.366997}
+--- !u!1 &5608699501871143578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8985960511452646219}
+  - component: {fileID: 5128011906444836253}
+  m_Layer: 0
+  m_Name: Lightning Parent (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8985960511452646219
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5608699501871143578}
+  m_LocalRotation: {x: 0, y: 0, z: 0.86602545, w: 0.49999994}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2860351563706458599}
-  - {fileID: 7675380176514611630}
+  - {fileID: 3813767866369022078}
+  - {fileID: 5157810820651200961}
   m_Father: {fileID: 7701506834379150216}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 240}
---- !u!114 &2659342083454638375
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 120}
+--- !u!114 &5128011906444836253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4812377287608972543}
+  m_GameObject: {fileID: 5608699501871143578}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b4f4476891e9c14b93ae12d6d16b3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotateSpeed: 200
+  _rotateSpeed: 80
+  _lightningTarget: {fileID: 4404471019699935701}
+  _LTRotSpeed: -100
 --- !u!1 &6577585602418833061
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,8 +858,8 @@ Transform:
   m_Children:
   - {fileID: 3486982241504597536}
   - {fileID: 7830911415055248351}
-  - {fileID: 3715326917835196542}
-  - {fileID: 3665199153943087040}
+  - {fileID: 8985960511452646219}
+  - {fileID: 4742872441381630694}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -812,66 +876,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 3
---- !u!1 &6869289269959296361
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4731248198834558851}
-  m_Layer: 0
-  m_Name: WorldSpaceTarget
-  m_TagString: Untagged
-  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4731248198834558851
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869289269959296361}
-  m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.589}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3715326917835196542}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 203.135, y: -28.281006, z: 62.366997}
---- !u!1 &6974819810369530811
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7675380176514611630}
-  m_Layer: 0
-  m_Name: WorldSpaceTarget
-  m_TagString: Untagged
-  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7675380176514611630
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6974819810369530811}
-  m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.589}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3665199153943087040}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 203.135, y: -28.281006, z: 62.366997}
 --- !u!1 &7951634628605388840
 GameObject:
   m_ObjectHideFlags: 0
@@ -917,7 +921,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4f4476891e9c14b93ae12d6d16b3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotateSpeed: 200
+  _rotateSpeed: 80
+  _lightningTarget: {fileID: 914316274}
+  _LTRotSpeed: -100
 --- !u!1 &8141745541523337770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,6 +1047,7 @@ VFXRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
