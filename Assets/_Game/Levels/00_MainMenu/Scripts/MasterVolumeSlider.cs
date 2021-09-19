@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MasterVolume : OptionSlider
+public class MasterVolumeSlider : OptionSlider
 {
     public override void SaveValue(int n)
     {

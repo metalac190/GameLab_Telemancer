@@ -1,18 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+
+/// <summary>
+/// Handles all menu-related events.
+/// </summary>
 
 public class MenuEvents : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static MenuEvents current;
+
+    private void Awake()
     {
-        
+        current = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    public event Action ONOpenOptionsMenu;
+    public void OpenOptionsMenu()
     {
-        
+        ONOpenOptionsMenu?.Invoke();
+    }
+
+    public event Action ONSaveCurrentSettings;
+
+    public void SaveCurrentSettings()
+    {
+        ONSaveCurrentSettings?.Invoke();
     }
 }

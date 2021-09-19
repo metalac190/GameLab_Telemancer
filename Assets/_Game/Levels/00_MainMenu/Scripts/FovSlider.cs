@@ -1,9 +1,19 @@
 ﻿using UnityEngine;
 
-namespace _Game.Levels._00_MainMenu.Scripts
+public class FovSlider : OptionSlider
 {
-    public class FovSlider : MonoBehaviour
+    public override void SaveValue(int n)
     {
+        PlayerPrefs.SetFloat("Fov", n);
+    }
+
+    public override void SetValue(int n)
+    {
+        string str = n + "";
+        if (n >= 110) 
+            str = "QUAKE PRO";
         
+        SetText(str);
+        SaveValue(n);
     }
 }

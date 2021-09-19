@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 
-namespace _Game.Levels._00_MainMenu.Scripts
+public class SfxVolumeSlider : OptionSlider
 {
-    public class SfxVolumeSlider : MonoBehaviour
+    public override void SaveValue(int n)
     {
-        
+        PlayerPrefs.SetInt("SfxVolume", n);
+        // Play a funny sound effect
     }
 }

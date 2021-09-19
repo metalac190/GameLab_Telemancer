@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-namespace _Game.Levels._00_MainMenu.Scripts
+public class MusicVolumeSlider : OptionSlider
 {
-    public class MusicVolumeSlider : MonoBehaviour
+    public override void SaveValue(int n)
     {
-        
+        PlayerPrefs.SetInt("MusicVolume", n);
     }
 }
