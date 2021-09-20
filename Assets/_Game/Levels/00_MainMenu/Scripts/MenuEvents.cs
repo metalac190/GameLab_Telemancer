@@ -21,9 +21,14 @@ public class MenuEvents : MonoBehaviour
     }
 
     public event Action ONSaveCurrentSettings;
-
     public void SaveCurrentSettings()
     {
         ONSaveCurrentSettings?.Invoke();
+    }
+
+    public event Action ONReloadSettings;
+    public void ReloadSettings()
+    {
+        ONReloadSettings?.Invoke();
     }
 }

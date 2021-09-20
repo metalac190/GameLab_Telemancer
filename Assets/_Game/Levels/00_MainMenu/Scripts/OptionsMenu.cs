@@ -28,6 +28,18 @@ public class OptionsMenu : MonoBehaviour
         _optionsMenu.SetActive(false);
     }
 
+    public void CloseMenuFromButton()
+    {
+        OnMenuClose();
+    }
+
+    public void RestoreDefualtSettings()
+    {
+        // Set all 
+        
+        MenuEvents.current.ReloadSettings();
+    }
+
     private void SaveSettings()
     {
         
