@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mechanics.WarpBolt;
+using UnityEngine;
 
 // Temporary Large / Big Rock Script.
 // With the IWarpInteractable interface, OnWarpBoltImpact is called when the warp bolt hits it
