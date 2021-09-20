@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -6,26 +7,33 @@ using UnityEngine.UI;
 /// </summary>
 public abstract class OptionSlider : MonoBehaviour
 {
-    [SerializeField] private int _value;
-    [SerializeField] private Slider _slider;
-    [SerializeField] private Text _text;
-    //[SerializeField] protected string playerPrefKey;
-
     public enum PlayerPrefKey
     {
         MasterVolume,
         SfxVolume,
         MusicVolume,
         Fov,
-        Sensitiviy
+        Sensitivity
     }
 
+    // Have PlayerPrefKey selected via dropdown menu in the inspector
     [SerializeField] private PlayerPrefKey prefKey;
-
+    
+    [SerializeField] private int _value;
+    [SerializeField] private Slider _slider;
+    [SerializeField] private Text _text;
+    
     public void Start()
     {
         MenuEvents.current.ONReloadSettings += LoadValue;
         _slider.onValueChanged.AddListener(delegate {SetValue((int)_slider.value);});
+        
+        LoadValue();
+    }
+
+    public void OnBecameVisible()
+    {
+        LoadValue();
     }
 
     protected virtual void SaveValue(int n)
@@ -36,7 +44,7 @@ public abstract class OptionSlider : MonoBehaviour
     protected virtual void LoadValue()
     {
         float val = PlayerPrefs.GetFloat(prefKey.ToString());
-        SetText(val + ""); // TODO: look into making SetText the sole way to update the stuff...
+        SetText(val + "");
         _slider.value = val;
     }
 

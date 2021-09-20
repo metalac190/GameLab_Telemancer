@@ -22,6 +22,11 @@ public class GraphicsQualitySelector : OptionSelector
                 // Ultra Quality
                 Debug.Log("Graphics quality selected: Ultra");
                 break;
+            default:
+                return;
         }
+        
+        // Only change the player pref if the base case wasn't hit
+        PlayerPrefs.SetFloat("GraphicsQuality", item);
     }
 }

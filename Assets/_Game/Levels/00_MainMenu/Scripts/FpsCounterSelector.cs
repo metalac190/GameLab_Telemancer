@@ -14,6 +14,11 @@ public class FpsCounterSelector : OptionSelector
                 // Visible
                 Debug.Log("FPS Counter: Visible");
                 break;
+            default:
+                return;
         }
+        
+        // Only change the player pref if the base case wasn't hit
+        PlayerPrefs.SetFloat("FpsCounter", item);
     }
 }
