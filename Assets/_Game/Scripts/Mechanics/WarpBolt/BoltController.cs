@@ -161,13 +161,15 @@ namespace Mechanics.WarpBolt
         #region Public Functions
 
         // Player is starting to cast the bolt
-        public void PrepareToFire(Vector3 position)
+        public void PrepareToFire(Vector3 position, Quaternion rotation)
         {
             if (_isAlive) {
                 Dissipate();
             }
             if (!_missingVisuals) {
                 _visuals.gameObject.SetActive(true);
+                _visuals.rotation = rotation;
+                SetPosition(position);
             }
             SetCastStatus(0);
         }

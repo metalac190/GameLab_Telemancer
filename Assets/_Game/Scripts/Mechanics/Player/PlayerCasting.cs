@@ -104,7 +104,7 @@ public class PlayerCasting : MonoBehaviour
 
     private void PrepareToCast()
     {
-        _warpBolt.PrepareToFire(GetBoltPosition());
+        _warpBolt.PrepareToFire(GetBoltPosition(), _cameraLookDirection.rotation);
     }
 
     // The main Coroutine for casting the warp bolt
