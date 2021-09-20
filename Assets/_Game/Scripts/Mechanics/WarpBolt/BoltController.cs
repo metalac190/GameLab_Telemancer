@@ -168,16 +168,18 @@ namespace Mechanics.WarpBolt
             }
             if (!_missingVisuals) {
                 _visuals.gameObject.SetActive(true);
-                _visuals.rotation = rotation;
-                SetPosition(position);
+                SetPosition(position, rotation);
             }
             SetCastStatus(0);
         }
 
         // Update the bolt's position. Called to keep the bolt in the player's hand
-        public void SetPosition(Vector3 position)
+        public void SetPosition(Vector3 position, Quaternion rotation)
         {
             transform.position = position;
+            _visuals.rotation = rotation;
+            if (!_missingVisuals) {
+            }
         }
 
         // Size should go from 0 to 1 as the player is casting the bolt

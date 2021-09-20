@@ -134,7 +134,7 @@ public class PlayerCasting : MonoBehaviour
 
     private void HoldPosition()
     {
-        _warpBolt.SetPosition(GetBoltPosition());
+        _warpBolt.SetPosition(GetBoltPosition(), _cameraLookDirection.rotation);
     }
 
     private void Fire()
