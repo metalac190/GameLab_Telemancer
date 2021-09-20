@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] Transform _spawnLocation;
     [SerializeField] GameObject _projectile;
 
     private GameObject _projectileInstance;
@@ -22,7 +23,7 @@ public class Player : MonoBehaviour
                 Destroy(_projectileInstance);
             }
 
-            _projectileInstance = Instantiate(_projectile, transform.position, Quaternion.identity);
+            _projectileInstance = Instantiate(_projectile, _spawnLocation.position, Quaternion.identity);
         }
     }
 }
