@@ -2,11 +2,11 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 
-// The controller for the Player Casting Sequence.
-// Requires a reference to the Warp Bolt and a reference to the Player Animator
-// Public functions are called by the Player Input System
 namespace Mechanics.Player
 {
+    // The controller for the Player Casting Sequence.
+    // Requires a reference to the Warp Bolt and a reference to the Player Animator
+    // Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
         [Header("Unlocks")]
@@ -16,14 +16,13 @@ namespace Mechanics.Player
         [SerializeField] private float _timeToFire = 0;
         [Header("External References")]
         [SerializeField] private BoltController _warpBolt = null;
-        [SerializeField] private UIColorChanger _hitStateColor = null;
         [Header("Internal References")]
         [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
 
         private bool _isCasting;
-        private int _lookingAtInteractable = -1;
 
         #region NullCheck
 
@@ -32,13 +31,24 @@ namespace Mechanics.Player
         private void AnimatorNullCheck()
         {
             if (_playerAnimator == null) {
-                _playerAnimator = transform.GetComponentInChildren<PlayerAnimator>();
+                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
                 if (_playerAnimator == null) {
-                    _playerAnimator = GetComponent<PlayerAnimator>();
-                    if (_playerAnimator == null) {
-                        //_missingAnimator = true;
-                        Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
-                    }
+                    //_missingAnimator = true;
+                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
+                }
+            }
+        }
+
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_playerFeedback == null) {
+                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
                 }
             }
         }
@@ -48,19 +58,21 @@ namespace Mechanics.Player
         private void WarpBoltNullCheck()
         {
             if (_warpBolt == null) {
-                _missingWarpBolt = true;
-                throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
-            } else {
-                PlayerController controller = GetComponent<PlayerController>();
+                _warpBolt = FindObjectOfType<BoltController>();
+                if (_warpBolt == null) {
+                    _missingWarpBolt = true;
+                    throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
+                }
+            }
+            PlayerController controller = GetComponent<PlayerController>();
+            if (controller == null) {
+                controller = FindObjectOfType<PlayerController>();
                 if (controller == null) {
-                    controller = FindObjectOfType<PlayerController>();
-                    if (controller == null) {
-                        Debug.LogError("Cannot find Player Controller", gameObject);
-                    }
+                    Debug.LogError("Cannot find Player Controller", gameObject);
                 }
-                if (controller != null) {
-                    _warpBolt.BoltData.SetPlayerReference(controller);
-                }
+            }
+            if (controller != null) {
+                _warpBolt.BoltData.SetPlayerReference(controller);
             }
         }
 
@@ -76,7 +88,8 @@ namespace Mechanics.Player
 
         private void Update()
         {
-            UpdateCastColor();
+            // Update HUD color
+            GetRaycast();
         }
 
         #endregion
@@ -152,25 +165,6 @@ namespace Mechanics.Player
             _warpBolt.OnWarp();
         }
 
-        private void UpdateCastColor()
-        {
-            if (_hitStateColor == null) return;
-            GetBoltForward(); // TODO: Better way to update?
-
-            // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
-            switch (_lookingAtInteractable) {
-                case 1:
-                    _hitStateColor.SetColor(Color.cyan);
-                    break;
-                case 0:
-                    _hitStateColor.SetColor(Color.white);
-                    break;
-                default:
-                    _hitStateColor.SetColor(Color.white);
-                    break;
-            }
-        }
-
         #endregion
 
         #region Helper Functions
@@ -178,23 +172,29 @@ namespace Mechanics.Player
         // A currently very messy script to get the Bolt's forward direction (should be towards the center of the camera)
         private Vector3 GetBoltForward()
         {
-            Vector3 current = GetBoltPosition();
-            if (_cameraLookDirection != null) {
-                Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-                Physics.Raycast(ray, out var hit, _boltLookDistance);
-                if (hit.point != Vector3.zero) {
-                    Vector3 angle = hit.point - current;
-                    if (hit.collider != null) {
-                        var interactable = hit.collider.GetComponent<IWarpInteractable>();
-                        _lookingAtInteractable = interactable != null ? 1 : 0;
-                    }
-                    return angle.normalized;
-                }
-                _lookingAtInteractable = -1;
-                Vector3 angle1 = _cameraLookDirection.position + _cameraLookDirection.forward * _boltLookDistance - current;
-                return angle1.normalized;
+            if (_cameraLookDirection == null) {
+                return _boltFirePosition != null ? _boltFirePosition.forward : transform.forward;
             }
-            return _boltFirePosition != null ? _boltFirePosition.forward : transform.forward;
+
+            Vector3 current = GetBoltPosition();
+            Vector3 angle = GetRaycast() - current;
+            return angle.normalized;
+        }
+
+        private Vector3 GetRaycast()
+        {
+            Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
+            Physics.Raycast(ray, out var hit, _boltLookDistance);
+
+            if (hit.point != Vector3.zero) {
+                if (hit.collider != null) {
+                    var interactable = hit.collider.GetComponent<IWarpInteractable>();
+                    if (!_missingFeedback) _playerFeedback.OnHudColorChange(interactable != null ? 1 : 0);
+                }
+                return hit.point;
+            }
+            if (!_missingFeedback) _playerFeedback.OnHudColorChange(-1);
+            return _cameraLookDirection.position + _cameraLookDirection.forward * _boltLookDistance;
         }
 
         // A simple function to get the position of the warp bolt

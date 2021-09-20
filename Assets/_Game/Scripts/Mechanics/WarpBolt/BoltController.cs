@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-// The main controller for the bolt warp projectile
-// Used by Player Casting
-// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
 namespace Mechanics.WarpBolt
 {
+    // The main controller for the bolt warp projectile
+    // Used by Player Casting
+    // Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
         [Header("Settings")]

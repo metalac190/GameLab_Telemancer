@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerWarpSound: {fileID: 0}
+  _warpInteractSound: {fileID: 0}
   _dissipationParticles: {fileID: 0}
 --- !u!1 &3230216783236303939
 GameObject:
@@ -54,7 +55,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3230216783236303938}
-  - component: {fileID: 1703485031941144460}
   m_Layer: 11
   m_Name: Visuals
   m_TagString: Untagged
@@ -77,18 +77,6 @@ Transform:
   m_Father: {fileID: 3230216783552704633}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1703485031941144460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3230216783236303939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6eb62a009beec9941a23494e823bbafb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3230216783552704635
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +158,6 @@ MonoBehaviour:
   _rb: {fileID: 3230216783552704631}
   _collider: {fileID: 3230216783552704632}
   _visuals: {fileID: 3230216783236303938}
-  _animator: {fileID: 1703485031941144460}
   _feedback: {fileID: 383780542762379984}
   _data: {fileID: 11400000, guid: 751bff2440f3a7c4f97394e056d5a92c, type: 2}
 --- !u!1001 &4506662824434642656
@@ -190,7 +177,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1340767799, guid: 421b2f40e466dd045bbe3b7c7351b307, type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Value.y
-      value: 1.76
+      value: 1.36
       objectReference: {fileID: 0}
     - target: {fileID: 1340767799, guid: 421b2f40e466dd045bbe3b7c7351b307, type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Value.z
@@ -204,7 +191,7 @@ PrefabInstance:
     - target: {fileID: 1064805010995598156, guid: 421b2f40e466dd045bbe3b7c7351b307,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Value.y
-      value: 1.8045892
+      value: 1.4045892
       objectReference: {fileID: 0}
     - target: {fileID: 1064805010995598156, guid: 421b2f40e466dd045bbe3b7c7351b307,
         type: 3}
@@ -259,7 +246,7 @@ PrefabInstance:
     - target: {fileID: 5839271329245747031, guid: 421b2f40e466dd045bbe3b7c7351b307,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Value.y
-      value: 2.1354108
+      value: 1.7354108
       objectReference: {fileID: 0}
     - target: {fileID: 5839271329245747031, guid: 421b2f40e466dd045bbe3b7c7351b307,
         type: 3}

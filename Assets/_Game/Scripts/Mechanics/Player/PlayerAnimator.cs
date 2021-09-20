@@ -1,64 +1,72 @@
 ﻿using UnityEngine;
 
-// The main Player Animator script that controls all animation for the player
-// Mostly used by the Player Casting Script and the 'Player Interactions' Script
-
-// NOTE: Each Animation Function returns how long that animation will take
 namespace Mechanics.Player
 {
+    // The main Player Animator script that controls all animation for the player
+    // Mostly used by the Player Casting Script and the 'Player Interactions' Script
     public class PlayerAnimator : MonoBehaviour
     {
         private float _fallTime;
 
-        public float OnPetToad()
+        public void OnPetToad()
         {
-            return 0;
         }
 
-        public float OnStartle()
+        public void OnStartle()
         {
-            return 0;
         }
 
-        public float OnJump()
-        {
-            return 0;
-        }
-
-        public float OnFall()
+        public void OnJump()
         {
             _fallTime = Time.time;
-            return 0;
         }
 
-        public float OnLand()
+        public void OnFall()
         {
-            return 0;
         }
 
-        public float OnKill()
+        public void OnLand()
         {
-            return 0;
+            float time = Time.time - _fallTime;
+            if (time < 1) {
+                OnSimpleLand();
+            } else if (time < 2) {
+                OnAnimatedLand();
+            } else {
+                OnDeathLand();
+            }
         }
 
-        public float OnCastBolt()
+        private void OnSimpleLand()
         {
-            return 0;
         }
 
-        public float OnResidueActive()
+        private void OnAnimatedLand()
         {
-            return 0;
         }
 
-        public float OnInstantWarp()
+        private void OnDeathLand()
         {
-            return 0;
         }
 
-        public float OnInteractableWarp()
+        public void OnKill()
         {
-            return 0;
+        }
+
+        public void OnCastBolt()
+        {
+        }
+
+        public void OnResidueActive()
+        {
+        }
+
+        public void OnInstantWarp()
+        {
+        }
+
+        public void OnInteractableWarp()
+        {
         }
 
         private void ResetToIdle()

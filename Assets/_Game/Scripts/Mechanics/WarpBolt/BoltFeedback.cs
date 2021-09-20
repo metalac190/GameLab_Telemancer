@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-// The sound and visual feedback script for the Bolt Controller
 namespace Mechanics.WarpBolt
 {
+    // The sound and visual feedback script for the Bolt Controller
     public class BoltFeedback : MonoBehaviour
     {
         [Header("Audio")]
