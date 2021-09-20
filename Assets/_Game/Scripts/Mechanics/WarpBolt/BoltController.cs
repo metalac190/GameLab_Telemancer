@@ -14,7 +14,6 @@ namespace Mechanics.WarpBolt
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
         [SerializeField] private Transform _visuals;
-        [SerializeField] private BoltAnimator _animator;
         [SerializeField] private BoltFeedback _feedback;
         [SerializeField] private BoltData _data;
         public BoltData BoltData => GetBoltData();
@@ -44,19 +43,6 @@ namespace Mechanics.WarpBolt
                 if (_visuals == null) {
                     _missingVisuals = true;
                     Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
-                }
-            }
-        }
-
-        private bool _missingAnimator;
-
-        private void AnimatorNullCheck()
-        {
-            if (_animator == null) {
-                _animator = transform.GetComponentInChildren<BoltAnimator>();
-                if (_animator == null) {
-                    _missingAnimator = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Animator", gameObject);
                 }
             }
         }
@@ -219,6 +205,9 @@ namespace Mechanics.WarpBolt
         private void WarpInteract(IWarpInteractable interactable)
         {
             bool dissipate = interactable.OnWarpBoltImpact(BoltData);
+            if (!_missingFeedback) {
+                _feedback.OnWarpInteract();
+            }
 
             if (dissipate) Dissipate();
         }

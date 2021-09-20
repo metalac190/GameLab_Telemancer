@@ -6,8 +6,10 @@ public class LightningRotator : MonoBehaviour
 {
     [SerializeField] float _rotateSpeed = 3f;
 
+#pragma warning disable 414
     [SerializeField] GameObject _lightningTarget;
     [SerializeField] float _LTRotSpeed = -3f;
+#pragma warning restore 414
 
     void Update()
     {

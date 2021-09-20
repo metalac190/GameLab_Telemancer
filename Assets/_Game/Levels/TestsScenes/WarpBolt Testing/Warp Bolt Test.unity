@@ -1949,7 +1949,8 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1703485031941144460, guid: beb2bcfc2d9a74e40aa4e1e095c50a88, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: beb2bcfc2d9a74e40aa4e1e095c50a88, type: 3}
 --- !u!1001 &5994795833423906254
 PrefabInstance:
@@ -2018,15 +2019,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 9038168528823519695, guid: c85c9085917d18d40844227537954f9d,
+    - target: {fileID: 5994795833423906256, guid: c85c9085917d18d40844227537954f9d,
         type: 3}
-      propertyPath: _hitStateColor
-      value: 
-      objectReference: {fileID: 245252225}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9038168528823519695, guid: c85c9085917d18d40844227537954f9d,
         type: 3}
       propertyPath: _warpBolt
       value: 
       objectReference: {fileID: 392311333}
+    - target: {fileID: 9038168528823519695, guid: c85c9085917d18d40844227537954f9d,
+        type: 3}
+      propertyPath: _hitStateColor
+      value: 
+      objectReference: {fileID: 245252225}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c85c9085917d18d40844227537954f9d, type: 3}

@@ -7,6 +7,7 @@ namespace Mechanics.WarpBolt
     {
         [Header("Audio")]
         [SerializeField] private AudioClip _playerWarpSound = null;
+        [SerializeField] private AudioClip _warpInteractSound = null;
         [Header("Visual")]
         [SerializeField] private ParticleSystem _dissipationParticles = null;
 
@@ -14,6 +15,13 @@ namespace Mechanics.WarpBolt
         {
             if (_dissipationParticles != null) {
                 _dissipationParticles.Play();
+            }
+        }
+
+        public void OnWarpInteract()
+        {
+            if (_warpInteractSound != null) {
+                // Play Warp Interact Sound
             }
         }
 
