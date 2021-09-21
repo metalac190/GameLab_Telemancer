@@ -26,84 +26,6 @@ namespace Mechanics.WarpBolt
 
         // -------------------------------------------------------------------------------------------
 
-        #region NullCheck
-
-        private BoltData GetBoltData()
-        {
-            if (_data == null) {
-                _data = (BoltData)ScriptableObject.CreateInstance("BoltData");
-                _data.SetWarpBoltReference(this);
-            }
-            return _data;
-        }
-
-        private bool _missingVisuals;
-
-        private void VisualsNullCheck()
-        {
-            if (_visuals == null) {
-                _visuals = transform.Find("Art");
-                if (_visuals == null) {
-                    _missingVisuals = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
-                }
-            }
-        }
-
-        private bool _missingRigidbody;
-
-        private void RigidbodyNullCheck()
-        {
-            if (_rb == null) {
-                if (transform.parent != null) {
-                    _rb = transform.parent.GetComponent<Rigidbody>();
-                }
-                if (_rb == null) {
-                    _rb = GetComponent<Rigidbody>();
-                    if (_rb == null) {
-                        _missingRigidbody = true;
-                        Debug.LogWarning("Cannot find Warp Bolt Rigidbody", gameObject);
-                    }
-                }
-            }
-        }
-
-        private bool _missingCollider;
-
-        private void ColliderNullCheck()
-        {
-            if (_collider == null) {
-                if (transform.parent != null) {
-                    _collider = transform.parent.GetComponent<Collider>();
-                }
-                if (_collider == null) {
-                    _collider = GetComponent<Collider>();
-                    if (_collider == null) {
-                        _missingCollider = true;
-                        Debug.LogWarning("Cannot find Warp Bolt Collider", gameObject);
-                    }
-                }
-            }
-            if (_collider != null) {
-                _collider.isTrigger = true;
-            }
-        }
-
-        private bool _missingFeedback;
-
-        private void FeedbackNullCheck()
-        {
-            if (_feedback == null) {
-                _feedback = transform.GetComponentInChildren<BoltFeedback>();
-                if (_feedback == null) {
-                    _missingFeedback = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Collider", gameObject);
-                }
-            }
-        }
-
-        #endregion
-
         #region Unity Functions
 
         private void OnEnable()
@@ -255,6 +177,7 @@ namespace Mechanics.WarpBolt
 
         private void DisableResidue()
         {
+            _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
             ResidueReady = false;
         }
@@ -276,6 +199,86 @@ namespace Mechanics.WarpBolt
                 _collider.enabled = false;
             }
             _isAlive = false;
+        }
+
+        #endregion
+
+        // -------------------------------------------------------------------------------------------
+
+        #region NullCheck
+
+        private BoltData GetBoltData()
+        {
+            if (_data == null) {
+                _data = (BoltData)ScriptableObject.CreateInstance("BoltData");
+                _data.SetWarpBoltReference(this);
+            }
+            return _data;
+        }
+
+        private bool _missingVisuals;
+
+        private void VisualsNullCheck()
+        {
+            if (_visuals == null) {
+                _visuals = transform.Find("Art");
+                if (_visuals == null) {
+                    _missingVisuals = true;
+                    Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
+                }
+            }
+        }
+
+        private bool _missingRigidbody;
+
+        private void RigidbodyNullCheck()
+        {
+            if (_rb == null) {
+                if (transform.parent != null) {
+                    _rb = transform.parent.GetComponent<Rigidbody>();
+                }
+                if (_rb == null) {
+                    _rb = GetComponent<Rigidbody>();
+                    if (_rb == null) {
+                        _missingRigidbody = true;
+                        Debug.LogWarning("Cannot find Warp Bolt Rigidbody", gameObject);
+                    }
+                }
+            }
+        }
+
+        private bool _missingCollider;
+
+        private void ColliderNullCheck()
+        {
+            if (_collider == null) {
+                if (transform.parent != null) {
+                    _collider = transform.parent.GetComponent<Collider>();
+                }
+                if (_collider == null) {
+                    _collider = GetComponent<Collider>();
+                    if (_collider == null) {
+                        _missingCollider = true;
+                        Debug.LogWarning("Cannot find Warp Bolt Collider", gameObject);
+                    }
+                }
+            }
+            if (_collider != null) {
+                _collider.isTrigger = true;
+            }
+        }
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_feedback == null) {
+                _feedback = transform.GetComponentInChildren<BoltFeedback>();
+                if (_feedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find Warp Bolt Collider", gameObject);
+                }
+            }
         }
 
         #endregion

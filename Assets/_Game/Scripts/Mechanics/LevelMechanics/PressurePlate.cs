@@ -21,4 +21,13 @@ public class PressurePlate : MonoBehaviour
             obj.Toggle();
         }
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        foreach (LevelActivatable obj in _activatables)
+        {
+            Gizmos.DrawLine(transform.position, obj.transform.position);
+        }
+    }
 }
