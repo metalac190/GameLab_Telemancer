@@ -6,7 +6,7 @@ using UnityEngine;
 public class MovingPlatform : LevelActivatable
 {
     [Header("MovingPlatform")]
-    [SerializeField] private List<Vector3> _points; // each point along the path the platform will follow. _points[0] should be it's starting position
+    [SerializeField] private List<Vector3> _path; // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
     private int _pointsListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
 
@@ -24,7 +24,7 @@ public class MovingPlatform : LevelActivatable
     {
         if(IsCurrentlyActive)
         {
-            if (transform.position != _points[_currentTarget])
+            if (transform.position != _path[_currentTarget])
             {
                 MovePlatform();
             }
@@ -48,11 +48,11 @@ public class MovingPlatform : LevelActivatable
     private void MovePlatform()
     {
         // get direction and distance to move
-        Vector3 _heading = _points[_currentTarget] - transform.position;
+        Vector3 _heading = _path[_currentTarget] - transform.position;
 
         if (_heading.magnitude < _tolerance) // if distance to move is less than one frame of movement
         {
-            transform.position = _points[_currentTarget]; // jump to target
+            transform.position = _path[_currentTarget]; // jump to target
         }
         else
         {
@@ -69,14 +69,14 @@ public class MovingPlatform : LevelActivatable
         {
             // get next target
             _currentTarget += _pointsListDirection;
-            if (_currentTarget < 0 || _currentTarget >= _points.Count)
+            if (_currentTarget < 0 || _currentTarget >= _path.Count)
             {
                 _pointsListDirection = _pointsListDirection * -1;
                 _currentTarget += _pointsListDirection * 2;
-                Mathf.Clamp(_currentTarget, 0, _points.Count);
+                Mathf.Clamp(_currentTarget, 0, _path.Count);
             }
         }
-        else if (_currentTarget > 0 && _currentTarget < _points.Count - 1) // if in middle of path, don't wait for _delayTime
+        else if (_currentTarget > 0 && _currentTarget < _path.Count - 1) // if in middle of path, don't wait for _delayTime
         {
             _currentTarget += _pointsListDirection;
         }
@@ -94,12 +94,24 @@ public class MovingPlatform : LevelActivatable
 
     IEnumerator MoveToStart()
     {
-        while(transform.position != _points[0])
+        if (_currentTarget != 0)
         {
-            _currentTarget = 0;
-            _pointsListDirection = 1;
-            MovePlatform();
+            _currentTarget--;
+            _pointsListDirection = -1;
+        }
+        while (transform.position != _path[0])
+        {
+            if (transform.position != _path[_currentTarget])
+            {
+                MovePlatform();
+            }
+            else
+            {
+                UpdateTarget();
+            }
             yield return new WaitForFixedUpdate();
         }
+        _currentTarget = 0;
+        _pointsListDirection = 1;
     }
 }
