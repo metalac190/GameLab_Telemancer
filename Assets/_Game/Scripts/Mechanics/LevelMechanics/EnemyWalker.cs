@@ -74,6 +74,9 @@ public class EnemyWalker : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // TODO: kill
-        Debug.Log("Kill player");
+        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            Debug.Log("Kill player");
+        }   
     }
 }
