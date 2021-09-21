@@ -16,4 +16,16 @@ public class Temp_LargeRock : MonoBehaviour, IWarpInteractable
         // Boolean return value to determine whether to dissipate warp bolt after impact
         return true;
     }
+
+    // Activate Residue Effects on object
+    public bool OnSetWarpResidue(BoltData data)
+    {
+        return true;
+    }
+
+    // Swap Player and Object or just call OnWarpBoltImpact() to not duplicate code
+    public void OnActivateWarpResidue(BoltData data)
+    {
+        OnWarpBoltImpact(data);
+    }
 }

@@ -94,6 +94,8 @@ namespace Mechanics.Player
 
             if (!_missingState) {
                 _playerState.OnChangeUnlocks += SetUnlocks;
+            } else {
+                SetUnlocks(false, false);
             }
         }
 
@@ -128,7 +130,11 @@ namespace Mechanics.Player
         public void ActivateBolt()
         {
             if (_missingWarpBolt) return;
-            Warp();
+            if (_warpBolt.ResidueReady) {
+                ActivateResidue();
+            } else {
+                Warp();
+            }
         }
 
         #endregion
@@ -145,7 +151,7 @@ namespace Mechanics.Player
 
         private void PrepareToCast()
         {
-            _warpBolt.PrepareToFire(GetBoltPosition(), _cameraLookDirection.rotation);
+            _warpBolt.PrepareToFire(GetBoltPosition(), _cameraLookDirection.rotation, _residueAbility);
         }
 
         // The main Coroutine for casting the warp bolt
@@ -187,6 +193,12 @@ namespace Mechanics.Player
         {
             if (!_warpAbility) return;
             _warpBolt.OnWarp();
+        }
+
+        private void ActivateResidue()
+        {
+            if (!_residueAbility) return;
+            _warpBolt.OnActivateResidue();
         }
 
         #endregion

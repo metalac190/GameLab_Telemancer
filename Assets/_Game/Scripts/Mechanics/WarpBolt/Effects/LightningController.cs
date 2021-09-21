@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mechanics.WarpBolt
+namespace Mechanics.WarpBolt.Effects
 {
     public class LightningController : MonoBehaviour
     {
@@ -39,7 +39,7 @@ namespace Mechanics.WarpBolt
 
             for (int i = 0; i < _endpoints.Count; i++) {
                 _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], delta);
-                Debug.Log(_endpoints[i].localPosition + " " + delta + " " + _finalEndpoints[i]);
+                //Debug.Log(_endpoints[i].localPosition + " " + delta + " " + _finalEndpoints[i]);
             }
         }
     }
