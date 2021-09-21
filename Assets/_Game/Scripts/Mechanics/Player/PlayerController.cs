@@ -36,5 +36,6 @@ public class PlayerController : MonoBehaviour
     public void Teleport(Transform other, Vector3 offset = default)
     {
         // TODO: Swap teleport player and other transform
+        Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
     }
 }

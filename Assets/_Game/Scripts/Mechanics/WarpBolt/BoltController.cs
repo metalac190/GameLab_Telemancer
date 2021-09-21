@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-// The main controller for the bolt warp projectile
-// Used by Player Casting
-// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
 namespace Mechanics.WarpBolt
 {
+    // The main controller for the bolt warp projectile
+    // Used by Player Casting
+    // Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
         [Header("Settings")]
@@ -14,11 +14,13 @@ namespace Mechanics.WarpBolt
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
         [SerializeField] private Transform _visuals;
-        [SerializeField] private BoltAnimator _animator;
         [SerializeField] private BoltFeedback _feedback;
         [SerializeField] private BoltData _data;
         public BoltData BoltData => GetBoltData();
+        public bool ResidueReady { get; private set; }
+        private IWarpInteractable _residueInteractable = null;
 
+        private bool _isResidue;
         private bool _isAlive;
         private float _timeAlive;
 
@@ -44,19 +46,6 @@ namespace Mechanics.WarpBolt
                 if (_visuals == null) {
                     _missingVisuals = true;
                     Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
-                }
-            }
-        }
-
-        private bool _missingAnimator;
-
-        private void AnimatorNullCheck()
-        {
-            if (_animator == null) {
-                _animator = transform.GetComponentInChildren<BoltAnimator>();
-                if (_animator == null) {
-                    _missingAnimator = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Animator", gameObject);
                 }
             }
         }
@@ -149,7 +138,11 @@ namespace Mechanics.WarpBolt
 
             IWarpInteractable interactable = other.GetComponent<IWarpInteractable>();
             if (interactable != null) {
-                WarpInteract(interactable);
+                if (_isResidue) {
+                    SetResidue(interactable);
+                } else {
+                    WarpInteract(interactable);
+                }
             }
             Dissipate();
         }
@@ -161,7 +154,7 @@ namespace Mechanics.WarpBolt
         #region Public Functions
 
         // Player is starting to cast the bolt
-        public void PrepareToFire(Vector3 position, Quaternion rotation)
+        public void PrepareToFire(Vector3 position, Quaternion rotation, bool isResidue)
         {
             if (_isAlive) {
                 Dissipate();
@@ -170,6 +163,8 @@ namespace Mechanics.WarpBolt
                 _visuals.gameObject.SetActive(true);
                 SetPosition(position, rotation);
             }
+            _isResidue = isResidue;
+            DisableResidue();
             SetCastStatus(0);
         }
 
@@ -177,8 +172,8 @@ namespace Mechanics.WarpBolt
         public void SetPosition(Vector3 position, Quaternion rotation)
         {
             transform.position = position;
-            _visuals.rotation = rotation;
             if (!_missingVisuals) {
+                _visuals.rotation = rotation;
             }
         }
 
@@ -203,11 +198,19 @@ namespace Mechanics.WarpBolt
         // Warp to the bolt's position
         public void OnWarp()
         {
+            if (!_isAlive) return;
             if (!_missingFeedback) {
                 _feedback.OnPlayerWarp();
             }
             _data.PlayerController.Teleport(transform);
             Disable();
+        }
+
+        public void OnActivateResidue()
+        {
+            if (!ResidueReady || _residueInteractable == null) return;
+            _residueInteractable.OnActivateWarpResidue(BoltData);
+            DisableResidue();
         }
 
         #endregion
@@ -219,8 +222,21 @@ namespace Mechanics.WarpBolt
         private void WarpInteract(IWarpInteractable interactable)
         {
             bool dissipate = interactable.OnWarpBoltImpact(BoltData);
+            if (!_missingFeedback) {
+                _feedback.OnWarpInteract();
+            }
 
             if (dissipate) Dissipate();
+        }
+
+        private void SetResidue(IWarpInteractable interactable)
+        {
+            bool activateResidue = interactable.OnSetWarpResidue(BoltData);
+            if (activateResidue) {
+                ResidueReady = true;
+                _residueInteractable = interactable;
+                Dissipate();
+            }
         }
 
         private void MoveBolt()
@@ -235,6 +251,12 @@ namespace Mechanics.WarpBolt
             if (_timeAlive > _lifeSpan) {
                 Dissipate();
             }
+        }
+
+        private void DisableResidue()
+        {
+            _residueInteractable = null;
+            ResidueReady = false;
         }
 
         private void Dissipate()

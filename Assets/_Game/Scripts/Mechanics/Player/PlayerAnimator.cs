@@ -1,67 +1,83 @@
 ﻿using UnityEngine;
 
-// The main Player Animator script that controls all animation for the player
-// Mostly used by the Player Casting Script and the 'Player Interactions' Script
-
-// NOTE: Each Animation Function returns how long that animation will take
-public class PlayerAnimator : MonoBehaviour
+namespace Mechanics.Player
 {
-    private float _fallTime;
-
-    public float OnPetToad()
+    // The main Player Animator script that controls all animation for the player
+    // Mostly used by the Player Casting Script and the 'Player Interactions' Script
+    public class PlayerAnimator : MonoBehaviour
     {
-        return 0;
-    }
+        private float _fallTime;
 
-    public float OnStartle()
-    {
-        return 0;
-    }
+        private void OnEnable()
+        {
+            ResetToIdle();
+        }
 
-    public float OnJump()
-    {
-        return 0;
-    }
+        public void OnPetToad()
+        {
+        }
 
-    public float OnFall()
-    {
-        _fallTime = Time.time;
-        return 0;
-    }
+        public void OnStartle()
+        {
+        }
 
-    public float OnLand()
-    {
-        return 0;
-    }
+        public void OnJump()
+        {
+            _fallTime = Time.time;
+        }
 
-    public float OnKill()
-    {
-        return 0;
-    }
+        public void OnFall()
+        {
+        }
 
-    public float OnCastBolt()
-    {
-        return 0.2f;
-    }
+        public void OnLand()
+        {
+            float time = Time.time - _fallTime;
+            if (time < 1) {
+                OnSimpleLand();
+            } else if (time < 2) {
+                OnAnimatedLand();
+            } else {
+                OnDeathLand();
+            }
+        }
 
-    public float OnResidueActive()
-    {
-        return 0;
-    }
+        private void OnSimpleLand()
+        {
+        }
 
-    public float OnInstantWarp()
-    {
-        return 0;
-    }
+        private void OnAnimatedLand()
+        {
+        }
 
-    public float OnInteractableWarp()
-    {
-        return 0;
-    }
+        private void OnDeathLand()
+        {
+        }
 
-    private void ResetToIdle()
-    {
-        // Resets all triggers and returns animation to idle
-        // For instance, after warping or after landing a fall
+        public void OnKill()
+        {
+        }
+
+        public void OnCastBolt()
+        {
+        }
+
+        public void OnResidueActive()
+        {
+        }
+
+        public void OnInstantWarp()
+        {
+        }
+
+        public void OnInteractableWarp()
+        {
+        }
+
+        private void ResetToIdle()
+        {
+            // Resets all triggers and returns animation to idle
+            // For instance, after warping or after landing a fall
+        }
     }
 }
