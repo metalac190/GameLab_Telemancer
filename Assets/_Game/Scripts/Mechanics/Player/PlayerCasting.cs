@@ -9,6 +9,9 @@ namespace Mechanics.Player
     // Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
+        [Header("Action Delays")]
+        [SerializeField] private float _timeToNextFire = 0.5f;
+        [SerializeField] private float _timeToNextWarp = 1.5f;
         [Header("Settings")]
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
@@ -17,12 +20,14 @@ namespace Mechanics.Player
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
 
         private bool _warpAbility;
         private bool _residueAbility;
-        private bool _isCasting;
+        private bool _lockCasting;
+        private bool _lockWarp;
 
         #region NullCheck
 
@@ -59,6 +64,20 @@ namespace Mechanics.Player
             }
         }
 
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_playerFeedback == null) {
+                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
+                }
+            }
+        }
+
         private bool _missingWarpBolt;
 
         private void WarpBoltNullCheck()
@@ -90,6 +109,7 @@ namespace Mechanics.Player
         {
             StateNullCheck();
             AnimatorNullCheck();
+            FeedbackNullCheck();
             WarpBoltNullCheck();
 
             if (!_missingState) {
@@ -122,19 +142,21 @@ namespace Mechanics.Player
         {
             // Called three times on quick click and called on click release too...
             // TODO: Fix Player Input left mouse clicking
-            if (_isCasting || _missingWarpBolt) return;
+            if (_lockCasting || _missingWarpBolt) return;
             PrepareToCast();
             StartCoroutine(Cast());
+            StartCoroutine(CastTimer());
         }
 
         public void ActivateBolt()
         {
-            if (_missingWarpBolt) return;
+            if (_lockWarp || _missingWarpBolt) return;
             if (_warpBolt.ResidueReady) {
                 ActivateResidue();
             } else {
                 Warp();
             }
+            StartCoroutine(WarpTimer());
         }
 
         #endregion
@@ -157,7 +179,7 @@ namespace Mechanics.Player
         // The main Coroutine for casting the warp bolt
         private IEnumerator Cast()
         {
-            _isCasting = true;
+            _lockCasting = true;
             if (_timeToFire > 0) {
                 for (float t = 0; t <= _timeToFire; t += Time.deltaTime) {
                     float delta = t / _timeToFire;
@@ -168,7 +190,21 @@ namespace Mechanics.Player
             }
             CastStatus(1);
             Fire();
-            _isCasting = false;
+            _lockCasting = false;
+        }
+
+        private IEnumerator CastTimer()
+        {
+            _lockCasting = true;
+            yield return new WaitForSecondsRealtime(_timeToNextFire);
+            _lockCasting = false;
+        }
+
+        private IEnumerator WarpTimer()
+        {
+            _lockCasting = true;
+            yield return new WaitForSecondsRealtime(_timeToNextWarp);
+            _lockCasting = false;
         }
 
         private void CastStatus(float status)
@@ -187,6 +223,10 @@ namespace Mechanics.Player
         {
             // Could tell animator to cast bolt, but it should be on the same page. Add check?
             _warpBolt.Fire(GetBoltPosition(), GetBoltForward());
+
+            if (!_missingFeedback) {
+                _playerFeedback.OnCastBolt();
+            }
         }
 
         private void Warp()
