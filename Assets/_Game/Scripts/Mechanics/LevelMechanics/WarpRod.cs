@@ -26,6 +26,11 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
         OnWarpBoltImpact(data);
     }
 
+    public void OnDisableWarpResidue() // Added as a hotfix
+    {
+        throw new System.NotImplementedException();
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
