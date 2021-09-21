@@ -1,5 +1,6 @@
 ﻿using Mechanics.WarpBolt;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Mechanics.Player
 {
@@ -8,6 +9,14 @@ namespace Mechanics.Player
     public class PlayerFeedback : MonoBehaviour
     {
         [SerializeField] private Temp_UIColorChanger _hudLookAtInteractableState = null;
+        [SerializeField] private VisualEffect _castFlash = null;
+
+        public void OnCastBolt()
+        {
+            if (_castFlash == null) return;
+
+            _castFlash.Play();
+        }
 
         public void OnHudColorChange(InteractableEnums type)
         {
