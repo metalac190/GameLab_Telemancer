@@ -17,6 +17,7 @@ namespace Mechanics.Player
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
 
@@ -59,6 +60,20 @@ namespace Mechanics.Player
             }
         }
 
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_playerFeedback == null) {
+                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
+                }
+            }
+        }
+
         private bool _missingWarpBolt;
 
         private void WarpBoltNullCheck()
@@ -90,6 +105,7 @@ namespace Mechanics.Player
         {
             StateNullCheck();
             AnimatorNullCheck();
+            FeedbackNullCheck();
             WarpBoltNullCheck();
 
             if (!_missingState) {
@@ -187,6 +203,10 @@ namespace Mechanics.Player
         {
             // Could tell animator to cast bolt, but it should be on the same page. Add check?
             _warpBolt.Fire(GetBoltPosition(), GetBoltForward());
+
+            if (!_missingFeedback) {
+                _playerFeedback.OnCastBolt();
+            }
         }
 
         private void Warp()
