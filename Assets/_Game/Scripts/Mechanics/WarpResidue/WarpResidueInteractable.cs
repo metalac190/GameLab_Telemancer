@@ -14,18 +14,23 @@ namespace Mechanics.WarpResidue
             _residueEffect.enabled = false;
         }
 
-        public bool OnWarpBoltImpact(BoltData data)
+        public virtual bool OnWarpBoltImpact(BoltData data)
         {
             return true;
         }
 
-        public bool OnSetWarpResidue(BoltData data)
+        public virtual bool OnSetWarpResidue(BoltData data)
         {
             _residueEffect.enabled = true;
             return true;
         }
 
-        public void OnActivateWarpResidue(BoltData data)
+        public virtual void OnActivateWarpResidue(BoltData data)
+        {
+            _residueEffect.enabled = false;
+        }
+
+        public virtual void OnDisableWarpResidue()
         {
             _residueEffect.enabled = false;
         }
