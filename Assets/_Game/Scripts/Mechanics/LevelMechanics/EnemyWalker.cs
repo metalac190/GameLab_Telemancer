@@ -79,4 +79,17 @@ public class EnemyWalker : MonoBehaviour
             Debug.Log("Kill player");
         }   
     }
+
+    private void OnDrawGizmos()
+    {
+        if (_path.Count > 0)
+        {
+            Gizmos.DrawWireSphere(_path[0], 0.25f);
+            Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+            for (int i = 0; i < _path.Count - 1; i++)
+            {
+                Gizmos.DrawLine(_path[i], _path[i + 1]);
+            }
+        }
+    }
 }
