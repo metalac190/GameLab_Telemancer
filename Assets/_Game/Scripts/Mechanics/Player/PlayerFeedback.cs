@@ -9,19 +9,20 @@ namespace Mechanics.Player
     {
         [SerializeField] private Temp_UIColorChanger _hudLookAtInteractableState = null;
 
-        public void OnHudColorChange(int type)
+        public void OnHudColorChange(InteractableEnums type)
         {
             if (_hudLookAtInteractableState == null) return;
 
             // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
             switch (type) {
-                case 1:
+                case InteractableEnums.WarpInteractable:
                     _hudLookAtInteractableState.SetColor(Color.cyan);
                     break;
-                case 0:
-                    _hudLookAtInteractableState.SetColor(Color.white);
+                case InteractableEnums.PlayerInteractable:
+                    _hudLookAtInteractableState.SetColor(Color.green);
                     break;
-                default:
+                case InteractableEnums.Object:
+                case InteractableEnums.Null:
                     _hudLookAtInteractableState.SetColor(Color.white);
                     break;
             }

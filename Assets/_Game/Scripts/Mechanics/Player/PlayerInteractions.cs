@@ -7,10 +7,12 @@ namespace Mechanics.Player
     public class PlayerInteractions : MonoBehaviour
     {
         [Header("Settings")]
+        [SerializeField] private float _maxLookDistance = 20;
         [SerializeField] private float _maxInteractDistance = 5;
         [SerializeField] private LayerMask _interactionMask = 1;
         [Header("References")]
         [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private PlayerFeedback _playerFeedback;
 
         #region NullCheck
 
@@ -22,7 +24,21 @@ namespace Mechanics.Player
                 _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
                 if (_playerAnimator == null) {
                     _missingAnimator = true;
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
+                    Debug.LogWarning("Cannot find the Player Animator for the Player Interactions Script", gameObject);
+                }
+            }
+        }
+
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_playerFeedback == null) {
+                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
                 }
             }
         }
@@ -34,6 +50,12 @@ namespace Mechanics.Player
         private void OnEnable()
         {
             AnimatorNullCheck();
+            FeedbackNullCheck();
+        }
+
+        private void Update()
+        {
+            LookAtInteractables();
         }
 
         #endregion
@@ -44,16 +66,36 @@ namespace Mechanics.Player
 
         public void Interact()
         {
-            GameObject interactionObject = GetRaycast();
-            if (interactionObject == null) return;
+            var hit = GetRaycast(_maxInteractDistance);
+            if (hit.collider == null) return;
 
-            Debug.Log("Interact with: " + gameObject);
+            // Find interactable and interact
+            // Play Animations on player
+        }
 
-            // Get Component for Toad {
-            if (!_missingAnimator) {
-                // _playerAnimator.OnPetToad();
+        public void LookAtInteractables()
+        {
+            var hit = GetRaycast(_maxLookDistance);
+            if (hit.collider == null) {
+                SetInteractable(InteractableEnums.Null);
+                return;
             }
-            // }
+            SetInteractable(InteractableEnums.Object);
+            GameObject interactionObject = hit.collider.gameObject;
+
+            //Debug.Log("Interact with: " + interactionObject.name, interactionObject);
+
+            var interactable = interactionObject.GetComponent<IWarpInteractable>();
+            if (interactable != null) {
+                SetInteractable(InteractableEnums.WarpInteractable);
+                return;
+            }
+
+            if (hit.distance < _maxInteractDistance) {
+                // Find interactable
+
+                //SetInteractable(InteractableEnums.PlayerInteractable);
+            }
         }
 
         #endregion
@@ -62,12 +104,19 @@ namespace Mechanics.Player
 
         #region Private Functions
 
-        private GameObject GetRaycast()
+        private void SetInteractable(InteractableEnums type)
         {
-            Ray ray = new Ray(transform.position, transform.eulerAngles);
+            if (!_missingFeedback) {
+                _playerFeedback.OnHudColorChange(type);
+            }
+        }
 
-            Physics.Raycast(ray, out var hit, _maxInteractDistance, _interactionMask);
-            return hit.collider != null ? hit.collider.gameObject : null;
+        private RaycastHit GetRaycast(float dist)
+        {
+            Ray ray = new Ray(transform.position, transform.forward);
+
+            Physics.Raycast(ray, out var hit, dist, _interactionMask);
+            return hit;
         }
 
         #endregion

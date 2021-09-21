@@ -9,22 +9,42 @@ namespace Mechanics.Player
     // Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
-        [Header("Unlocks")]
-        [SerializeField] private bool _warpAbility = false;
         [Header("Settings")]
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
         [Header("External References")]
-        [SerializeField] private BoltController _warpBolt = null;
+        [SerializeField] private BoltController _warpBolt;
         [Header("Internal References")]
+        [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerAnimator _playerAnimator;
-        [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
 
+        private bool _warpAbility;
+        private bool _residueAbility;
         private bool _isCasting;
 
         #region NullCheck
+
+        private bool _missingState;
+
+        private void StateNullCheck()
+        {
+            if (_playerState == null) {
+                if (transform.parent != null) {
+                    _playerState = transform.parent.GetComponent<PlayerState>();
+                    if (transform.parent != null) {
+                        _playerState = transform.parent.GetComponentInChildren<PlayerState>();
+                    }
+                } else {
+                    _playerState = GetComponent<PlayerState>();
+                }
+                if (_playerState == null) {
+                    _missingState = true;
+                    Debug.LogWarning("Cannot find the Player State for the Player Casting Script", gameObject);
+                }
+            }
+        }
 
         //private bool _missingAnimator;
 
@@ -34,20 +54,6 @@ namespace Mechanics.Player
                 _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
                 if (_playerAnimator == null) {
                     //_missingAnimator = true;
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
-                }
-            }
-        }
-
-
-        private bool _missingFeedback;
-
-        private void FeedbackNullCheck()
-        {
-            if (_playerFeedback == null) {
-                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
-                if (_playerFeedback == null) {
-                    _missingFeedback = true;
                     Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
                 }
             }
@@ -82,8 +88,22 @@ namespace Mechanics.Player
 
         private void OnEnable()
         {
+            StateNullCheck();
             AnimatorNullCheck();
             WarpBoltNullCheck();
+
+            if (!_missingState) {
+                _playerState.OnChangeUnlocks += SetUnlocks;
+            } else {
+                SetUnlocks(false, false);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (!_missingState) {
+                _playerState.OnChangeUnlocks -= SetUnlocks;
+            }
         }
 
         private void Update()
@@ -110,7 +130,11 @@ namespace Mechanics.Player
         public void ActivateBolt()
         {
             if (_missingWarpBolt) return;
-            Warp();
+            if (_warpBolt.ResidueReady) {
+                ActivateResidue();
+            } else {
+                Warp();
+            }
         }
 
         #endregion
@@ -119,9 +143,15 @@ namespace Mechanics.Player
 
         #region Private Functions
 
+        private void SetUnlocks(bool warp, bool residue)
+        {
+            _warpAbility = warp;
+            _residueAbility = residue;
+        }
+
         private void PrepareToCast()
         {
-            _warpBolt.PrepareToFire(GetBoltPosition(), _cameraLookDirection.rotation);
+            _warpBolt.PrepareToFire(GetBoltPosition(), _cameraLookDirection.rotation, _residueAbility);
         }
 
         // The main Coroutine for casting the warp bolt
@@ -165,6 +195,12 @@ namespace Mechanics.Player
             _warpBolt.OnWarp();
         }
 
+        private void ActivateResidue()
+        {
+            if (!_residueAbility) return;
+            _warpBolt.OnActivateResidue();
+        }
+
         #endregion
 
         #region Helper Functions
@@ -187,13 +223,8 @@ namespace Mechanics.Player
             Physics.Raycast(ray, out var hit, _boltLookDistance);
 
             if (hit.point != Vector3.zero) {
-                if (hit.collider != null) {
-                    var interactable = hit.collider.GetComponent<IWarpInteractable>();
-                    if (!_missingFeedback) _playerFeedback.OnHudColorChange(interactable != null ? 1 : 0);
-                }
                 return hit.point;
             }
-            if (!_missingFeedback) _playerFeedback.OnHudColorChange(-1);
             return _cameraLookDirection.position + _cameraLookDirection.forward * _boltLookDistance;
         }
 

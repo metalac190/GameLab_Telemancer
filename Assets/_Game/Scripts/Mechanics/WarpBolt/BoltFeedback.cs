@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Mechanics.WarpBolt
 {
@@ -9,12 +10,12 @@ namespace Mechanics.WarpBolt
         [SerializeField] private AudioClip _playerWarpSound = null;
         [SerializeField] private AudioClip _warpInteractSound = null;
         [Header("Visual")]
-        [SerializeField] private ParticleSystem _dissipationParticles = null;
+        [SerializeField] private VisualEffect _impactParticles = null;
 
         public void OnBoltDissipate()
         {
-            if (_dissipationParticles != null) {
-                _dissipationParticles.Play();
+            if (_impactParticles != null) {
+                _impactParticles.Play();
             }
         }
 

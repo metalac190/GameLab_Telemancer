@@ -8,6 +8,11 @@ namespace Mechanics.Player
     {
         private float _fallTime;
 
+        private void OnEnable()
+        {
+            ResetToIdle();
+        }
+
         public void OnPetToad()
         {
         }
