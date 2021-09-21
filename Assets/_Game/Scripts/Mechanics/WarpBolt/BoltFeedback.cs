@@ -1,25 +1,37 @@
 ﻿using UnityEngine;
+using UnityEngine.VFX;
 
-// The sound and visual feedback script for the Bolt Controller
-public class BoltFeedback : MonoBehaviour
+namespace Mechanics.WarpBolt
 {
-    [Header("Audio")]
-    [SerializeField] private AudioClip _playerWarpSound = null;
-    [Header("Visual")]
-    [SerializeField] private ParticleSystem _dissipationParticles = null;
-
-    public void OnBoltDissipate()
+    // The sound and visual feedback script for the Bolt Controller
+    public class BoltFeedback : MonoBehaviour
     {
-        if (_dissipationParticles != null) {
-            _dissipationParticles.Play();
+        [Header("Audio")]
+        [SerializeField] private AudioClip _playerWarpSound = null;
+        [SerializeField] private AudioClip _warpInteractSound = null;
+        [Header("Visual")]
+        [SerializeField] private VisualEffect _impactParticles = null;
+
+        public void OnBoltDissipate()
+        {
+            if (_impactParticles != null) {
+                _impactParticles.Play();
+            }
         }
-    }
 
-    public void OnPlayerWarp()
-    {
-        if (_playerWarpSound != null) {
-            // Play player warp sound
-            // Maybe be on Player Feedback Script?
+        public void OnWarpInteract()
+        {
+            if (_warpInteractSound != null) {
+                // Play Warp Interact Sound
+            }
+        }
+
+        public void OnPlayerWarp()
+        {
+            if (_playerWarpSound != null) {
+                // Play player warp sound
+                // Maybe be on Player Feedback Script?
+            }
         }
     }
 }
