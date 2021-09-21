@@ -25,4 +25,10 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
     {
         OnWarpBoltImpact(data);
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, _warpPad.transform.position);
+    }
 }
