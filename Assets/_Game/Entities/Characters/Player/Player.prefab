@@ -139,6 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcaf2607b423247adaa734851862fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timeToNextFire: 0.5
+  _timeToNextWarp: 1.5
   _boltLookDistance: 20
   _timeToFire: 0
   _warpBolt: {fileID: 0}
@@ -885,6 +887,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Flash VFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628496274098499706, guid: 6ec5837416908f5428e411ed767a8ce6,
+        type: 3}
+      propertyPath: m_InitialEventName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628496274098499706, guid: 6ec5837416908f5428e411ed767a8ce6,
+        type: 3}
+      propertyPath: m_InitialEventNameOverriden
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec5837416908f5428e411ed767a8ce6, type: 3}

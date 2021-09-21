@@ -9,6 +9,9 @@ namespace Mechanics.Player
     // Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
+        [Header("Action Delays")]
+        [SerializeField] private float _timeToNextFire = 0.5f;
+        [SerializeField] private float _timeToNextWarp = 1.5f;
         [Header("Settings")]
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
@@ -23,7 +26,8 @@ namespace Mechanics.Player
 
         private bool _warpAbility;
         private bool _residueAbility;
-        private bool _isCasting;
+        private bool _lockCasting;
+        private bool _lockWarp;
 
         #region NullCheck
 
@@ -138,19 +142,21 @@ namespace Mechanics.Player
         {
             // Called three times on quick click and called on click release too...
             // TODO: Fix Player Input left mouse clicking
-            if (_isCasting || _missingWarpBolt) return;
+            if (_lockCasting || _missingWarpBolt) return;
             PrepareToCast();
             StartCoroutine(Cast());
+            StartCoroutine(CastTimer());
         }
 
         public void ActivateBolt()
         {
-            if (_missingWarpBolt) return;
+            if (_lockWarp || _missingWarpBolt) return;
             if (_warpBolt.ResidueReady) {
                 ActivateResidue();
             } else {
                 Warp();
             }
+            StartCoroutine(WarpTimer());
         }
 
         #endregion
@@ -173,7 +179,7 @@ namespace Mechanics.Player
         // The main Coroutine for casting the warp bolt
         private IEnumerator Cast()
         {
-            _isCasting = true;
+            _lockCasting = true;
             if (_timeToFire > 0) {
                 for (float t = 0; t <= _timeToFire; t += Time.deltaTime) {
                     float delta = t / _timeToFire;
@@ -184,7 +190,21 @@ namespace Mechanics.Player
             }
             CastStatus(1);
             Fire();
-            _isCasting = false;
+            _lockCasting = false;
+        }
+
+        private IEnumerator CastTimer()
+        {
+            _lockCasting = true;
+            yield return new WaitForSecondsRealtime(_timeToNextFire);
+            _lockCasting = false;
+        }
+
+        private IEnumerator WarpTimer()
+        {
+            _lockCasting = true;
+            yield return new WaitForSecondsRealtime(_timeToNextWarp);
+            _lockCasting = false;
         }
 
         private void CastStatus(float status)
