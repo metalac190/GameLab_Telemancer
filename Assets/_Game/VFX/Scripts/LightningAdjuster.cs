@@ -23,10 +23,8 @@ public class LightningAdjuster : MonoBehaviour
         _finalEndpoints = new Vector3[_endpoints.Length];
         _finalEndrotations = new Quaternion[_endpoints.Length];
 
-        if (interpolator == 0f)
-        {
-            for (int i = 0; i < _endpoints.Length; i++)
-            {
+        if (interpolator == 0f) {
+            for (int i = 0; i < _endpoints.Length; i++) {
                 _finalEndpoints[i] = _endpoints[i].position;
                 _finalEndrotations[i] = _endpoints[i].rotation;
             }
@@ -41,13 +39,10 @@ public class LightningAdjuster : MonoBehaviour
 
     private void Update()
     {
-        
         interpolator = Mathf.Clamp01((Time.time - _timeStart) / (_timeStop - _timeStart));
 
-        if (interpolator <= 1f)
-        {
-            for (int i = 0; i < _endpoints.Length; i++)
-            {
+        if (interpolator <= 1f) {
+            for (int i = 0; i < _endpoints.Length; i++) {
                 //_finalEndpoints[i] += (transform.position - _posLastFrame);
 
                 Debug.Log(_finalEndpoints[i] + transform.position);
@@ -62,9 +57,9 @@ public class LightningAdjuster : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (_finalEndpoints == null) return;
         Gizmos.color = Color.red;
-        foreach (Vector3 pos in _finalEndpoints)
-        {
+        foreach (Vector3 pos in _finalEndpoints) {
             Gizmos.DrawSphere(pos + transform.position, 0.1f);
         }
     }
