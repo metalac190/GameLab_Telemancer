@@ -14,37 +14,6 @@ namespace Mechanics.Player
         [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private PlayerFeedback _playerFeedback;
 
-        #region NullCheck
-
-        private bool _missingAnimator;
-
-        private void AnimatorNullCheck()
-        {
-            if (_playerAnimator == null) {
-                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
-                if (_playerAnimator == null) {
-                    _missingAnimator = true;
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Interactions Script", gameObject);
-                }
-            }
-        }
-
-
-        private bool _missingFeedback;
-
-        private void FeedbackNullCheck()
-        {
-            if (_playerFeedback == null) {
-                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
-                if (_playerFeedback == null) {
-                    _missingFeedback = true;
-                    Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
-                }
-            }
-        }
-
-        #endregion
-
         #region Unity Fucntions
 
         private void OnEnable()
@@ -117,6 +86,39 @@ namespace Mechanics.Player
 
             Physics.Raycast(ray, out var hit, dist, _interactionMask);
             return hit;
+        }
+
+        #endregion
+
+        // -------------------------------------------------------------------------------------------
+
+        #region NullCheck
+
+        //private bool _missingAnimator;
+
+        private void AnimatorNullCheck()
+        {
+            if (_playerAnimator == null) {
+                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
+                if (_playerAnimator == null) {
+                    //_missingAnimator = true;
+                    Debug.LogWarning("Cannot find the Player Animator for the Player Interactions Script", gameObject);
+                }
+            }
+        }
+
+
+        private bool _missingFeedback;
+
+        private void FeedbackNullCheck()
+        {
+            if (_playerFeedback == null) {
+                _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _missingFeedback = true;
+                    Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
+                }
+            }
         }
 
         #endregion
