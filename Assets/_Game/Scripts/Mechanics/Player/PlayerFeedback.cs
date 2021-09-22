@@ -9,13 +9,23 @@ namespace Mechanics.Player
     public class PlayerFeedback : MonoBehaviour
     {
         [SerializeField] private Temp_UIColorChanger _hudLookAtInteractableState = null;
+        [Header("Flash on Player Cast Bolt")]
+        [SerializeField] private Transform _whereToFlash = null;
         [SerializeField] private VisualEffect _castFlash = null;
+        private VisualEffect _instantiatedCastFlash;
+
+        private void OnEnable()
+        {
+            InstantiateCastFlash();
+        }
+
+        // -------------------------------------------------------------------------------------------
 
         public void OnCastBolt()
         {
-            if (_castFlash == null) return;
+            if (_instantiatedCastFlash == null) return;
 
-            _castFlash.Play();
+            _instantiatedCastFlash.Play();
         }
 
         public void OnHudColorChange(InteractableEnums type)
@@ -35,6 +45,18 @@ namespace Mechanics.Player
                     _hudLookAtInteractableState.SetColor(Color.white);
                     break;
             }
+        }
+
+        // -------------------------------------------------------------------------------------------
+
+        private void InstantiateCastFlash()
+        {
+            if (_castFlash == null) return;
+            if (_instantiatedCastFlash != null) {
+                Destroy(_instantiatedCastFlash.gameObject);
+            }
+            Transform location = _whereToFlash != null ? _whereToFlash : transform;
+            _instantiatedCastFlash = Instantiate(_castFlash, location);
         }
     }
 }
