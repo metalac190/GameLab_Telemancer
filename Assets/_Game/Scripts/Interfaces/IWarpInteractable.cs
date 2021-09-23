@@ -13,4 +13,6 @@ public interface IWarpInteractable
 
     // Activate Warp Residue -- Same as OnWarpBoltImpact? Not Sure, msg Brandon if you have any thoughts
     void OnActivateWarpResidue(BoltData data);
+
+    void OnDisableWarpResidue();
 }
