@@ -26,9 +26,20 @@ public class PlayerController : MonoBehaviour {
     public UnityEvent OnPlayerDeath;
     public bool flag_cantAct;
 
+#if UNITY_EDITOR
+    [Header("Debug/Testing")]
+    public PlayerDebug playerDebug;
+    [System.Serializable] public class PlayerDebug {
+        public Transform targetTransform;
+        public Vector3 targetPosition, offset;
+    }
+#endif
+
 #pragma warning restore 0649
 
     // -------------------------------------------------------------------------------------------
+
+    #region Initialize & Repeating
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
@@ -54,7 +65,11 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    #endregion
+
     // -------------------------------------------------------------------------------------------
+
+    #region Inputs
 
     public void Move(InputAction.CallbackContext value) {
         Vector2 inputValue = value.ReadValue<Vector2>();
@@ -71,6 +86,12 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    #endregion
+
+    // -------------------------------------------------------------------------------------------
+
+    #region Teleport
+
     public void Teleport(Transform other, Vector3 offset = default) {
         // TODO: Swap teleport player and other transform
         Vector3 oldPlayerPos = transform.position;
@@ -82,4 +103,39 @@ public class PlayerController : MonoBehaviour {
 
         Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
     }
+
+    public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
+        controller.enabled = false;
+        transform.position = other + offset;
+        controller.enabled = true;
+
+        Debug.Log("Teleport to raw position " + other);
+    }
+
+    #endregion
+
+    // -------------------------------------------------------------------------------------------
+
+    #region Debug
+
+    public void DebugTeleportWithTransform() {
+        if(playerDebug.targetTransform)
+            Teleport(playerDebug.targetTransform, playerDebug.offset);
+        else
+            Debug.Log("Debug transform not given, cannot teleport");
+    }
+
+    public void DebugTeleportToTransform() {
+        if(playerDebug.targetTransform)
+            TeleportToPosition(playerDebug.targetTransform.position, playerDebug.offset);
+        else
+            Debug.Log("Debug transform not given, cannot teleport");
+    }
+
+    public void DebugTeleportToVector3() {
+        TeleportToPosition(playerDebug.targetPosition, playerDebug.offset);
+    }
+
+    #endregion
+
 }
