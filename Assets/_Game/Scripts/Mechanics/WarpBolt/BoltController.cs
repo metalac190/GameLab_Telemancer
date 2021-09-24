@@ -76,11 +76,16 @@ namespace Mechanics.WarpBolt
 
         #region Public Functions
 
+        public void Redirect(Transform reference, float timer)
+        {
+            Redirect(reference.position, reference.rotation, timer);
+        }
+
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
         }
 
-        // Player is starting to cast the bolt
+        // Called when the player presses the "cast bolt" button
         public void PrepareToFire(Vector3 position, Quaternion rotation, bool isResidue)
         {
             if (_isAlive) {
@@ -123,21 +128,19 @@ namespace Mechanics.WarpBolt
         }
 
         // Warp to the bolt's position
-        public void OnWarp()
+        public bool OnWarp()
         {
-            if (!_isAlive) return;
-            if (!_missingFeedback) {
-                _feedback.OnPlayerWarp();
-            }
-            _data.PlayerController.Teleport(transform);
-            Disable();
+            if (!_isAlive) return false;
+            Warp();
+            return true;
         }
 
-        public void OnActivateResidue()
+        public bool OnActivateResidue()
         {
-            if (!ResidueReady || _residueInteractable == null) return;
+            if (!ResidueReady || _residueInteractable == null) return false;
             _residueInteractable.OnActivateWarpResidue(BoltData);
             DisableResidue();
+            return true;
         }
 
         #endregion
@@ -145,6 +148,15 @@ namespace Mechanics.WarpBolt
         // -------------------------------------------------------------------------------------------
 
         #region Private Functions
+
+        private void Warp()
+        {
+            if (!_missingFeedback) {
+                _feedback.OnPlayerWarp();
+            }
+            _data.PlayerController.Teleport(transform);
+            Disable();
+        }
 
         private void WarpInteract(IWarpInteractable interactable)
         {

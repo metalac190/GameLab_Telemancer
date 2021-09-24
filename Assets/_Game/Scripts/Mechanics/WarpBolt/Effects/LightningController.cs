@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Mechanics.WarpBolt.Effects
 {
-    // The controller / animator for the lightning.
-    // Lerps the lightning position from the bolt to its full trail length
+    /// Summary:
+    /// The controller / animator for the lightning.
+    /// Lerps the lightning position from the bolt to its full trail length
     public class LightningController : MonoBehaviour
     {
         [SerializeField] List<Transform> _endpoints = new List<Transform>();

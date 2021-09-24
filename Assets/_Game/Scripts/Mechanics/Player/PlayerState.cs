@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Mechanics.Player
 {
-    // The State of the Player
-    // This should link to PlayerPrefs State (Henry)
+    /// Summary:
+    /// The State of the Player
+    /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
         [SerializeField] private bool _unlockedWarp = false;

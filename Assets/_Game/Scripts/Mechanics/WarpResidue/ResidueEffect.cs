@@ -4,9 +4,14 @@ using UnityEngine;
 
 namespace Mechanics.WarpResidue
 {
+    /// Summary:
+    /// The script to implement the Residue Effect
+    /// Searches the object and all child objects for MeshRenderers
+    /// Creates a second material for each of those MeshRenderers to apply the Residue Shader
     public class ResidueEffect : MonoBehaviour
     {
-        public Material residueBaseMaterial = null;
+        // Required basic material that uses the Custom Residue Effect Shader
+        [SerializeField] private Material _residueBaseMaterial = null;
 
         private List<MeshRenderer> _meshRenderers;
         private List<Material> _originalMaterials;
@@ -37,6 +42,7 @@ namespace Mechanics.WarpResidue
 
         #endregion
 
+        // Called on Awake, searches all child objects for MeshRenderers
         private void GetMeshRenderers()
         {
             _meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
@@ -52,10 +58,11 @@ namespace Mechanics.WarpResidue
             }
         }
 
+        // Called on Awake, creates a second material for each object that uses the Residue Effect shader (on Base Material)
         private void CreateResidueMaterials()
         {
             foreach (var material in _originalMaterials) {
-                Material residueMat = Instantiate(residueBaseMaterial);
+                Material residueMat = Instantiate(_residueBaseMaterial);
                 // Set the residue Material custom shaders Base Material to originalMat
                 // residueMat.shader... = material;
                 residueMat.SetTexture("MainTexture", material.mainTexture);
@@ -64,6 +71,8 @@ namespace Mechanics.WarpResidue
             }
         }
 
+        // Called by another script to enable the residue effects
+        // TODO: Lerp the shader noise from no residue to full residue?
         private void ActivateResidue()
         {
             for (var i = 0; i < _meshRenderers.Count; i++) {
@@ -75,6 +84,7 @@ namespace Mechanics.WarpResidue
             }
         }
 
+        // Called by another script to disable the residue effects
         public void DisableResidue()
         {
             for (var i = 0; i < _meshRenderers.Count; i++) {
@@ -82,8 +92,11 @@ namespace Mechanics.WarpResidue
             }
         }
 
+        // Called on Destroy, clears all secondary materials
         private void ClearMaterials()
         {
+            // Make sure the MeshRenderers are using the original material
+            DisableResidue();
             foreach (var mat in _residueMaterials) {
                 Destroy(mat);
             }
