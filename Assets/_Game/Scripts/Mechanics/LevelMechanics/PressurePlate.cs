@@ -22,7 +22,7 @@ public class PressurePlate : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         foreach (LevelActivatable obj in _activatables)
