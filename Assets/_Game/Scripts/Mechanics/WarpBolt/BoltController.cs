@@ -2,9 +2,10 @@
 
 namespace Mechanics.WarpBolt
 {
-    // The main controller for the bolt warp projectile
-    // Used by Player Casting
-    // Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
+    /// Summary:
+    /// The main controller for the bolt warp projectile
+    /// Used by Player Casting
+    /// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
         [Header("Settings")]
@@ -74,6 +75,10 @@ namespace Mechanics.WarpBolt
         // -------------------------------------------------------------------------------------------
 
         #region Public Functions
+
+        public void Redirect(Vector3 position, Quaternion rotation, float timer)
+        {
+        }
 
         // Player is starting to cast the bolt
         public void PrepareToFire(Vector3 position, Quaternion rotation, bool isResidue)
