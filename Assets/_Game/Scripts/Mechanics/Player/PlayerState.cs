@@ -24,9 +24,19 @@ namespace Mechanics.Player
             UpdateUnlocks();
         }
 
+        public void OnKill()
+        {
+            // Ensure player can be killed
+            Kill();
+        }
+
         private void UpdateUnlocks()
         {
             OnChangeUnlocks.Invoke(_unlockedWarp, _unlockedResidue);
+        }
+
+        private void Kill()
+        {
         }
     }
 }
