@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Mechanics.WarpBolt;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Mechanics.Player
 {
@@ -28,6 +29,7 @@ namespace Mechanics.Player
 
         private bool _warpAbility;
         private bool _residueAbility;
+
         private bool _lockCasting;
         private bool _lockWarp;
         private bool _lockResidue;
@@ -66,20 +68,22 @@ namespace Mechanics.Player
 
         // -------------------------------------------------------------------------------------------
 
-        #region Public Functions
+        #region Public Functions - Input
 
-        public void CastBolt()
+        public void CastBolt(InputAction.CallbackContext value)
         {
-            // Called three times on quick click and called on click release too...
-            // TODO: Fix Player Input left mouse clicking
+            if (!value.performed) return;
+            // Ensure that casting is not locked and warp bolt exists
             if (_lockCasting || _missingWarpBolt) return;
             PrepareToCast();
             StartCoroutine(Cast());
             StartCoroutine(CastTimer());
         }
 
-        public void ActivateWarp()
+        public void ActivateWarp(InputAction.CallbackContext value)
         {
+            if (!value.performed) return;
+            // Ensure that player has warp ability, it is not locked, and warp bolt exists
             if (!_warpAbility || _lockWarp || _missingWarpBolt) return;
 
             // Lock the warp if it was successful
@@ -88,8 +92,10 @@ namespace Mechanics.Player
             }
         }
 
-        public void ActivateResidue()
+        public void ActivateResidue(InputAction.CallbackContext value)
         {
+            if (!value.performed) return;
+            // Ensure that player has residue ability, it is not locked, and warp bolt exists
             if (!_residueAbility || _lockResidue || _missingWarpBolt) return;
 
             // Lock the residue if it was successful

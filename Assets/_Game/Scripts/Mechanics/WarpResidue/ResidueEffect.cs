@@ -61,6 +61,7 @@ namespace Mechanics.WarpResidue
         // Called on Awake, creates a second material for each object that uses the Residue Effect shader (on Base Material)
         private void CreateResidueMaterials()
         {
+            if (_residueBaseMaterial == null) return;
             foreach (var material in _originalMaterials) {
                 Material residueMat = Instantiate(_residueBaseMaterial);
                 // Set the residue Material custom shaders Base Material to originalMat
@@ -75,6 +76,7 @@ namespace Mechanics.WarpResidue
         // TODO: Lerp the shader noise from no residue to full residue?
         private void ActivateResidue()
         {
+            if (_residueBaseMaterial == null) return;
             for (var i = 0; i < _meshRenderers.Count; i++) {
                 var meshRenderer = _meshRenderers[i];
                 if (meshRenderer.materials.Length > 1) {

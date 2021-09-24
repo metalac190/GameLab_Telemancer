@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Mechanics.WarpBolt
 {
@@ -11,6 +12,10 @@ namespace Mechanics.WarpBolt
         [Header("Settings")]
         [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
         [SerializeField] private float _lifeSpan = 4;
+        [Header("Warping")]
+        [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
+        [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
+        [SerializeField] private LayerMask _collisionMask = 1;
         [Header("References")]
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
@@ -72,6 +77,12 @@ namespace Mechanics.WarpBolt
 
         #endregion
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
+        }
+
         // -------------------------------------------------------------------------------------------
 
         #region Public Functions
@@ -130,9 +141,7 @@ namespace Mechanics.WarpBolt
         // Warp to the bolt's position
         public bool OnWarp()
         {
-            if (!_isAlive) return false;
-            Warp();
-            return true;
+            return _isAlive && Warp();
         }
 
         public bool OnActivateResidue()
@@ -149,14 +158,53 @@ namespace Mechanics.WarpBolt
 
         #region Private Functions
 
-        private void Warp()
+        private bool Warp()
         {
+            if (WarpCollisionTesting()) return false;
             if (!_missingFeedback) {
                 _feedback.OnPlayerWarp();
             }
-            _data.PlayerController.Teleport(transform);
+            _data.PlayerController.TeleportToPosition(transform.position, Vector3.down);
             Disable();
+            return true;
         }
+
+        private bool WarpCollisionTesting()
+        {
+            // Ensure that warp bolt position is not out of bounds and space is large enough for player
+
+            bool collision = WarpCollisionCheck();
+            if (!collision) return false;
+
+            // Offsets to try
+            Vector3 originalPosition = transform.position;
+            Vector3[] checkOffsets =
+            {
+                new Vector3(0, -_playerRadius.y, 0),
+                new Vector3(0, _playerRadius.y, 0),
+                new Vector3(_playerRadius.x, 0, 0),
+                new Vector3(-_playerRadius.x, 0, 0),
+                new Vector3(0, 0, _playerRadius.z),
+                new Vector3(0, 0, -_playerRadius.z)
+            };
+
+            // Attempt to avoid collision at the following offsets
+            foreach (var offset in checkOffsets) {
+                bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
+                if (hitObj) {
+                    float dist = offset.magnitude - hit.distance / offset.magnitude + _overCorrection;
+                    transform.position = originalPosition - dist * offset;
+                    if (!WarpCollisionCheck()) {
+                        return false;
+                    }
+                }
+            }
+
+            transform.position = originalPosition;
+            return true;
+        }
+
+        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask);
 
         private void WarpInteract(IWarpInteractable interactable)
         {
