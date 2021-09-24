@@ -4,8 +4,9 @@ using UnityEngine.VFX;
 
 namespace Mechanics.Player
 {
-    // The Player Feedback Script, contains all sound or visual effects that the player directly causes
-    // Used by anything connected to the player
+    /// Summary:
+    /// The Player Feedback Script, contains all sound or visual effects that the player directly causes
+    /// Used by anything connected to the player
     public class PlayerFeedback : MonoBehaviour
     {
         [SerializeField] private Temp_UIColorChanger _hudLookAtInteractableState = null;

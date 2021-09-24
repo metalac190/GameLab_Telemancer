@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace Mechanics.Player
 {
-    // The State of the Player
-    // This should link to PlayerPrefs State (Henry)
+    /// Summary:
+    /// The State of the Player
+    /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
         [SerializeField] private bool _unlockedWarp = false;
@@ -24,9 +25,19 @@ namespace Mechanics.Player
             UpdateUnlocks();
         }
 
+        public void OnKill()
+        {
+            // Ensure player can be killed
+            Kill();
+        }
+
         private void UpdateUnlocks()
         {
             OnChangeUnlocks.Invoke(_unlockedWarp, _unlockedResidue);
+        }
+
+        private void Kill()
+        {
         }
     }
 }
