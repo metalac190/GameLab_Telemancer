@@ -5,35 +5,45 @@ using UnityEngine;
 
 public class RelayStone : MonoBehaviour, IWarpInteractable
 {
-    [SerializeField] private RelayStone _relayPair;
+    [SerializeField] private RelayStone _relayPair = null;
 
-    public void OnActivateWarpResidue(BoltData data)
+    public bool OnWarpBoltImpact(BoltData data)
     {
-        throw new System.NotImplementedException();
-    }
+        // Redirect the warp bolt
+        // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
+        data.WarpBolt.Redirect(_relayPair.transform.position + (_relayPair.transform.forward * 2), _relayPair.transform.rotation, 0);
+        Debug.Log("bolt redirected");
 
-    public void OnDisableWarpResidue()
-    {
-        throw new System.NotImplementedException();
+        // Don't dissipate the warp bolt!
+        return false;
     }
 
     public bool OnSetWarpResidue(BoltData data)
     {
-        throw new System.NotImplementedException();
+        // Ignore Warp Residue, instead call WarpBoltImpact
+        OnWarpBoltImpact(data);
+
+        // Don't dissipate the warp bolt!
+        return false;
     }
 
-    public bool OnWarpBoltImpact(BoltData data)
+    // Warp Residue doesn't matter for relay stone
+    public void OnActivateWarpResidue(BoltData data)
     {
-        throw new System.NotImplementedException();
     }
+    public void OnDisableWarpResidue()
+    {
+    }
+
+    
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, _relayPair.transform.position);
+        if(_relayPair != null)
+            Gizmos.DrawLine(transform.position, _relayPair.transform.position);
 
         Gizmos.color = Color.red;
-        //Ray ray = new Ray(transform.position, transform.forward * 5);
         Vector3 direction = transform.TransformDirection(Vector3.forward * 5);
         Gizmos.DrawRay(transform.position, direction);
     }
