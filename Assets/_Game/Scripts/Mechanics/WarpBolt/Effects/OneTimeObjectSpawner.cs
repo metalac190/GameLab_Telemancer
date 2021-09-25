@@ -2,6 +2,9 @@
 
 namespace Mechanics.WarpBolt.Effects
 {
+    /// Summary:
+    /// A helper script to instantiate an object on awake.
+    /// Used to instantiate visual effect prefabs primarily
     public class OneTimeObjectSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject _objectToSpawn = null;
