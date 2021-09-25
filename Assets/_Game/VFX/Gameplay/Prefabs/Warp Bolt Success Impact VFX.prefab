@@ -315,15 +315,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577585602418833061}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72bd683ffc26f7f40b0843475b6fd8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _endpoints:
   - {fileID: 914316275}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 9181464396526497412}
   _duration: 5
 --- !u!114 &7133037124337845470
@@ -683,7 +681,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8141745541523337770}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1.161}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7701506834379150216}
@@ -764,7 +762,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: isSuccessful
+        m_Overridden: 1
 --- !u!73398921 &3197386998221778485
 VFXRenderer:
   m_ObjectHideFlags: 0
@@ -783,6 +784,8 @@ VFXRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

@@ -6,7 +6,7 @@ using UnityEngine;
 public class MovingPlatform : LevelActivatable
 {
     [Header("MovingPlatform")]
-    [SerializeField] private List<Vector3> _path; // each point along the path the platform will follow. _points[0] should be it's starting position
+    [SerializeField] private List<Vector3> _path = new List<Vector3>(); // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
     private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
 
@@ -84,12 +84,14 @@ public class MovingPlatform : LevelActivatable
 
     private void OnTriggerEnter(Collider other)
     {
-        other.transform.parent = transform;
+        if(other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
+            other.transform.parent = transform;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.transform.parent = null;
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
+            other.transform.parent = null;
     }
 
     IEnumerator MoveToStart()
