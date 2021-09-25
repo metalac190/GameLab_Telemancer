@@ -205,11 +205,13 @@ namespace Mechanics.WarpBolt
                 new Vector3(0, 0, -_playerRadius.z)
             };
 
+            Debug.Log("Warp Collision");
+
             // Attempt to avoid collision at the following offsets
             foreach (var offset in checkOffsets) {
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
-                    float dist = offset.magnitude - hit.distance / offset.magnitude + _overCorrection;
+                    float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
                     transform.position = originalPosition - dist * offset;
                     if (!WarpCollisionCheck()) {
                         return false;
