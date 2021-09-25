@@ -2,6 +2,7 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Mechanics.Player
 {
@@ -20,6 +21,9 @@ namespace Mechanics.Player
         [SerializeField] private float _timeToFire = 0;
         [Header("External References")]
         [SerializeField] private BoltController _warpBolt;
+        [SerializeField] private Image _castImage = null;
+        [SerializeField] private Image _warpImage = null;
+        [SerializeField] private Image _residueImage = null;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerAnimator _playerAnimator;
@@ -78,6 +82,7 @@ namespace Mechanics.Player
             PrepareToCast();
             StartCoroutine(Cast());
             StartCoroutine(CastTimer());
+            if (_castImage != null) StartCoroutine(InputDebug(_castImage));
         }
 
         public void ActivateWarp(InputAction.CallbackContext value)
@@ -89,6 +94,7 @@ namespace Mechanics.Player
             // Lock the warp if it was successful
             if (_warpBolt.OnWarp()) {
                 StartCoroutine(WarpTimer());
+                if (_warpImage != null) StartCoroutine(InputDebug(_warpImage));
             }
         }
 
@@ -101,6 +107,7 @@ namespace Mechanics.Player
             // Lock the residue if it was successful
             if (_warpBolt.OnActivateResidue()) {
                 StartCoroutine(ResidueTimer());
+                if (_residueImage != null) StartCoroutine(InputDebug(_residueImage));
             }
         }
 
@@ -188,6 +195,21 @@ namespace Mechanics.Player
         {
             _warpAbility = warp;
             _residueAbility = residue;
+
+            // Temporary Debugging
+            if (_warpImage != null) {
+                _warpImage.color = warp ? new Color(1, 1, 1, 0.5f) : new Color(1, 1, 1, 36f / 255);
+            }
+            if (_residueImage != null) {
+                _residueImage.color = residue ? new Color(1, 1, 1, 0.5f) : new Color(1, 1, 1, 36f / 255);
+            }
+        }
+
+        private IEnumerator InputDebug(Image image)
+        {
+            image.color = new Color(0.5f, 0.75f, 0.5f, 0.75f);
+            yield return new WaitForSecondsRealtime(0.1f);
+            image.color = new Color(1f, 1f, 1f, 0.5f);
         }
 
         private Quaternion GetCameraRotation()

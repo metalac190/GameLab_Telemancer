@@ -107,7 +107,6 @@ namespace Mechanics.WarpBolt
                 SetPosition(position, rotation);
             }
             _isResidue = isResidue;
-            DisableResidue();
             SetCastStatus(0);
         }
 
@@ -218,6 +217,8 @@ namespace Mechanics.WarpBolt
 
         private void SetResidue(IWarpInteractable interactable)
         {
+            DisableResidue();
+
             bool activateResidue = interactable.OnSetWarpResidue(BoltData);
             if (activateResidue) {
                 ResidueReady = true;
