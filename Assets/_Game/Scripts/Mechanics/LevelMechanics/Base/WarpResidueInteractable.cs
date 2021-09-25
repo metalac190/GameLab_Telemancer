@@ -15,6 +15,9 @@ public class WarpResidueInteractable : MonoBehaviour, IWarpInteractable
     private void Awake()
     {
         _residueEffect = GetComponent<ResidueEffect>();
+        if (_residueEffect == null) {
+            _residueEffect = gameObject.AddComponent<ResidueEffect>();
+        }
         _residueEffect.enabled = false;
     }
 
