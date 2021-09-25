@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mechanics.WarpBolt.Effects
@@ -19,6 +20,8 @@ namespace Mechanics.WarpBolt.Effects
 
         private void Awake()
         {
+            _endpoints = _endpoints.Where(item => item != null).ToList();
+
             _finalEndpoints = new List<Vector3>(_endpoints.Count);
 
             foreach (var point in _endpoints) {

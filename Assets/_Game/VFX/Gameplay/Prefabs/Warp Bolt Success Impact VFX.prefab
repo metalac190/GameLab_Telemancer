@@ -283,6 +283,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7701506834379150216}
   - component: {fileID: 2514329137218377425}
+  - component: {fileID: 7133037124337845470}
   m_Layer: 0
   m_Name: Warp Bolt Success Impact VFX
   m_TagString: Untagged
@@ -323,6 +324,19 @@ MonoBehaviour:
   - {fileID: 914316275}
   - {fileID: 9181464396526497412}
   _duration: 5
+--- !u!114 &7133037124337845470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6577585602418833061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36596addb787beb4a961ac295e144a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _effectToPlay: {fileID: 2904421725289851946}
 --- !u!1 &7093000474494359961
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,7 +681,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8141745541523337770}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.161}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7701506834379150216}
@@ -683,7 +697,7 @@ VisualEffect:
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: dc5d16d9626b95c498ff6507ba6dec7f, type: 3}
   m_InitialEventName: 
-  m_InitialEventNameOverriden: 1
+  m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
   m_PropertySheet:

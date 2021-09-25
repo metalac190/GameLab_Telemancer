@@ -34,6 +34,8 @@ namespace Mechanics.WarpBolt
         private bool _isResidue;
         private bool _isAlive;
         private float _timeAlive;
+
+        private Vector3 _previousPosition;
         private Coroutine _redirectDelayRoutine = null;
 
         // -------------------------------------------------------------------------------------------
@@ -64,19 +66,22 @@ namespace Mechanics.WarpBolt
             MoveBolt();
         }
 
-        // On Collision Enter causes some weird issues on impact
-        // Warning: If you want to switch to collision, change the value in Null Check to not make it trigger!
-        private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision other)
         {
             if (!_isAlive) return;
 
-            IWarpInteractable interactable = other.GetComponent<IWarpInteractable>();
+            var contact = other.GetContact(0);
+
+            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
             if (interactable != null) {
                 if (_isResidue) {
                     SetResidue(interactable);
                 } else {
                     WarpInteract(interactable);
                 }
+                PlayCollisionParticles(contact.point, contact.normal, true);
+            } else {
+                PlayCollisionParticles(contact.point, contact.normal, false);
             }
             Dissipate();
         }
@@ -260,6 +265,8 @@ namespace Mechanics.WarpBolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
+            _previousPosition = transform.position;
+
             _rb.MovePosition(transform.position + BoltData.Direction * _movementSpeed);
         }
 
@@ -281,10 +288,17 @@ namespace Mechanics.WarpBolt
         private void Dissipate()
         {
             if (!_missingFeedback) {
-                _feedback.OnBoltDissipate();
+                _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
             OnWarpDissipate?.Invoke();
             Disable();
+        }
+
+        private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
+        {
+            if (!_missingFeedback) {
+                _feedback.OnBoltImpact(position, normal, hitInteractable);
+            }
         }
 
         private void Disable()
@@ -372,7 +386,7 @@ namespace Mechanics.WarpBolt
                 }
             }
             if (_collider != null) {
-                _collider.isTrigger = true;
+                _collider.isTrigger = false;
             }
         }
 

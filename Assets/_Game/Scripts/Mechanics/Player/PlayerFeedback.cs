@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
@@ -11,11 +10,17 @@ namespace Mechanics.Player
     /// Used by anything connected to the player
     public class PlayerFeedback : MonoBehaviour
     {
+        // @Brett should probably take over audio and hud Feedback
+        // This is more for debugging and rough feedback
+
+        [Header("HUD Crosshair Display")]
         [SerializeField] private Text _hudLookAtInteractable = null;
-        [SerializeField] private float _inputFlashTime = 0.1f;
+
+        [Header("HUD Abilities Display")]
         [SerializeField] private Image _castImage = null;
         [SerializeField] private Image _warpImage = null;
         [SerializeField] private Image _residueImage = null;
+        [SerializeField] private float _inputFlashTime = 0.1f;
 
         [SerializeField] private Color _disabledColor = new Color(1, 1, 1, 36f / 255f);
         [SerializeField] private Color _normalColor = new Color(1, 1, 1, 0.5f);
@@ -23,13 +28,17 @@ namespace Mechanics.Player
         [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);
         [SerializeField] private Color _failedColor = new Color(0.75f, 0.5f, 0.5f, 0.5f);
 
+        [Header("VFX Flash on Cast")]
+        [SerializeField] private VfxController _castFlash;
         [SerializeField] private Transform _whereToFlash = null;
-        [SerializeField] private VisualEffect _castFlash = null;
-        private VisualEffect _instantiatedCastFlash;
 
-        private void OnEnable()
+        private void Awake()
         {
-            InstantiateCastFlash();
+            // Ensure that VFX is in scene (allows for prefab reference)
+            if (_castFlash != null && !_castFlash.gameObject.activeInHierarchy) {
+                Transform location = _whereToFlash != null ? _whereToFlash : transform;
+                _castFlash = Instantiate(_castFlash, location);
+            }
         }
 
         public void OnUpdateUnlockedAbilities(bool warpAbility, bool residueAbility)
@@ -51,8 +60,8 @@ namespace Mechanics.Player
 
         public void OnCastBolt()
         {
-            if (_instantiatedCastFlash != null) {
-                _instantiatedCastFlash.Play();
+            if (_castFlash != null) {
+                _castFlash.Play();
             }
         }
 
@@ -108,16 +117,6 @@ namespace Mechanics.Player
             image.color = successful ? _usedColor : _failedColor;
             yield return new WaitForSecondsRealtime(_inputFlashTime);
             image.color = _normalColor;
-        }
-
-        private void InstantiateCastFlash()
-        {
-            if (_castFlash == null) return;
-            if (_instantiatedCastFlash != null) {
-                Destroy(_instantiatedCastFlash.gameObject);
-            }
-            Transform location = _whereToFlash != null ? _whereToFlash : transform;
-            _instantiatedCastFlash = Instantiate(_castFlash, location);
         }
     }
 }
