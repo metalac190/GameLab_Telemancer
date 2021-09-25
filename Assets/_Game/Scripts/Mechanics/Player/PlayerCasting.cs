@@ -2,6 +2,7 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Mechanics.Player
 {
@@ -49,12 +50,20 @@ namespace Mechanics.Player
             } else {
                 SetUnlocks(false, false);
             }
+            if (!_missingWarpBolt) {
+                _warpBolt.OnResidueReady += OnResidueReady;
+                _warpBolt.OnWarpDissipate += OnWarpDissipate;
+            }
         }
 
         private void OnDisable()
         {
             if (!_missingState) {
                 _playerState.OnChangeUnlocks -= SetUnlocks;
+            }
+            if (!_missingWarpBolt) {
+                _warpBolt.OnResidueReady -= OnResidueReady;
+                _warpBolt.OnWarpDissipate -= OnWarpDissipate;
             }
         }
 
@@ -72,35 +81,48 @@ namespace Mechanics.Player
 
         public void CastBolt(InputAction.CallbackContext value)
         {
-            if (!value.performed) return;
+            if (!value.performed || _missingWarpBolt) return;
             // Ensure that casting is not locked and warp bolt exists
-            if (_lockCasting || _missingWarpBolt) return;
+            if (_lockCasting) {
+                _playerFeedback.OnPrepareToCast(false);
+                return;
+            }
             PrepareToCast();
             StartCoroutine(Cast());
             StartCoroutine(CastTimer());
+
+            _playerFeedback.OnPrepareToCast();
         }
 
         public void ActivateWarp(InputAction.CallbackContext value)
         {
-            if (!value.performed) return;
-            // Ensure that player has warp ability, it is not locked, and warp bolt exists
-            if (!_warpAbility || _lockWarp || _missingWarpBolt) return;
+            if (!value.performed || _missingWarpBolt) return;
+            // Ensure that player has warp ability and warp bolt exists
+            if (!_warpAbility) return;
 
             // Lock the warp if it was successful
-            if (_warpBolt.OnWarp()) {
+            if (!_lockWarp && _warpBolt.OnWarp()) {
                 StartCoroutine(WarpTimer());
+
+                _playerFeedback.OnActivateWarp();
+            } else {
+                _playerFeedback.OnActivateWarp(false);
             }
         }
 
         public void ActivateResidue(InputAction.CallbackContext value)
         {
-            if (!value.performed) return;
-            // Ensure that player has residue ability, it is not locked, and warp bolt exists
-            if (!_residueAbility || _lockResidue || _missingWarpBolt) return;
+            if (!value.performed || _missingWarpBolt) return;
+            // Ensure that player has residue ability and warp bolt exists
+            if (!_residueAbility) return;
 
             // Lock the residue if it was successful
-            if (_warpBolt.OnActivateResidue()) {
+            if (!_lockResidue && _warpBolt.OnActivateResidue()) {
                 StartCoroutine(ResidueTimer());
+
+                _playerFeedback.OnActivateResidue();
+            } else {
+                _playerFeedback.OnActivateResidue(false);
             }
         }
 
@@ -149,9 +171,33 @@ namespace Mechanics.Player
             // Could tell animator to cast bolt, but it should be on the same page. Add check?
             _warpBolt.Fire(GetBoltPosition(), GetBoltForward());
 
-            if (!_missingFeedback) {
-                _playerFeedback.OnCastBolt();
+            _playerFeedback.OnCastBolt();
+            if (_warpAbility) {
+                _playerFeedback.OnWarpReady();
             }
+        }
+
+        #endregion
+
+        #region Private Functions
+
+        // Controlled by Player State
+        private void SetUnlocks(bool warp, bool residue)
+        {
+            _warpAbility = warp;
+            _residueAbility = residue;
+
+            _playerFeedback.OnUpdateUnlockedAbilities(warp, residue);
+        }
+
+        private void OnResidueReady()
+        {
+            _playerFeedback.OnResidueReady();
+        }
+
+        private void OnWarpDissipate()
+        {
+            _playerFeedback.OnWarpReady(false);
         }
 
         #endregion
@@ -182,13 +228,6 @@ namespace Mechanics.Player
         #endregion
 
         #region Helper Functions
-
-        // Controlled by Player State
-        private void SetUnlocks(bool warp, bool residue)
-        {
-            _warpAbility = warp;
-            _residueAbility = residue;
-        }
 
         private Quaternion GetCameraRotation()
         {
@@ -251,28 +290,23 @@ namespace Mechanics.Player
             }
         }
 
-        //private bool _missingAnimator;
-
         private void AnimatorNullCheck()
         {
             if (_playerAnimator == null) {
                 _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
                 if (_playerAnimator == null) {
-                    //_missingAnimator = true;
+                    _playerAnimator = gameObject.AddComponent<PlayerAnimator>();
                     Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
                 }
             }
         }
-
-
-        private bool _missingFeedback;
 
         private void FeedbackNullCheck()
         {
             if (_playerFeedback == null) {
                 _playerFeedback = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerFeedback>() : GetComponent<PlayerFeedback>();
                 if (_playerFeedback == null) {
-                    _missingFeedback = true;
+                    _playerFeedback = gameObject.AddComponent<PlayerFeedback>();
                     Debug.LogWarning("Cannot find the Player Feedback for the Player Casting Script", gameObject);
                 }
             }

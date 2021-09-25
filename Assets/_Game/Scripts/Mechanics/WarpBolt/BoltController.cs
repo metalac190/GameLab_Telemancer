@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Mechanics.WarpBolt
@@ -16,6 +17,7 @@ namespace Mechanics.WarpBolt
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
+        [SerializeField] private bool _debugWarpBox = false;
         [Header("References")]
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
@@ -24,11 +26,15 @@ namespace Mechanics.WarpBolt
         [SerializeField] private BoltData _data;
         public BoltData BoltData => GetBoltData();
         public bool ResidueReady { get; private set; }
+        public event Action OnResidueReady = delegate { };
+        public event Action OnWarpDissipate = delegate { };
+
         private IWarpInteractable _residueInteractable = null;
 
         private bool _isResidue;
         private bool _isAlive;
         private float _timeAlive;
+        private Coroutine _redirectDelayRoutine = null;
 
         // -------------------------------------------------------------------------------------------
 
@@ -79,8 +85,10 @@ namespace Mechanics.WarpBolt
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
+            if (_debugWarpBox) {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
+            }
         }
 
         // -------------------------------------------------------------------------------------------
@@ -94,6 +102,12 @@ namespace Mechanics.WarpBolt
 
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
+            if (timer == 0) {
+                transform.position = position;
+                transform.rotation = rotation;
+            } else {
+                _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
+            }
         }
 
         // Called when the player presses the "cast bolt" button
@@ -106,8 +120,11 @@ namespace Mechanics.WarpBolt
                 _visuals.gameObject.SetActive(true);
                 SetPosition(position, rotation);
             }
+            if (_redirectDelayRoutine != null) {
+                StopCoroutine(_redirectDelayRoutine);
+                _redirectDelayRoutine = null;
+            }
             _isResidue = isResidue;
-            DisableResidue();
             SetCastStatus(0);
         }
 
@@ -188,11 +205,13 @@ namespace Mechanics.WarpBolt
                 new Vector3(0, 0, -_playerRadius.z)
             };
 
+            Debug.Log("Warp Collision");
+
             // Attempt to avoid collision at the following offsets
             foreach (var offset in checkOffsets) {
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
-                    float dist = offset.magnitude - hit.distance / offset.magnitude + _overCorrection;
+                    float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
                     transform.position = originalPosition - dist * offset;
                     if (!WarpCollisionCheck()) {
                         return false;
@@ -206,6 +225,15 @@ namespace Mechanics.WarpBolt
 
         private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask);
 
+        private IEnumerator RedirectDelay(Vector3 position, Quaternion rotation, float timer)
+        {
+            Disable();
+            yield return new WaitForSecondsRealtime(timer);
+            Enable();
+            transform.position = position;
+            transform.rotation = rotation;
+        }
+
         private void WarpInteract(IWarpInteractable interactable)
         {
             bool dissipate = interactable.OnWarpBoltImpact(BoltData);
@@ -218,9 +246,12 @@ namespace Mechanics.WarpBolt
 
         private void SetResidue(IWarpInteractable interactable)
         {
+            DisableResidue();
+
             bool activateResidue = interactable.OnSetWarpResidue(BoltData);
             if (activateResidue) {
                 ResidueReady = true;
+                OnResidueReady?.Invoke();
                 _residueInteractable = interactable;
                 Dissipate();
             }
@@ -252,6 +283,7 @@ namespace Mechanics.WarpBolt
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate();
             }
+            OnWarpDissipate?.Invoke();
             Disable();
         }
 
@@ -264,6 +296,17 @@ namespace Mechanics.WarpBolt
                 _collider.enabled = false;
             }
             _isAlive = false;
+        }
+
+        private void Enable()
+        {
+            if (!_missingVisuals) {
+                _visuals.gameObject.SetActive(true);
+            }
+            if (!_missingCollider) {
+                _collider.enabled = true;
+            }
+            _isAlive = true;
         }
 
         #endregion
