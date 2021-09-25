@@ -71,7 +71,6 @@ namespace Mechanics.WarpBolt
             if (!_isAlive) return;
 
             var contact = other.GetContact(0);
-            PlayCollisionParticles(contact.point, contact.normal);
 
             IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
             if (interactable != null) {
@@ -80,6 +79,9 @@ namespace Mechanics.WarpBolt
                 } else {
                     WarpInteract(interactable);
                 }
+                PlayCollisionParticles(contact.point, contact.normal, true);
+            } else {
+                PlayCollisionParticles(contact.point, contact.normal, false);
             }
             Dissipate();
         }
@@ -292,13 +294,11 @@ namespace Mechanics.WarpBolt
             Disable();
         }
 
-        private void PlayCollisionParticles(Vector3 position, Vector3 normal)
+        private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position, normal);
+                _feedback.OnBoltImpact(position, normal, hitInteractable);
             }
-            OnWarpDissipate?.Invoke();
-            Disable();
         }
 
         private void Disable()

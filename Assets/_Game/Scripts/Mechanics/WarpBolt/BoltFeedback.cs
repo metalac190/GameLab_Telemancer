@@ -15,19 +15,7 @@ namespace Mechanics.WarpBolt
         [SerializeField] private SFXOneShot _warpInteractSound = null;
 
         [Header("VFX on Impact")]
-        [SerializeField] private VfxController _successfulImpactVfx;
-        [SerializeField] private VfxController _failedImpactVfx;
-
-        private void Awake()
-        {
-            // Ensure that particles are in scene (allows for prefab reference)
-            if (_successfulImpactVfx != null && !_successfulImpactVfx.gameObject.activeInHierarchy) {
-                _successfulImpactVfx = Instantiate(_successfulImpactVfx, transform);
-            }
-            if (_failedImpactVfx != null && !_failedImpactVfx.gameObject.activeInHierarchy) {
-                _failedImpactVfx = Instantiate(_failedImpactVfx, transform);
-            }
-        }
+        [SerializeField] private VfxController _boltImpactVfx;
 
         public void OnBoltDissipate(Vector3 position, Vector3 forward)
         {
@@ -36,13 +24,17 @@ namespace Mechanics.WarpBolt
 
         public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)
         {
-            VfxController effectToPlay = interactable ? _successfulImpactVfx : _failedImpactVfx;
-            if (effectToPlay != null) {
-                // Play particles at collision normal
-                effectToPlay.transform.position = position;
-                effectToPlay.transform.forward = normal;
+            // TODO: Remove nasty instantiation -- reuse objects in some way
 
-                effectToPlay.Play();
+            if (_boltImpactVfx != null) {
+                VfxController controller = Instantiate(_boltImpactVfx);
+                // Play particles at collision normal
+                controller.transform.position = position;
+                controller.transform.forward = normal;
+
+                controller.Play(interactable);
+
+                controller.AutoKill(2);
             }
         }
 
