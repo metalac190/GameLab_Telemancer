@@ -11,7 +11,7 @@ namespace AudioSystem
         Single //One at a time, blend or fade to next
     }
 
-    [CreateAssetMenu(menuName = "SoundSystem/MusicEvent", fileName = "MUS_")]
+    [CreateAssetMenu(menuName = "AudioSystem/MusicEvent", fileName = "MUS_")]
     public class MusicEvent : ScriptableObject
     {
         [Header("General Settings")]
