@@ -40,14 +40,10 @@ namespace AudioSystem
         [Space(15)]
         [SerializeField] float initialFadeInTime = 0;
         [SerializeField] float crossfadeTime = 0;
-        [SerializeField] float layerIncreaseFadeInTime = 0;
-        [SerializeField] float layerDecreaseFadeInTime = 0;
         [SerializeField] float stopSongFadeOutTime = 0;
 
         public float InitialFadeInTime => initialFadeInTime;
         public float CrossfadeTime => crossfadeTime;
-        public float LayerIncreaseFadeInTime => layerIncreaseFadeInTime;
-        public float LayerDecreaseFadeInTime => layerDecreaseFadeInTime;
         public float StopSongFadeOutTime => stopSongFadeOutTime;
 
         public void Play()
