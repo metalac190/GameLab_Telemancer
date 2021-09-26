@@ -74,7 +74,7 @@ namespace Mechanics.Player
         {
         }
 
-        private void ResetToIdle()
+        public void ResetToIdle()
         {
             // Resets all triggers and returns animation to idle
             // For instance, after warping or after landing a fall

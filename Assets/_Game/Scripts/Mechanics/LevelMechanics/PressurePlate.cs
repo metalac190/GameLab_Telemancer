@@ -4,25 +4,31 @@ using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
 {
-    [SerializeField] private List<LevelActivatable> _activatables; // the list of objects to be toggled by this pressure plate
+    [SerializeField] private List<LevelActivatable> _activatables = new List<LevelActivatable>(); // the list of objects to be toggled by this pressure plate
 
     private void OnTriggerEnter(Collider other)
     {
-        foreach (LevelActivatable obj in _activatables)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
         {
-            obj.Toggle();
+            foreach (LevelActivatable obj in _activatables)
+            {
+                obj.Toggle();
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        foreach (LevelActivatable obj in _activatables)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
         {
-            obj.Toggle();
+            foreach (LevelActivatable obj in _activatables)
+            {
+                obj.Toggle();
+            }
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         foreach (LevelActivatable obj in _activatables)
