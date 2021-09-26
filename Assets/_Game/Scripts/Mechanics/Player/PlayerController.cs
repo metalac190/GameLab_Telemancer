@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("General Control")]
     public UnityEvent OnPlayerDeath;
+    public bool grounded;
     public bool flag_cantAct;
 
 #if UNITY_EDITOR
@@ -55,6 +56,10 @@ public class PlayerController : MonoBehaviour {
             if(flag_jump) { // Jump
                 moveVelocity.y = jumpForce;
                 flag_jump = false;
+
+            } else if(grounded && moveVelocity.y < 0) { // Grounded - stop gravity
+                moveVelocity.y = 0;
+
             } else { // Gravity
                 // TODO - float
                 moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
@@ -81,7 +86,7 @@ public class PlayerController : MonoBehaviour {
         if(value.performed) {
             //Teleport(GameObject.Find("Cube").transform);
 
-            if(/*grounded*/true)
+            if(grounded)
                 flag_jump = true;
         }
     }
