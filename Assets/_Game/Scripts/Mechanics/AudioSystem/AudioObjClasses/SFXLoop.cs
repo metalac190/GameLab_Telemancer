@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AudioSystem
 {
-    [CreateAssetMenu(menuName = "SoundSystem/SFX Looped", fileName = "SFX_LP_")]
+    [CreateAssetMenu(menuName = "AudioSystem/SFX Looped", fileName = "SFX_LP_")]
     public class SFXLoop : SFXEvent
     {
         [HideInInspector] public int NumCycles = 0;
