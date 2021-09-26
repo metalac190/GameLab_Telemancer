@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
-// The Bolt Data Scriptable Object that is used by the Bolt Controller
-// This scripts main purpose is to hold data such as the Bolt Controller and the Player Controller
-// It is passed through the OnWarpBoltImpact function
 namespace Mechanics.WarpBolt
 {
+    /// Summary:
+    /// The Bolt Data Scriptable Object that is used by the Bolt Controller
+    /// This scripts main purpose is to hold data such as the Bolt Controller and the Player Controller
+    /// It is passed through the OnWarpBoltImpact function
     public class BoltData : ScriptableObject
     {
         private BoltController _warpBolt;
