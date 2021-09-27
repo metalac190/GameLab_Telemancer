@@ -2,8 +2,9 @@
 
 namespace Mechanics.Player
 {
-    // The Player Interaction Controller, allows the player to interact directly with objects
-    // Should be on the camera transform or camera parent transform
+    /// Summary:
+    /// The Player Interaction Controller, allows the player to interact directly with objects
+    /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
         [Header("Settings")]

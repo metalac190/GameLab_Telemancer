@@ -4,30 +4,50 @@ using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
 {
-    [SerializeField] private List<LevelActivatable> _activatables; // the list of objects to be toggled by this pressure plate
+    [SerializeField] private List<LevelActivatable> _activatables = new List<LevelActivatable>(); // the list of objects to be toggled by this pressure plate
+    private int _id = 0;
+
+    private void Awake()
+    {
+        _id = gameObject.GetInstanceID();
+    }
+
+    private void Start()
+    {
+        foreach(LevelActivatable obj in _activatables)
+        {
+            if(obj != null) { obj.AddToSwitches(_id); }
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        foreach (LevelActivatable obj in _activatables)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
         {
-            obj.Toggle();
+            foreach (LevelActivatable obj in _activatables)
+            {
+                if (obj != null) { obj.Toggle(_id); }
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        foreach (LevelActivatable obj in _activatables)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
         {
-            obj.Toggle();
+            foreach (LevelActivatable obj in _activatables)
+            {
+                if (obj != null) { obj.Toggle(_id); }
+            }
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         foreach (LevelActivatable obj in _activatables)
         {
-            Gizmos.DrawLine(transform.position, obj.transform.position);
+            if (obj != null) { Gizmos.DrawLine(transform.position, obj.transform.position); }
         }
     }
 }

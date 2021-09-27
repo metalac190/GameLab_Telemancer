@@ -28,12 +28,13 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
 
     public void OnDisableWarpResidue() // Added as a hotfix
     {
-        throw new System.NotImplementedException();
+        // hwat
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, _warpPad.transform.position);
+        if(_warpPad != null)
+            Gizmos.DrawLine(transform.position, _warpPad.transform.position);
     }
 }
