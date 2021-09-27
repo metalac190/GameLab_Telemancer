@@ -11,21 +11,33 @@ namespace Mechanics.Player
     /// Used by anything connected to the player
     public class PlayerFeedback : MonoBehaviour
     {
-        [SerializeField] private Text _hudLookAtInteractable = null;
+        
         [SerializeField] private float _inputFlashTime = 0.1f;
+        [SerializeField] private Transform _whereToFlash = null;
+        [SerializeField] private VisualEffect _castFlash = null;
+        private VisualEffect _instantiatedCastFlash;
+
+        [SerializeField] private Xhair _crosshair = null;
+        
+        [Header("HUD Images")]
+        [SerializeField] private Image _hudXhair = null;
         [SerializeField] private Image _castImage = null;
         [SerializeField] private Image _warpImage = null;
         [SerializeField] private Image _residueImage = null;
-
+        
+        [Header("Ability Colors")]
         [SerializeField] private Color _disabledColor = new Color(1, 1, 1, 36f / 255f);
         [SerializeField] private Color _normalColor = new Color(1, 1, 1, 0.5f);
         [SerializeField] private Color _usedColor = new Color(0.5f, 0.75f, 0.5f, 0.75f);
         [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);
         [SerializeField] private Color _failedColor = new Color(0.75f, 0.5f, 0.5f, 0.5f);
 
-        [SerializeField] private Transform _whereToFlash = null;
-        [SerializeField] private VisualEffect _castFlash = null;
-        private VisualEffect _instantiatedCastFlash;
+        [Header("Crosshair Colors")] 
+        [SerializeField] private Color _xhairColorNormal = Color.white;
+        [SerializeField] private Color _xhairColorWarp = new Color(162, 191, 240, 1f);
+        [SerializeField] private Color _xhairColorInteract = Color.green;
+        
+        
 
         private void OnEnable()
         {
@@ -54,6 +66,9 @@ namespace Mechanics.Player
             if (_instantiatedCastFlash != null) {
                 _instantiatedCastFlash.Play();
             }
+            
+            // Call Xhair class to handle crosshair status bar
+            StartCoroutine(_crosshair.FillBoltStatusBar(0.5f));
         }
 
         public void OnWarpReady(bool ready = true)
@@ -86,19 +101,19 @@ namespace Mechanics.Player
 
         public void OnHudColorChange(InteractableEnums type)
         {
-            if (_hudLookAtInteractable == null) return;
+            if (_hudXhair == null) return;
 
             // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
             switch (type) {
                 case InteractableEnums.WarpInteractable:
-                    _hudLookAtInteractable.color = Color.cyan;
+                    _hudXhair.color = _xhairColorWarp;
                     break;
                 case InteractableEnums.PlayerInteractable:
-                    _hudLookAtInteractable.color = Color.green;
+                    _hudXhair.color = _xhairColorInteract;
                     break;
                 case InteractableEnums.Object:
                 case InteractableEnums.Null:
-                    _hudLookAtInteractable.color = Color.white;
+                    _hudXhair.color = _xhairColorNormal;
                     break;
             }
         }
