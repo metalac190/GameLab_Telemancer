@@ -47,9 +47,10 @@ namespace Mechanics.WarpBolt
             VisualsNullCheck();
             RigidbodyNullCheck();
             ColliderNullCheck();
+            FeedbackNullCheck();
 
             Disable();
-            BoltData.ResetDirection(Vector3.zero);
+            BoltData.Direction = Vector3.zero;
         }
 
         private void Update()
@@ -75,15 +76,14 @@ namespace Mechanics.WarpBolt
             IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
             if (interactable != null) {
                 if (_isResidue) {
-                    SetResidue(interactable);
+                    SetResidue(interactable, contact.point, contact.normal);
                 } else {
-                    WarpInteract(interactable);
+                    WarpInteract(interactable, contact.point, contact.normal);
                 }
-                PlayCollisionParticles(contact.point, contact.normal, true);
             } else {
+                Dissipate();
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
-            Dissipate();
         }
 
         #endregion
@@ -116,14 +116,14 @@ namespace Mechanics.WarpBolt
         }
 
         // Called when the player presses the "cast bolt" button
-        public void PrepareToFire(Vector3 position, Quaternion rotation, bool isResidue)
+        public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
             if (_isAlive) {
                 Dissipate();
             }
             if (!_missingVisuals) {
                 _visuals.gameObject.SetActive(true);
-                SetPosition(position, rotation);
+                SetPosition(position, forward);
             }
             if (_redirectDelayRoutine != null) {
                 StopCoroutine(_redirectDelayRoutine);
@@ -134,11 +134,11 @@ namespace Mechanics.WarpBolt
         }
 
         // Update the bolt's position. Called to keep the bolt in the player's hand
-        public void SetPosition(Vector3 position, Quaternion rotation)
+        public void SetPosition(Vector3 position, Vector3 forward)
         {
             transform.position = position;
             if (!_missingVisuals) {
-                _visuals.rotation = rotation;
+                _visuals.forward = forward;
             }
         }
 
@@ -149,12 +149,20 @@ namespace Mechanics.WarpBolt
         }
 
         // Set the bolts position and direction and fire the bolt
-        public void Fire(Vector3 position, Vector3 direction)
+        public void Fire(Vector3 position, Vector3 forward)
         {
-            BoltData.ResetDirection(direction);
+            BoltData.Direction = forward;
             transform.position = position;
+            if (!_missingVisuals) {
+                _visuals.forward = forward;
+            }
             if (!_missingCollider) {
                 _collider.enabled = true;
+            }
+            if (!_missingRigidbody) {
+                // Ensure that the rigidbody doesn't have any velocity
+                _rb.velocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
             }
             _isAlive = true;
             _timeAlive = 0;
@@ -239,17 +247,20 @@ namespace Mechanics.WarpBolt
             transform.rotation = rotation;
         }
 
-        private void WarpInteract(IWarpInteractable interactable)
+        private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
             bool dissipate = interactable.OnWarpBoltImpact(BoltData);
             if (!_missingFeedback) {
                 _feedback.OnWarpInteract();
             }
 
-            if (dissipate) Dissipate();
+            if (dissipate) {
+                Dissipate();
+                PlayCollisionParticles(position, normal, true);
+            }
         }
 
-        private void SetResidue(IWarpInteractable interactable)
+        private void SetResidue(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
             DisableResidue();
 
@@ -259,6 +270,7 @@ namespace Mechanics.WarpBolt
                 OnResidueReady?.Invoke();
                 _residueInteractable = interactable;
                 Dissipate();
+                PlayCollisionParticles(position, normal, true);
             }
         }
 
