@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float _speed = 3f;
-
-    public float Speed
-    {
-        get => _speed;
-        set => _speed = value;
-    }
+    [SerializeField] float _speed = 3f;
 
     private void FixedUpdate()
     {

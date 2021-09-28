@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] GameObject _projectile;
+    [SerializeField] Transform _spawnLocation = null;
+    [SerializeField] GameObject _projectile = null;
 
     private GameObject _projectileInstance;
 
@@ -15,14 +17,12 @@ public class Player : MonoBehaviour
 
     public void Fire()
     {
-        if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
-        {
-            if(_projectileInstance != null)
-            {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame || Mouse.current.leftButton.isPressed) {
+            if (_projectileInstance != null) {
                 Destroy(_projectileInstance);
             }
 
-            _projectileInstance = Instantiate(_projectile, transform.position, Quaternion.identity);
+            _projectileInstance = Instantiate(_projectile, _spawnLocation.position, Quaternion.identity);
         }
     }
 }
