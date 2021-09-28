@@ -3,19 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RelayStone : MonoBehaviour, IWarpInteractable
+public class DelayStone : MonoBehaviour, IWarpInteractable
 {
-    [Header("Relay Stone")]
-    [SerializeField] private RelayStone _relayPair = null;
+    [Header("Delay Stone")]
+    [SerializeField] private float _delayTime = 3;
 
     [Header("Debuging")]
     [SerializeField] private float _trajectoryRayGizmo = 5;
-
     public bool OnWarpBoltImpact(BoltData data)
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
-        data.WarpBolt.Redirect(_relayPair.transform.position + (_relayPair.transform.forward * 2), _relayPair.transform.rotation, 0);
+        data.WarpBolt.Redirect(transform.position + (transform.forward * 2), transform.rotation, _delayTime);
         Debug.Log("bolt redirected");
 
         // Don't dissipate the warp bolt!
@@ -39,14 +38,10 @@ public class RelayStone : MonoBehaviour, IWarpInteractable
     {
     }
 
-    
+
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        if(_relayPair != null)
-            Gizmos.DrawLine(transform.position, _relayPair.transform.position);
-
         Gizmos.color = Color.red;
         Vector3 direction = transform.TransformDirection(Vector3.forward * _trajectoryRayGizmo);
         Gizmos.DrawRay(transform.position, direction);
