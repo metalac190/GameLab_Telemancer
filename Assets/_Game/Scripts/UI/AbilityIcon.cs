@@ -17,7 +17,7 @@ public abstract class AbilityIcon : MonoBehaviour
     
     private IEnumerator CoolDownAnimation()
     {
-        
+        yield return null;
     }
 
     public void Cast()
@@ -30,6 +30,6 @@ public abstract class AbilityIcon : MonoBehaviour
 
     protected virtual IEnumerator CastAnimation()
     {
-        
+        yield return null;
     }
 }
