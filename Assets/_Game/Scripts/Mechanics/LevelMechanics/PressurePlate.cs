@@ -25,22 +25,27 @@ public class PressurePlate : MonoBehaviour
     {
         if (!_isPressed)
         {
-            if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") && other.gameObject.layer != LayerMask.NameToLayer("Ground Detector"))
+            if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") && 
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") && 
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
             {
                 _isPressed = true;
                 foreach (LevelActivatable obj in _activatables)
                 {
                     if (obj != null) { obj.Toggle(_id); }
                 }
-                
+                Debug.Log("pressure plate entered: " + other.gameObject.name);
+
             }
         }
-        Debug.Log("pressure plate entered: " + other.gameObject.name);
+        
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") && other.gameObject.layer != LayerMask.NameToLayer("Ground Detector"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
             if (!_isPressed)
             {
@@ -55,7 +60,9 @@ public class PressurePlate : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") && other.gameObject.layer != LayerMask.NameToLayer("Ground Detector"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
             if (_isPressed)
             {
@@ -66,8 +73,9 @@ public class PressurePlate : MonoBehaviour
                 }
             }
             //StartCoroutine(DeactivateOnCooldown());
+            Debug.Log("pressure plate exited: " + other.gameObject.name);
         }
-        Debug.Log("pressure plate exited: " + other.gameObject.name);
+        
     }
 
     /*
