@@ -113,21 +113,17 @@ public class PlayerController : MonoBehaviour {
         Vector3 oldPlayerPos = transform.position;
 
         controller.enabled = false;
-        groundDetectorCollision.enabled = false;
         transform.position = other.position + offset;
         other.position = oldPlayerPos;
         controller.enabled = true;
-        groundDetectorCollision.enabled = true;
 
         Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
         controller.enabled = false;
-        groundDetectorCollision.enabled = false;
         transform.position = other + offset;
         controller.enabled = true;
-        groundDetectorCollision.enabled = true;
 
         Debug.Log("Teleport to raw position " + other);
     }
