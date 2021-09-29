@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour {
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
 
     private CharacterController controller;
+    private PlayerGroundDetection groundDetector;
+    private CapsuleCollider groundDetectorCollision;
 
     [Header("Horizontal Movement")]
     [Range(0,50)] public float moveSpeed;
@@ -46,6 +48,8 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
+        groundDetector = GetComponentInChildren<PlayerGroundDetection>();
+        groundDetectorCollision = groundDetector.GetComponent<CapsuleCollider>();
         OnPlayerDeath.AddListener(() => {
             flag_cantAct = true;
         });
@@ -128,12 +132,12 @@ public class PlayerController : MonoBehaviour {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            yield return new WaitForSeconds(floatTime);
+            if(floatTime > 0)
+                yield return new WaitForSeconds(floatTime);
             floating = false;
-        } else {
+        } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
-            yield return null;
-        }
+        yield return null;
     }
 
     #endregion
