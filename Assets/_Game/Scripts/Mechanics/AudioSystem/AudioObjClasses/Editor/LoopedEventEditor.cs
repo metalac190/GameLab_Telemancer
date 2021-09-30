@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 
 [CustomEditor(typeof(AudioSystem.SFXLoop))]
 public class LoopedEventEditor : Editor
@@ -12,10 +11,20 @@ public class LoopedEventEditor : Editor
     SerializedProperty numCycleProperty;
     SerializedProperty enableFiniteLoopingProperty;
 
+    [SerializeField] private AudioSource previewer;
+
     void OnEnable()
     {
         numCycleProperty = serializedObject.FindProperty("NumCycles");
         enableFiniteLoopingProperty = serializedObject.FindProperty("FiniteLoopingEnabled");
+
+        previewer = EditorUtility.CreateGameObjectWithHideFlags
+            ("Audio preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
+    }
+
+    void OnDisable()
+    {
+        DestroyImmediate(previewer.gameObject);
     }
 
     public override void OnInspectorGUI()
@@ -46,6 +55,25 @@ public class LoopedEventEditor : Editor
             sfxLoop.IsLoopedInfinitely = true;
         }
 
+        DrawPreviewButton();
+
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DrawPreviewButton()
+    {
+        EditorGUI.BeginDisabledGroup(serializedObject.isEditingMultipleObjects);
+
+        GUILayout.Space(20);
+
+        if (GUILayout.Button("Preview"))
+        {
+            ((AudioSystem.SFXLoop)target).Preview(previewer);
+        }
+        if (GUILayout.Button("Stop Preview"))
+        {
+            ((AudioSystem.SFXLoop)target).StopPreview(previewer);
+        }
+        EditorGUI.EndDisabledGroup();
     }
 }
