@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Mechanics.WarpBolt;
+using AudioSystem;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
@@ -26,6 +27,12 @@ namespace Mechanics.Player
         [SerializeField] private Transform _whereToFlash = null;
         [SerializeField] private VisualEffect _castFlash = null;
         private VisualEffect _instantiatedCastFlash;
+
+        [Header("Audio")]
+        [SerializeField] private SFXOneShot _activateWarpSound = null;
+        [SerializeField] private SFXOneShot _boltCastSound = null;
+        [SerializeField] private SFXOneShot _activateResidueSound = null;
+        [SerializeField] private SFXOneShot _objectImpactResidueSound = null;
 
         private void OnEnable()
         {
@@ -54,6 +61,10 @@ namespace Mechanics.Player
             if (_instantiatedCastFlash != null) {
                 _instantiatedCastFlash.Play();
             }
+
+            if (_boltCastSound != null) {
+                _boltCastSound.PlayOneShot(transform.position);
+            }
         }
 
         public void OnWarpReady(bool ready = true)
@@ -68,6 +79,10 @@ namespace Mechanics.Player
             if (_warpImage != null) {
                 StartCoroutine(InputDebug(_warpImage, wasSuccessful));
             }
+
+            if (_activateWarpSound != null && wasSuccessful) {
+                _activateWarpSound.PlayOneShot(transform.position);
+            }
         }
 
         public void OnResidueReady()
@@ -75,12 +90,20 @@ namespace Mechanics.Player
             if (_residueImage != null) {
                 _residueImage.color = _readyToUseColor;
             }
+
+            if (_objectImpactResidueSound != null) {
+                _objectImpactResidueSound.PlayOneShot(transform.position);
+            }
         }
 
         public void OnActivateResidue(bool wasSuccessful = true)
         {
             if (_residueImage != null) {
                 StartCoroutine(InputDebug(_residueImage, wasSuccessful));
+            }
+
+            if (_activateResidueSound != null && wasSuccessful) {
+                _activateResidueSound.PlayOneShot(transform.position);
             }
         }
 
