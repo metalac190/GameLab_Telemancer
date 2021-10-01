@@ -17,6 +17,7 @@ namespace Mechanics.Player
         [SerializeField] private float _timeToNextWarp = 1.5f;
         [SerializeField] private float _timeToNextResidue = 1.5f;
         [Header("Settings")]
+        [SerializeField] private bool _clearResidueOnFire = true;
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
         [Header("External References")]
@@ -135,6 +136,10 @@ namespace Mechanics.Player
         private void PrepareToCast()
         {
             _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
+            if (_clearResidueOnFire) {
+                _warpBolt.DisableResidue();
+                _playerFeedback.OnResidueReady(false);
+            }
         }
 
         // The main Coroutine for casting the warp bolt

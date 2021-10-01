@@ -95,13 +95,13 @@ namespace Mechanics.Player
             }
         }
 
-        public void OnResidueReady()
+        public void OnResidueReady(bool ready = true)
         {
             if (_residueImage != null) {
-                _residueImage.color = _readyToUseColor;
+                _residueImage.color = ready ? _readyToUseColor : _normalColor;
             }
 
-            if (_objectImpactResidueSound != null) {
+            if (ready && _objectImpactResidueSound != null) {
                 _objectImpactResidueSound.PlayOneShot(transform.position);
             }
         }

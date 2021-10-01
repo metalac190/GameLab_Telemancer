@@ -290,7 +290,7 @@ namespace Mechanics.WarpBolt
             }
         }
 
-        private void DisableResidue()
+        public void DisableResidue()
         {
             _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
