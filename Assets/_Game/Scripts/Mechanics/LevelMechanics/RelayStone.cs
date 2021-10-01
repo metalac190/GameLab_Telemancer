@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class RelayStone : MonoBehaviour, IWarpInteractable
 {
+    [Header("Relay Stone")]
     [SerializeField] private RelayStone _relayPair = null;
+
+    [Header("Debuging")]
+    [SerializeField] private float _trajectoryRayGizmo = 5;
 
     public bool OnWarpBoltImpact(BoltData data)
     {
@@ -44,7 +48,7 @@ public class RelayStone : MonoBehaviour, IWarpInteractable
             Gizmos.DrawLine(transform.position, _relayPair.transform.position);
 
         Gizmos.color = Color.red;
-        Vector3 direction = transform.TransformDirection(Vector3.forward * 5);
+        Vector3 direction = transform.TransformDirection(Vector3.forward * _trajectoryRayGizmo);
         Gizmos.DrawRay(transform.position, direction);
     }
 }
