@@ -27,7 +27,7 @@ public class OptionsMenu : MonoBehaviour
     private void Start()
     {
         // Add listener
-        MenuEvents.current.ONOpenOptionsMenu += OnMenuOpen;
+        UIEvents.current.OnOpenOptionsMenu += OnMenuOpen;
         
         // Ensure menu is hidden
         _optionsMenu.SetActive(false);
@@ -35,7 +35,7 @@ public class OptionsMenu : MonoBehaviour
 
     private void OnMenuOpen()
     {
-        MenuEvents.current.ReloadSettings();
+        UIEvents.current.ReloadSettings();
         _optionsMenu.SetActive(true);
     }
 
@@ -61,6 +61,6 @@ public class OptionsMenu : MonoBehaviour
             PlayerPrefs.SetFloat(pref.Key, pref.Value);
         }
         
-        MenuEvents.current.ReloadSettings();
+        UIEvents.current.ReloadSettings();
     }
 }

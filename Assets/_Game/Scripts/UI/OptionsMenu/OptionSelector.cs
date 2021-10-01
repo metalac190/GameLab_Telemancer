@@ -17,7 +17,7 @@ public abstract class OptionSelector : MonoBehaviour
 
     private void Start()
     {
-        MenuEvents.current.ONReloadSettings += LoadValue;
+        UIEvents.current.OnReloadSettings += LoadValue;
         
         // Create listeners for all the option buttons
         for (int x = 0; x < options.Length; x++)
