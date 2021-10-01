@@ -84,14 +84,29 @@ public class MovingPlatform : LevelActivatable
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
-            other.transform.parent = transform;
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        {
+            //if (other.transform.root != other.transform)
+            //other.transform.parent = transform;
+            other.transform.root.transform.parent = transform;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
-            other.transform.parent = null;
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        {
+            Transform exitingObj = other.gameObject.transform;
+            while(exitingObj.parent != transform)
+            {
+                exitingObj = exitingObj.parent;
+            }
+            exitingObj.parent = null;
+        }
     }
 
     IEnumerator MoveToStart()
