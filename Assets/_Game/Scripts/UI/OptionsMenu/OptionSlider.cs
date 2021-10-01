@@ -25,7 +25,7 @@ public abstract class OptionSlider : MonoBehaviour
     
     public void Start()
     {
-        MenuEvents.current.ONReloadSettings += LoadValue;
+        UIEvents.current.OnReloadSettings += LoadValue;
         _slider.onValueChanged.AddListener(delegate {SetValue((int)_slider.value);});
         
         LoadValue();

@@ -8,9 +8,9 @@ namespace Mechanics.Player
     [RequireComponent(typeof(PlayerSfx), typeof(PlayerVfx), typeof(PlayerToHud))]
     public class PlayerFeedback : MonoBehaviour
     {
-        private PlayerVfx _playerVfx;
-        private PlayerToHud _playerToHud;
-        private PlayerSfx _playerSfx;
+        [SerializeField] private PlayerVfx _playerVfx;
+        [SerializeField] private PlayerToHud _playerToHud;
+        [SerializeField] private PlayerSfx _playerSfx;
 
         public void OnUpdateUnlockedAbilities(bool warpAbility, bool residueAbility)
         {
