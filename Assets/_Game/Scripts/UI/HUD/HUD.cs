@@ -67,7 +67,7 @@ public class HUD : MonoBehaviour
     private void Start()
     {
         DisplayDebugHUD(_debugMode);
-        UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
+        //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
     }
 
     private IEnumerator InputDebug(Image image, bool successful)
