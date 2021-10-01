@@ -20,14 +20,17 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] [Range(0,20)] private float jumpForce;
     [SerializeField] [Range(0,50)] private float risingGravity, fallingGravity;
     [SerializeField] [Range(0,1)] private float floatTime;
+    private bool floating;
     private bool flag_jump, flag_canFloat;
 
     [Header("General Control")]
     public UnityEvent OnPlayerDeath;
+    public bool grounded;
     public bool flag_cantAct;
 
-#if UNITY_EDITOR
     [Header("Debug/Testing")]
+    [SerializeField] private bool infiniteJumps;
+#if UNITY_EDITOR
     public PlayerDebug playerDebug;
     [System.Serializable] public class PlayerDebug {
         public Transform targetTransform;
@@ -43,6 +46,9 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
+        OnPlayerDeath.AddListener(() => {
+            flag_cantAct = true;
+        });
     }
 
     private void FixedUpdate() {
@@ -51,14 +57,23 @@ public class PlayerController : MonoBehaviour {
             // XZ Axis
             moveVelocity = (((xzInput.x * transform.right) + (xzInput.z * transform.forward)) * moveSpeed) + (moveVelocity.y * transform.up);
 
-            // Y Axis
+            #region Y Axis
             if(flag_jump) { // Jump
                 moveVelocity.y = jumpForce;
                 flag_jump = false;
+                flag_canFloat = true;
+
+            } else if((grounded && moveVelocity.y < 0) || floating) { // Grounded or floating - stop gravity
+                moveVelocity.y = 0;
+                flag_canFloat = false;
+
+            } else if(!grounded && flag_canFloat && Mathf.Abs(moveVelocity.y) <= 0.05f) { // Peak of jump - float (can only float once per jump)
+                StartCoroutine(Float());
+
             } else { // Gravity
-                // TODO - float
                 moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
             }
+            #endregion
 
             // Apply
             controller.Move(moveVelocity * Time.fixedDeltaTime);
@@ -74,14 +89,11 @@ public class PlayerController : MonoBehaviour {
     public void Move(InputAction.CallbackContext value) {
         Vector2 inputValue = value.ReadValue<Vector2>();
         xzInput = new Vector3(inputValue.x, 0f, inputValue.y);
-        //Debug.Log(value.ReadValue<Vector2>());
     }
 
     public void Jump(InputAction.CallbackContext value) {
         if(value.performed) {
-            //Teleport(GameObject.Find("Cube").transform);
-
-            if(/*grounded*/true)
+            if(grounded || infiniteJumps)
                 flag_jump = true;
         }
     }
@@ -90,7 +102,7 @@ public class PlayerController : MonoBehaviour {
 
     // -------------------------------------------------------------------------------------------
 
-    #region Teleport
+    #region Teleport & Movement
 
     public void Teleport(Transform other, Vector3 offset = default) {
         // TODO: Swap teleport player and other transform
@@ -112,12 +124,25 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("Teleport to raw position " + other);
     }
 
+    private IEnumerator Float() {
+        if(!floating) {
+            flag_canFloat = false;
+            floating = true;
+            yield return new WaitForSeconds(floatTime);
+            floating = false;
+        } else {
+            Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
+            yield return null;
+        }
+    }
+
     #endregion
 
     // -------------------------------------------------------------------------------------------
 
     #region Debug
 
+#if UNITY_EDITOR
     public void DebugTeleportWithTransform() {
         if(playerDebug.targetTransform)
             Teleport(playerDebug.targetTransform, playerDebug.offset);
@@ -135,6 +160,7 @@ public class PlayerController : MonoBehaviour {
     public void DebugTeleportToVector3() {
         TeleportToPosition(playerDebug.targetPosition, playerDebug.offset);
     }
+#endif
 
     #endregion
 
