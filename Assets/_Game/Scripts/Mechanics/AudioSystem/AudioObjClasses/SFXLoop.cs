@@ -28,5 +28,28 @@ namespace AudioSystem
         {
             audioSource.Stop();
         }
+
+        public void Preview(AudioSource source)
+        {
+            SetVariationValues();
+
+            if (Clip == null) return;
+
+            source.clip = Clip;
+            source.outputAudioMixerGroup = Mixer;
+            source.priority = Priority;
+            source.volume = Volume;
+            source.pitch = Pitch;
+            source.panStereo = StereoPan;
+            source.spatialBlend = SpatialBlend;
+
+            source.loop = true;
+            source.Play();
+        }
+
+        public void StopPreview(AudioSource source)
+        {
+            source.loop = false;
+        }
     }
 }

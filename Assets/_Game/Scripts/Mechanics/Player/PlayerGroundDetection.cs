@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class PlayerGroundDetection : MonoBehaviour {
 
-    //private BoxCollider collider;
     private PlayerController pc;
 
     private void Awake() {
-        Debug.Log("ah");
-        //collider = GetComponent<BoxCollider>();
         pc = GetComponentInParent<PlayerController>();
     }
 
