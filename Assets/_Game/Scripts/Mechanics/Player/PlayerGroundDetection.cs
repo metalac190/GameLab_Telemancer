@@ -11,14 +11,20 @@ public class PlayerGroundDetection : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
+        if(other.isTrigger)
+            return;
         pc.grounded = true;
     }
 
     private void OnTriggerExit(Collider other) {
+        if(other.isTrigger)
+            return;
         pc.grounded = false;
     }
 
     private void OnTriggerStay(Collider other) {
+        if(other.isTrigger)
+            return;
         pc.grounded = true;
     }
 
