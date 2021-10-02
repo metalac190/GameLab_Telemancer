@@ -17,6 +17,7 @@ namespace Mechanics.Player
         [SerializeField] private float _timeToNextWarp = 1.5f;
         [SerializeField] private float _timeToNextResidue = 1.5f;
         [Header("Settings")]
+        [SerializeField] private bool _clearResidueOnFire = true;
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
         [Header("External References")]
@@ -134,7 +135,11 @@ namespace Mechanics.Player
 
         private void PrepareToCast()
         {
-            _warpBolt.PrepareToFire(GetBoltPosition(), GetCameraRotation(), _residueAbility);
+            _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
+            if (_clearResidueOnFire) {
+                _warpBolt.DisableResidue();
+                _playerFeedback.OnResidueReady(false);
+            }
         }
 
         // The main Coroutine for casting the warp bolt
@@ -163,7 +168,7 @@ namespace Mechanics.Player
 
         private void HoldPosition()
         {
-            _warpBolt.SetPosition(GetBoltPosition(), GetCameraRotation());
+            _warpBolt.SetPosition(GetBoltPosition(), GetBoltForward());
         }
 
         private void Fire()
@@ -229,19 +234,15 @@ namespace Mechanics.Player
 
         #region Helper Functions
 
-        private Quaternion GetCameraRotation()
-        {
-            return !_missingCamera ? _cameraLookDirection.rotation : Quaternion.identity;
-        }
-
         private Vector3 GetBoltForward()
         {
-            if (!_missingCamera) {
+            if (_missingCamera) {
                 return _boltFirePosition != null ? _boltFirePosition.forward : transform.forward;
             }
 
             Vector3 current = GetBoltPosition();
             Vector3 angle = GetRaycast() - current;
+
             return angle.normalized;
         }
 

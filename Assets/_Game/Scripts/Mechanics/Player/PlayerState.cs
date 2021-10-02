@@ -21,6 +21,7 @@ namespace Mechanics.Player
         public event Action<bool, bool> OnChangeUnlocks = delegate { };
 
         private PlayerController _playerController;
+        private bool _isAlive = true;
 
         private void OnValidate()
         {
@@ -45,6 +46,8 @@ namespace Mechanics.Player
 
         public void OnKill()
         {
+            if (!_isAlive) return;
+            _isAlive = false;
             _onPlayerDeath.Invoke();
 
             _playerController.flag_cantAct = true;
@@ -61,6 +64,7 @@ namespace Mechanics.Player
 
         public void OnRespawn()
         {
+            _isAlive = true;
             _onPlayerRespawn.Invoke();
 
             _playerController.TeleportToPosition(_lastCheckpoint);
