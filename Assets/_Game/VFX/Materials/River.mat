@@ -120,6 +120,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_ECF2F190: 0.021
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -242,13 +243,15 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     - _depth: 0.24
-    - _depthStrength: 0.734
+    - _depthStrength: 0.235
+    - _ior: 0.25
     - _mainNormalTiling: 2.08
-    - _mainSpeed: 9.62
-    - _normalStrength: 0.46
+    - _mainSpeed: 0.143
+    - _normalStrength: 0.318
+    - _refractionStrength: 0
     - _secondaryNormalTiling: 4.11
-    - _secondarySpeed: 35
-    - _smoothness: 0.94
+    - _secondarySpeed: 0.034
+    - _smoothness: 0.981
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
@@ -266,10 +269,10 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - _deepWaterColor: {r: 0.14711627, g: 0.4067638, b: 0.5471698, a: 0.8784314}
+    - _deepWaterColor: {r: 0.14711615, g: 0.40676367, b: 0.5471698, a: 0.7921569}
     - _mainDirection: {r: -1, g: 0.125, b: 0, a: 0}
     - _secondaryDir: {r: 0.86, g: -1, b: 0, a: 0}
-    - _shallowWaterColor: {r: 0.34082413, g: 0.54997444, b: 0.6509434, a: 0.8117647}
+    - _shallowWaterColor: {r: 0.34082398, g: 0.54997444, b: 0.6509434, a: 0.7176471}
 --- !u!114 &448448799909569050
 MonoBehaviour:
   m_ObjectHideFlags: 11
