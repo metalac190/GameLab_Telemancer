@@ -11,11 +11,22 @@ public class Door : LevelActivatable
 
     protected override void OnActivate()
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(MoveDoor(_openPosition, true));
     }
 
     protected override void OnDeactivate()
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(MoveDoor(_closedPosition, false));
+    }
+
+    IEnumerator MoveDoor(Vector3 target, bool opening)
+    {
+        Debug.Log("Opening Door");
+        while(opening == IsCurrentlyActive && transform.position != target)
+        {
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * _moveSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+        Debug.Log("Door open");
     }
 }
