@@ -77,7 +77,7 @@ namespace Mechanics.Player
         private void SetInteractable(InteractableEnums type)
         {
             if (!_missingFeedback) {
-                _playerFeedback.OnHudColorChange(type);
+                _playerFeedback.OnCrosshairColorChange(type);
             }
         }
 
