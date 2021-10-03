@@ -26,7 +26,7 @@ public class MainMenu : MonoBehaviour
     public void OpenOptionsMenu()
     {
         // Fire OpenOptionsMenu event
-        MenuEvents.current.OpenOptionsMenu();
+        UIEvents.current.OpenOptionsMenu();
     }
 
     public void ExitGame()
