@@ -42,9 +42,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Activate Bolt",
+                    "name": "Activate Warp",
                     "type": "Button",
                     "id": "d2eb5ba2-4396-4c56-9fd4-ed6259f362bd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Activate Residue",
+                    "type": "Button",
+                    "id": "73e49d7e-c782-42cc-88ca-0e1224b1f8fa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NPC Interact",
+                    "type": "Button",
+                    "id": "606845b5-e2a9-4345-b14f-ae69299e8f15",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -145,7 +163,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard Mouse",
-                    "action": "Activate Bolt",
+                    "action": "Activate Warp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -168,6 +186,28 @@
                     "processors": "",
                     "groups": "Keyboard Mouse",
                     "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e79912a4-183b-409c-a570-0267f514955e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Activate Residue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe541797-8fba-4d56-ad17-d38525d66da8",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NPC Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mechanics.WarpBolt.Effects
 {
-    // The controller / animator for the lightning.
-    // Lerps the lightning position from the bolt to its full trail length
+    /// Summary:
+    /// The controller / animator for the lightning.
+    /// Lerps the lightning position from the bolt to its full trail length
     public class LightningController : MonoBehaviour
     {
         [SerializeField] List<Transform> _endpoints = new List<Transform>();
@@ -18,6 +20,8 @@ namespace Mechanics.WarpBolt.Effects
 
         private void Awake()
         {
+            _endpoints = _endpoints.Where(item => item != null).ToList();
+
             _finalEndpoints = new List<Vector3>(_endpoints.Count);
 
             foreach (var point in _endpoints) {

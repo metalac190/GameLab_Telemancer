@@ -2,9 +2,10 @@
 
 namespace Mechanics.WarpBolt
 {
-    // The Bolt Data Scriptable Object that is used by the Bolt Controller
-    // This scripts main purpose is to hold data such as the Bolt Controller and the Player Controller
-    // It is passed through the OnWarpBoltImpact function
+    /// Summary:
+    /// The Bolt Data Scriptable Object that is used by the Bolt Controller
+    /// This scripts main purpose is to hold data such as the Bolt Controller and the Player Controller
+    /// It is passed through the OnWarpBoltImpact function
     public class BoltData : ScriptableObject
     {
         private BoltController _warpBolt;
@@ -56,11 +57,6 @@ namespace Mechanics.WarpBolt
 
 
         // The direction that the warp bolt is traveling in. Can be modified by the ResetDirection() function below
-        public Vector3 Direction { get; private set; } = Vector3.zero;
-
-        public void ResetDirection(Vector3 direction)
-        {
-            Direction = direction;
-        }
+        public Vector3 Direction { get; set; } = Vector3.zero;
     }
 }

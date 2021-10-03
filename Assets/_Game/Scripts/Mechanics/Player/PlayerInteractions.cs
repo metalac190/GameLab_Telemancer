@@ -2,8 +2,9 @@
 
 namespace Mechanics.Player
 {
-    // The Player Interaction Controller, allows the player to interact directly with objects
-    // Should be on the camera transform or camera parent transform
+    /// Summary:
+    /// The Player Interaction Controller, allows the player to interact directly with objects
+    /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
         [Header("Settings")]
@@ -76,7 +77,7 @@ namespace Mechanics.Player
         private void SetInteractable(InteractableEnums type)
         {
             if (!_missingFeedback) {
-                _playerFeedback.OnHudColorChange(type);
+                _playerFeedback.OnCrosshairColorChange(type);
             }
         }
 
