@@ -17,14 +17,9 @@ public class PlayerToHud : MonoBehaviour
         UIEvents.current.CastBolt(wasSuccessful);
     }
 
-    public void OnCastBolt()
-    {
-        // TODO: find a reason for this function to exist
-    }
-    
     public void OnWarpReady(bool ready = true)
     {
-        UIEvents.current.WarpReady();
+        UIEvents.current.WarpReady(ready);
     }
 
     public void OnActivateWarp(bool wasSuccessful = true)
@@ -40,7 +35,7 @@ public class PlayerToHud : MonoBehaviour
 
     public void OnResidueReady(bool ready = true)
     {
-        UIEvents.current.ResidueReady();
+        UIEvents.current.ResidueReady(ready);
     }
 
     public void OnHudColorChange(InteractableEnums type)

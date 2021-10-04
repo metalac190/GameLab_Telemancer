@@ -110,6 +110,7 @@ namespace Mechanics.WarpBolt
             if (timer == 0) {
                 transform.position = position;
                 transform.rotation = rotation;
+                _data.Direction = rotation * Vector3.forward;
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
             }
@@ -218,25 +219,28 @@ namespace Mechanics.WarpBolt
                 new Vector3(0, 0, -_playerRadius.z)
             };
 
-            Debug.Log("Warp Collision");
 
-            // Attempt to avoid collision at the following offsets
+            // Attempt to avoid collision at each of the offsets
             foreach (var offset in checkOffsets) {
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
                     float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
                     transform.position = originalPosition - dist * offset;
                     if (!WarpCollisionCheck()) {
+                        Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
                         return false;
                     }
                 }
             }
 
+            // Could not avoid collision
             transform.position = originalPosition;
+            Debug.Log("Warp Failed: Not enough space in area");
             return true;
         }
 
-        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask);
+        // Collision check for the warp bolt. Ignores triggers
+        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
 
         private IEnumerator RedirectDelay(Vector3 position, Quaternion rotation, float timer)
         {
@@ -245,6 +249,7 @@ namespace Mechanics.WarpBolt
             Enable();
             transform.position = position;
             transform.rotation = rotation;
+            _data.Direction = rotation * Vector3.forward;
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
