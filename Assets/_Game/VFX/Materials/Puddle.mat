@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3603226712355230199
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 2
 --- !u!21 &2100000
 Material:
   serializedVersion: 6
@@ -20,16 +7,17 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ResidueBase
-  m_Shader: {fileID: -6465566751694194690, guid: 647110fcaaf515247bb20cf68ec941c7,
+  m_Name: Puddle
+  m_Shader: {fileID: -6465566751694194690, guid: 4c12c0efda11849449992a9059071dd2,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _BLENDMODE_ALPHA _ENABLE_FOG_ON_TRANSPARENT _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
+    RenderType: Transparent
   disabledShaderPasses:
   - DistortionVectors
   - MOTIONVECTORS
@@ -39,22 +27,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - MainTexture:
-        m_Texture: {fileID: 2800000, guid: 66246941a3144274fa8176cfca1bfd95, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - NebulaTexture:
-        m_Texture: {fileID: 2800000, guid: 66246941a3144274fa8176cfca1bfd95, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - StarMap:
-        m_Texture: {fileID: 8900000, guid: f3dd2724f1d89dc40baf49fb38044ffb, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - WarpMap:
-        m_Texture: {fileID: 8900000, guid: e167fefb690484544be629fe43691208, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _AnisotropyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -139,18 +111,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _mainNormal:
+        m_Texture: {fileID: 2800000, guid: 66d20be338a7ff641af626f6abd6fdc2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _secondaryNormal:
+        m_Texture: {fileID: 2800000, guid: 3769ffbe85d321b43a2c178f01288661, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - EdgeOffset: 0.005
-    - NoiseEdge: 0.25
-    - NoiseScale: 0.35
-    - Vector1_2AA6D686: 20
-    - Vector1_6EC71C2C: 17.4
-    - Vector1_7E602F45: 9.64
-    - Vector1_8042A716: -0.05
-    - Vector1_9BAF16B6: 5.56
-    - Vector1_C618FAFF: 0.01
-    - Vector1_DCB04498: 1.3
-    - Vector1_FA944BFD: 0.773
+    - Vector1_ECF2F190: 0.031
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -161,7 +131,7 @@ Material:
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
-    - _AlphaDstBlend: 0
+    - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _Anisotropy: 0
     - _BlendMode: 0
@@ -194,7 +164,7 @@ Material:
     - _DistortionVectorScale: 2
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -226,9 +196,9 @@ Material:
     - _PPDMinSamples: 5
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
-    - _ReceivesSSR: 0
+    - _ReceivesSSR: 1
     - _RefractionModel: 0
-    - _RenderQueueType: 1
+    - _RenderQueueType: 5
     - _RequireSplitLighting: 0
     - _SSRefractionProjectionModel: 0
     - _Smoothness: 0.5
@@ -239,10 +209,10 @@ Material:
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
     - _StencilRef: 0
-    - _StencilRefDepth: 0
+    - _StencilRefDepth: 8
     - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 2
-    - _StencilRefMV: 32
+    - _StencilRefGBuffer: 10
+    - _StencilRefMV: 40
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 8
     - _StencilWriteMaskDistortionVec: 4
@@ -250,7 +220,7 @@ Material:
     - _StencilWriteMaskMV: 40
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
-    - _SurfaceType: 0
+    - _SurfaceType: 1
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _Thickness: 1
@@ -267,17 +237,21 @@ Material:
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
-    - _ZTestDepthEqualForOpaque: 3
+    - _ZTestDepthEqualForOpaque: 4
     - _ZTestGBuffer: 4
     - _ZTestModeDistortion: 4
     - _ZTestTransparent: 4
-    - _ZWrite: 1
+    - _ZWrite: 0
+    - _depth: 0.2
+    - _depthStrength: 1.479
+    - _ior: 0.169
+    - _mainNormalTiling: 0.46
+    - _mainSpeed: 0.004
+    - _normalStrength: 0.259
+    - _secondaryNormalTiling: 1.12
+    - _secondarySpeed: 0.002
+    - _smoothness: 0.991
     m_Colors:
-    - Color_42D2DC4C: {r: 0.9078044, g: 0.7971698, b: 1, a: 1}
-    - Color_F17D2D71: {r: 0.9660822, g: 0.8349056, b: 1, a: 1}
-    - EdgeColor: {r: 0.8412873, g: 0.8376916, b: 2.3678749, a: 0}
-    - NoiseSpeed: {r: 0, g: 0.1, b: 0, a: 0}
-    - StarOffset: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -294,3 +268,20 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
+    - _deepWaterColor: {r: 0.12602332, g: 0.3359532, b: 0.45282984, a: 0.3764706}
+    - _mainDirection: {r: 1, g: 1, b: 0, a: 0}
+    - _secondaryDir: {r: 0.63, g: -0.2, b: 0, a: 0}
+    - _shallowWaterColor: {r: 0.33468306, g: 0.547975, b: 0.6509434, a: 0.34117648}
+--- !u!114 &448448799909569050
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 2
