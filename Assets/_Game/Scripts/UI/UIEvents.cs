@@ -139,13 +139,27 @@ public class UIEvents : MonoBehaviour
 
     /* ----------------------------------------------------------------------------------------- */
 
-    #region Pause Menu
+    #region Game State
 
     public event Action<bool> OnPauseGame;
 
     public void PauseGame(bool isPaused)
     {
         OnPauseGame?.Invoke(isPaused);
+    }
+
+    public event Action OnPlayerDied;
+
+    public void PlayerDied()
+    {
+        OnPlayerDied?.Invoke();
+    }
+
+    public event Action OnPlayerRespawn;
+
+    public void PlayerRespawn()
+    {
+        OnPlayerRespawn?.Invoke();
     }
 
     //public event Action OnQuitGame;
