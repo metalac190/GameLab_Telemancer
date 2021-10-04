@@ -123,6 +123,23 @@ public class UIEvents : MonoBehaviour
     #endregion
     
     /* ----------------------------------------------------------------------------------------- */
-    
-    
+
+    #region Pause Menu
+
+    public event Action<bool> OnPauseGame;
+    public void PauseGame(bool isPaused)
+    {
+        OnPauseGame?.Invoke(isPaused);
+    }
+
+    //public event Action OnQuitGame;
+    public void QuitGame()
+    {
+        //OnQuitGame?.Invoke();
+        Application.Quit();
+    }
+
+    #endregion
+
+
 }
