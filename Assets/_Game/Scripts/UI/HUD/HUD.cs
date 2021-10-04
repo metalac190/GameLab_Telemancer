@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// The main HUD script.
+/// Desperately needs to be split into numerous smaller scripts.
+/// </summary>
 public class HUD : MonoBehaviour
 {
     public bool _debugMode;
@@ -22,6 +26,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private Color _xhairColorWarp = new Color(0.6352941f, 0.7490196f, 0.9411765f, 1f);
     [SerializeField] private Color _xhairColorInteract = Color.green;
     private Color _xhairColorNormal = Color.white;
+
+    [Header("Respawn Menu")] 
+    [SerializeField] private GameObject _respawnMenu;
 
     [Header("Area Notification")] 
     [SerializeField] private Text _chapterNumber;
@@ -63,11 +70,15 @@ public class HUD : MonoBehaviour
 
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
+
+        UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
+        UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
     }
 
     private void Start()
     {
         DisplayDebugHUD(_debugMode);
+        _respawnMenu.SetActive(false);
         //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
     }
 
@@ -82,6 +93,20 @@ public class HUD : MonoBehaviour
     {
         _debugSpellsPnl.SetActive(isEnabled);
         _debugStatsPnl.SetActive(isEnabled);
+    }
+    
+    private void DisplayRespawnMenu(bool isEnabled)
+    {
+        _respawnMenu.SetActive(isEnabled);
+        _xhair.transform.parent.gameObject.SetActive(!isEnabled);
+        _debugSpellsPnl.SetActive(!isEnabled && _debugMode);
+        
+        // Set timescale
+        Time.timeScale = isEnabled ? 0f : 1f;
+        // Unlock / lock Cursor
+        Cursor.lockState = isEnabled? CursorLockMode.None : CursorLockMode.Locked;
+        
+        // Add UI animations here
     }
 
     private void UnlockWarp(bool isUnlocked)
