@@ -109,7 +109,7 @@ namespace Mechanics.WarpBolt
         {
             if (timer == 0) {
                 transform.position = position;
-                transform.rotation = rotation;
+                _visuals.forward = rotation * Vector3.forward;
                 _data.Direction = rotation * Vector3.forward;
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
@@ -248,7 +248,7 @@ namespace Mechanics.WarpBolt
             yield return new WaitForSecondsRealtime(timer);
             Enable();
             transform.position = position;
-            transform.rotation = rotation;
+            _visuals.forward = rotation * Vector3.forward;
             _data.Direction = rotation * Vector3.forward;
         }
 
@@ -302,7 +302,7 @@ namespace Mechanics.WarpBolt
             ResidueReady = false;
         }
 
-        private void Dissipate()
+        public void Dissipate()
         {
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate(transform.position, transform.forward);

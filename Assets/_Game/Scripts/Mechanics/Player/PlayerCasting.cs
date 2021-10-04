@@ -2,7 +2,6 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Mechanics.Player
 {
@@ -37,6 +36,8 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        private bool _dead;
+
         #region Unity Functions
 
         private void OnEnable()
@@ -56,6 +57,7 @@ namespace Mechanics.Player
                 _warpBolt.OnResidueReady += OnResidueReady;
                 _warpBolt.OnWarpDissipate += OnWarpDissipate;
             }
+            SetAlive();
         }
 
         private void OnDisable()
@@ -64,6 +66,7 @@ namespace Mechanics.Player
                 _playerState.OnChangeUnlocks -= SetUnlocks;
             }
             if (!_missingWarpBolt) {
+                _warpBolt.Dissipate();
                 _warpBolt.OnResidueReady -= OnResidueReady;
                 _warpBolt.OnWarpDissipate -= OnWarpDissipate;
             }
@@ -81,9 +84,11 @@ namespace Mechanics.Player
 
         #region Public Functions - Input
 
+        // TODO: UIEvents should expose an 'bool IsPaused()' for other scripts to access. Ignores inputs during game paused
+
         public void CastBolt(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (_dead || !value.performed || _missingWarpBolt) return;
             // Ensure that casting is not locked and warp bolt exists
             if (_lockCasting) {
                 _playerFeedback.OnPrepareToCast(false);
@@ -98,7 +103,7 @@ namespace Mechanics.Player
 
         public void ActivateWarp(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (_dead || !value.performed || _missingWarpBolt) return;
             // Ensure that player has warp ability and warp bolt exists
             if (!_warpAbility) return;
 
@@ -114,7 +119,7 @@ namespace Mechanics.Player
 
         public void ActivateResidue(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (_dead || !value.performed || _missingWarpBolt) return;
             // Ensure that player has residue ability and warp bolt exists
             if (!_residueAbility) return;
 
@@ -126,6 +131,23 @@ namespace Mechanics.Player
             } else {
                 _playerFeedback.OnActivateResidue(false);
             }
+        }
+
+        #endregion
+
+        #region Public Functions
+
+        public void SetDead()
+        {
+            _dead = true;
+        }
+
+        public void SetAlive()
+        {
+            _dead = false;
+            _lockCasting = false;
+            _lockWarp = false;
+            _lockResidue = false;
         }
 
         #endregion
