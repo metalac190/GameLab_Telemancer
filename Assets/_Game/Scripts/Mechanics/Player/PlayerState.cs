@@ -41,6 +41,7 @@ namespace Mechanics.Player
 
         private void Start()
         {
+            UIEvents.current.OnPlayerRespawn += OnRespawn;
             UpdateUnlocks();
         }
 
@@ -49,10 +50,11 @@ namespace Mechanics.Player
             if (!_isAlive) return;
             _isAlive = false;
             _onPlayerDeath.Invoke();
+            UIEvents.current.PlayerDied();
 
             _playerController.flag_cantAct = true;
 
-            StartCoroutine(RespawnCoroutine());
+            //StartCoroutine(RespawnCoroutine());
         }
 
         // TODO: Actual respawn method, this is a temporary timer for testing only
