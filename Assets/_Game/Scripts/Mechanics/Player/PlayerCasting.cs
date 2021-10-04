@@ -243,7 +243,6 @@ namespace Mechanics.Player
 
             Vector3 current = GetBoltPosition();
             Vector3 angle = GetRaycast() - current;
-            Debug.Log(angle + " = " + GetRaycast() + " - " + current);
 
             return angle.normalized;
         }
