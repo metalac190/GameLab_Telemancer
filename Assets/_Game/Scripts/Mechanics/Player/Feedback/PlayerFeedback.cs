@@ -26,7 +26,6 @@ namespace Mechanics.Player
         {
             _playerVfx.OnCastBolt();
             _playerSfx.CastBolt();
-            _playerToHud.OnCastBolt();
         }
 
         public void OnWarpReady(bool ready = true)
