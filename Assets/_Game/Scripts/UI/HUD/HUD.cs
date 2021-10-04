@@ -1,9 +1,13 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// The main HUD script.
+/// Desperately needs to be split into numerous smaller scripts.
+/// </summary>
 public class HUD : MonoBehaviour
 {
     public bool _debugMode;
@@ -23,6 +27,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private Color _xhairColorInteract = Color.green;
     private Color _xhairColorNormal = Color.white;
 
+    [Header("Respawn Menu")] 
+    [SerializeField] private GameObject _respawnMenu;
+
     [Header("Area Notification")] 
     [SerializeField] private Text _chapterNumber;
     [SerializeField] private Text _chapterName;
@@ -36,8 +43,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private float _FadeOut = 1.2f;
 
     [Header("Debug HUD")] 
-    [SerializeField] private GameObject _debugHudParent;
-    
+    [SerializeField] private GameObject _debugSpellsPnl;
+    [SerializeField] private GameObject _debugStatsPnl;
+
     [Header("Debug HUD Ability Colors")]
     [SerializeField] private Color _usedColor = new Color(0.5f, 0.75f, 0.5f, 0.75f);
     [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);
@@ -62,11 +70,15 @@ public class HUD : MonoBehaviour
 
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
+
+        UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
+        UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
     }
 
     private void Start()
     {
         DisplayDebugHUD(_debugMode);
+        _respawnMenu.SetActive(false);
         //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
     }
 
@@ -79,7 +91,27 @@ public class HUD : MonoBehaviour
 
     private void DisplayDebugHUD(bool isEnabled)
     {
-        _debugHudParent.SetActive(isEnabled);
+        _debugSpellsPnl.SetActive(isEnabled);
+        _debugStatsPnl.SetActive(isEnabled);
+    }
+    
+    private void DisplayRespawnMenu(bool isEnabled)
+    {
+        _respawnMenu.SetActive(isEnabled);
+        _xhair.transform.parent.gameObject.SetActive(!isEnabled);
+        _debugSpellsPnl.SetActive(!isEnabled && _debugMode);
+        
+        // Set timescale
+        Time.timeScale = isEnabled ? 0f : 1f;
+        // Unlock / lock Cursor
+        Cursor.lockState = isEnabled? CursorLockMode.None : CursorLockMode.Locked;
+        
+        // Reset the hud
+        _boltImage.color = _normalColor;
+        _warpImage.color = _normalColor;
+        _residueImage.color = _normalColor;
+
+        // Add UI animations here
     }
 
     private void UnlockWarp(bool isUnlocked)
@@ -115,6 +147,7 @@ public class HUD : MonoBehaviour
         // Debug HUD coloring
         if (_debugMode)
             _boltImage.color = _readyToUseColor;
+
     }
 
     private void CastWarp(bool actionSuccessful)
@@ -124,11 +157,11 @@ public class HUD : MonoBehaviour
             StartCoroutine(InputDebug(_warpImage, actionSuccessful));
     }
     
-    private void WarpReady()
+    private void WarpReady(bool isReady)
     {
         // Debug HUD coloring
         if (_debugMode)
-            _warpImage.color = _readyToUseColor;
+            _warpImage.color = isReady ? _readyToUseColor : _normalColor;
     }
     
     private void CastResidue(bool actionSuccessful)
@@ -138,11 +171,11 @@ public class HUD : MonoBehaviour
             StartCoroutine(InputDebug(_residueImage, actionSuccessful));
     }
     
-    private void ResidueReady()
+    private void ResidueReady(bool isReady)
     {
         // Debug HUD coloring
         if (_debugMode)
-            _residueImage.color = _readyToUseColor;
+            _residueImage.color = isReady ? _readyToUseColor : _normalColor;
     }
 
     private void ChangeXhairColor(InteractableEnums target)
