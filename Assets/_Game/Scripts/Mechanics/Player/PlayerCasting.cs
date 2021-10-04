@@ -66,7 +66,6 @@ namespace Mechanics.Player
                 _playerState.OnChangeUnlocks -= SetUnlocks;
             }
             if (!_missingWarpBolt) {
-                _warpBolt.Dissipate();
                 _warpBolt.OnResidueReady -= OnResidueReady;
                 _warpBolt.OnWarpDissipate -= OnWarpDissipate;
             }
@@ -140,6 +139,7 @@ namespace Mechanics.Player
         public void SetDead()
         {
             _dead = true;
+            _warpBolt.Dissipate();
         }
 
         public void SetAlive()
