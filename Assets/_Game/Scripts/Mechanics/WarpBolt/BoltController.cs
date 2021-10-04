@@ -110,6 +110,7 @@ namespace Mechanics.WarpBolt
             if (timer == 0) {
                 transform.position = position;
                 transform.rotation = rotation;
+                _data.Direction = rotation * Vector3.forward;
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
             }
@@ -248,6 +249,7 @@ namespace Mechanics.WarpBolt
             Enable();
             transform.position = position;
             transform.rotation = rotation;
+            _data.Direction = rotation * Vector3.forward;
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)

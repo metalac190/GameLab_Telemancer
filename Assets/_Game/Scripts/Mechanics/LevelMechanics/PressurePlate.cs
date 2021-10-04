@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
 {
+    [Header("Pressure Plate")]
     [SerializeField] private List<LevelActivatable> _activatables = new List<LevelActivatable>(); // the list of objects to be toggled by this pressure plate
     private int _id = 0;
-    private bool _isPressed = false; // if two things are on the pressure plate at once, don't want to double activate it
+    [SerializeField] private bool _isPressed = false; // if two things are on the pressure plate at once, don't want to double activate it
+
+    [Header("Don't change these")]
+    [SerializeField] private GameObject _movingButton = null;
+    [SerializeField] private float _moveButtonDist = -0.5f;
 
     private void Awake()
     {
@@ -35,7 +40,7 @@ public class PressurePlate : MonoBehaviour
                     if (obj != null) { obj.Toggle(_id); }
                 }
                 Debug.Log("pressure plate entered: " + other.gameObject.name);
-
+                StartCoroutine(MoveButton(_moveButtonDist, true));
             }
         }
         
@@ -54,6 +59,7 @@ public class PressurePlate : MonoBehaviour
                 {
                     if (obj != null) { obj.Toggle(_id); }
                 }
+                StartCoroutine(MoveButton(_moveButtonDist, true));
             }
         }
     }
@@ -74,9 +80,21 @@ public class PressurePlate : MonoBehaviour
             }
             //StartCoroutine(DeactivateOnCooldown());
             Debug.Log("pressure plate exited: " + other.gameObject.name);
+            StartCoroutine(MoveButton(0, false));
         }
         
     }
+    
+    IEnumerator MoveButton(float newZ, bool isActive)
+    {
+        while(isActive == _isPressed && newZ != _movingButton.transform.localPosition.z)
+        {
+            float newPos = Mathf.Lerp(_movingButton.transform.localPosition.z, newZ, Time.fixedDeltaTime * 2);
+            _movingButton.transform.localPosition = new Vector3(_movingButton.transform.localPosition.x, _movingButton.transform.localPosition.x, newPos);
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    
 
     /*
     IEnumerator DeactivateOnCooldown()
