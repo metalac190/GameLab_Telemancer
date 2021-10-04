@@ -17,11 +17,6 @@ public class PlayerToHud : MonoBehaviour
         UIEvents.current.CastBolt(wasSuccessful);
     }
 
-    public void OnCastBolt()
-    {
-        // TODO: find a reason for this function to exist
-    }
-    
     public void OnWarpReady(bool ready = true)
     {
         UIEvents.current.WarpReady();
