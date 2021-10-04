@@ -34,7 +34,7 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        if(_warpPad != null)
+        if (_warpPad != null)
             Gizmos.DrawLine(transform.position, _warpPad.transform.position);
     }
 }
