@@ -533,10 +533,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  groundAcceleration: 40
+  airAcceleration: 10
   jumpForce: 3.5
   risingGravity: 5
   fallingGravity: 10
-  floatTime: 0.1
+  floatTime: 0.04
+  OnTeleport:
+    m_PersistentCalls:
+      m_Calls: []
   OnPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
