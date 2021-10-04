@@ -20,6 +20,7 @@ namespace Mechanics.Player
         [SerializeField] private bool _clearResidueOnFire = true;
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
+        [SerializeField] private LayerMask _lookAtMask = 1;
         [Header("External References")]
         [SerializeField] private BoltController _warpBolt;
         [Header("Internal References")]
@@ -251,7 +252,7 @@ namespace Mechanics.Player
             if (_missingCamera) return transform.position + transform.forward;
 
             Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-            Physics.Raycast(ray, out var hit, _boltLookDistance);
+            Physics.Raycast(ray, out var hit, _boltLookDistance, _lookAtMask, QueryTriggerInteraction.Ignore);
 
             if (hit.point != Vector3.zero) {
                 return hit.point;
