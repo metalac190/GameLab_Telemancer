@@ -6,7 +6,20 @@ namespace Mechanics.Player
     // Mostly used by the Player Casting Script and the 'Player Interactions' Script
     public class PlayerAnimator : MonoBehaviour
     {
+        [SerializeField] private Animator _animator;
+        [SerializeField] private string _castBoltTrigger = "pointTrigger";
+        [SerializeField] private string _warpTrigger = "snapTrigger";
+        [SerializeField] private string _useResidueTrigger = "interactTrigger";
+        [SerializeField] private string _boltDissipateTrigger = "dissipateTrigger";
+
         private float _fallTime;
+
+        private void Awake()
+        {
+            if (_animator == null) {
+                _animator = GetComponentInChildren<Animator>();
+            }
+        }
 
         private void OnEnable()
         {
@@ -60,18 +73,27 @@ namespace Mechanics.Player
 
         public void OnCastBolt()
         {
+            _animator.SetTrigger(_castBoltTrigger);
         }
 
-        public void OnResidueActive()
+        public void OnUseResidue()
         {
+            _animator.SetTrigger(_useResidueTrigger);
         }
 
         public void OnInstantWarp()
         {
+            _animator.SetTrigger(_warpTrigger);
         }
 
         public void OnInteractableWarp()
         {
+            _animator.SetTrigger(_useResidueTrigger);
+        }
+
+        public void OnNoAction()
+        {
+            _animator.SetTrigger(_boltDissipateTrigger);
         }
 
         public void ResetToIdle()

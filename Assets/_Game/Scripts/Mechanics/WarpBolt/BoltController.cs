@@ -169,10 +169,20 @@ namespace Mechanics.WarpBolt
             _timeAlive = 0;
         }
 
+        public bool CanWarp()
+        {
+            return _isAlive;
+        }
+
         // Warp to the bolt's position
         public bool OnWarp()
         {
             return _isAlive && Warp();
+        }
+
+        public bool CanUseResidue()
+        {
+            return ResidueReady && _residueInteractable != null;
         }
 
         public bool OnActivateResidue()

@@ -9,6 +9,8 @@ namespace Mechanics.Player
     [RequireComponent(typeof(PlayerSfx), typeof(PlayerVfx), typeof(PlayerToHud))]
     public class PlayerFeedback : MonoBehaviour
     {
+        [SerializeField] private PlayerAnimator _playerAnimator = null;
+
         #region Feedback Script References
 
         private PlayerToHud _playerToHud;
@@ -43,6 +45,9 @@ namespace Mechanics.Player
         public void OnPrepareToCast(bool wasSuccessful = true)
         {
             _playerToHud.OnPrepareToCast(wasSuccessful);
+            if (wasSuccessful && _playerAnimator != null) {
+                _playerAnimator.OnCastBolt();
+            }
         }
 
         // The player successfully casted a bolt
@@ -58,12 +63,26 @@ namespace Mechanics.Player
             _playerToHud.OnWarpReady(ready);
         }
 
+        public void PrepareToWarp()
+        {
+            if (_playerAnimator != null) {
+                _playerAnimator.OnInstantWarp();
+            }
+        }
+
         // The player made a "Warp" input. Can be successful or failed
         public void OnActivateWarp(bool wasSuccessful = true)
         {
             _playerToHud.OnActivateWarp(wasSuccessful);
             if (wasSuccessful) {
                 _playerSfx.ActivateWarp();
+            }
+        }
+
+        public void PrepareForResidue()
+        {
+            if (_playerAnimator != null) {
+                _playerAnimator.OnUseResidue();
             }
         }
 
@@ -82,6 +101,9 @@ namespace Mechanics.Player
             _playerToHud.OnActivateResidue(wasSuccessful);
             if (wasSuccessful) {
                 _playerSfx.ActivateResidue();
+                if (_playerAnimator != null) {
+                    _playerAnimator.OnUseResidue();
+                }
             }
         }
 

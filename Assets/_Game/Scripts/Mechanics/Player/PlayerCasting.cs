@@ -2,6 +2,7 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Android;
 
 namespace Mechanics.Player
 {
@@ -18,13 +19,15 @@ namespace Mechanics.Player
         [Header("Settings")]
         [SerializeField] private bool _clearResidueOnFire = true;
         [SerializeField] private float _boltLookDistance = 20f;
+        [SerializeField] private float _delayFire = 0;
         [SerializeField] private float _timeToFire = 0;
+        [SerializeField] private float _delayWarp = 0;
+        [SerializeField] private float _delayResidue = 0;
         [SerializeField] private LayerMask _lookAtMask = 1;
         [Header("External References")]
         [SerializeField] private BoltController _warpBolt;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
-        [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
@@ -57,7 +60,6 @@ namespace Mechanics.Player
         private void OnEnable()
         {
             StateNullCheck();
-            AnimatorNullCheck();
             FeedbackNullCheck();
             WarpBoltNullCheck();
             TransformNullCheck();
@@ -108,7 +110,6 @@ namespace Mechanics.Player
                 return;
             }
             PrepareToCast();
-            StartCoroutine(Cast());
             StartCoroutine(CastTimer());
 
             _playerFeedback.OnPrepareToCast();
@@ -120,14 +121,7 @@ namespace Mechanics.Player
             // Ensure that player has warp ability and warp bolt exists
             if (!_warpAbility) return;
 
-            // Lock the warp if it was successful
-            if (!_lockWarp && _warpBolt.OnWarp()) {
-                StartCoroutine(WarpTimer());
-
-                _playerFeedback.OnActivateWarp();
-            } else {
-                _playerFeedback.OnActivateWarp(false);
-            }
+            PrepareToWarp();
         }
 
         public void ActivateResidue(InputAction.CallbackContext value)
@@ -136,14 +130,7 @@ namespace Mechanics.Player
             // Ensure that player has residue ability and warp bolt exists
             if (!_residueAbility) return;
 
-            // Lock the residue if it was successful
-            if (!_lockResidue && _warpBolt.OnActivateResidue()) {
-                StartCoroutine(ResidueTimer());
-
-                _playerFeedback.OnActivateResidue();
-            } else {
-                _playerFeedback.OnActivateResidue(false);
-            }
+            PrepareForResidue();
         }
 
         #endregion
@@ -154,17 +141,19 @@ namespace Mechanics.Player
 
         private void PrepareToCast()
         {
-            _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
             if (_clearResidueOnFire) {
                 _warpBolt.DisableResidue();
                 _playerFeedback.OnResidueReady(false);
             }
+            StartCoroutine(Cast());
         }
 
         // The main Coroutine for casting the warp bolt
         private IEnumerator Cast()
         {
             _lockCasting = true;
+            yield return new WaitForSecondsRealtime(_delayFire);
+            _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
             if (_timeToFire > 0) {
                 for (float t = 0; t <= _timeToFire; t += Time.deltaTime) {
                     float delta = t / _timeToFire;
@@ -198,6 +187,76 @@ namespace Mechanics.Player
             _playerFeedback.OnCastBolt();
             if (_warpAbility) {
                 _playerFeedback.OnWarpReady();
+            }
+        }
+
+        private void PrepareToWarp()
+        {
+            if (_lockWarp || !_warpBolt.CanWarp()) {
+                _playerFeedback.OnActivateWarp(false);
+                return;
+            }
+            _playerFeedback.PrepareToWarp();
+            if (_delayWarp == 0) {
+                OnWarp();
+            } else {
+                StartCoroutine(Warp());
+            }
+        }
+
+        private IEnumerator Warp()
+        {
+            _lockWarp = true;
+            yield return new WaitForSecondsRealtime(_delayWarp);
+            OnWarp();
+        }
+
+        private void OnWarp()
+        {
+            // Warp
+            if (_warpBolt.OnWarp()) {
+                // Lock if warp was successful
+                StartCoroutine(WarpTimer());
+
+                _playerFeedback.OnActivateWarp();
+            } else {
+                _lockWarp = false;
+                _playerFeedback.OnActivateWarp(false);
+            }
+        }
+
+        private void PrepareForResidue()
+        {
+            if (_lockResidue || !_warpBolt.CanUseResidue()) {
+                _playerFeedback.OnActivateResidue(false);
+                return;
+            }
+            _playerFeedback.PrepareForResidue();
+            if (_delayResidue == 0) {
+                OnUseResidue();
+            } else {
+                StartCoroutine(Residue());
+            }
+        }
+
+        private IEnumerator Residue()
+        {
+            _lockResidue = true;
+            yield return new WaitForSecondsRealtime(_delayResidue);
+            OnUseResidue();
+        }
+
+        private void OnUseResidue()
+        {
+            // Warp
+            if (_warpBolt.OnActivateResidue()) {
+                // Lock if residue was successful
+                StartCoroutine(ResidueTimer());
+
+                _playerFeedback.OnActivateResidue();
+            } else {
+                _lockResidue = false;
+                _playerFeedback.OnActivateResidue(false);
             }
         }
 
@@ -306,17 +365,6 @@ namespace Mechanics.Player
                 if (_playerState == null) {
                     _missingState = true;
                     Debug.LogWarning("Cannot find the Player State for the Player Casting Script", gameObject);
-                }
-            }
-        }
-
-        private void AnimatorNullCheck()
-        {
-            if (_playerAnimator == null) {
-                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
-                if (_playerAnimator == null) {
-                    _playerAnimator = gameObject.AddComponent<PlayerAnimator>();
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
                 }
             }
         }
