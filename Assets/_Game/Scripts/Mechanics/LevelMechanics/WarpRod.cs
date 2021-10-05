@@ -10,7 +10,11 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
 
     public bool OnWarpBoltImpact(BoltData data)
     {
-        data.PlayerController.Teleport(_warpPad.transform, _teleportOffset);
+        Debug.Log("rodrodrodrodrod");
+        if (_warpPad != null)
+        {
+            data.PlayerController.TeleportToPosition(_warpPad.transform.position, _teleportOffset);
+        }
 
         // Boolean return value to determine whether to dissipate warp bolt after impact
         return true;
@@ -34,7 +38,7 @@ public class WarpRod : MonoBehaviour, IWarpInteractable
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        if(_warpPad != null)
+        if (_warpPad != null)
             Gizmos.DrawLine(transform.position, _warpPad.transform.position);
     }
 }
