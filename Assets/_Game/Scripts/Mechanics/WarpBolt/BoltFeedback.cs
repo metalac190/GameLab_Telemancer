@@ -1,6 +1,5 @@
 ﻿using AudioSystem;
 using UnityEngine;
-using UnityEngine.VFX;
 
 namespace Mechanics.WarpBolt
 {
@@ -15,7 +14,7 @@ namespace Mechanics.WarpBolt
         [SerializeField] private SFXOneShot _warpInteractSound = null;
 
         [Header("VFX on Impact")]
-        [SerializeField] private VfxController _boltImpactVfx;
+        [SerializeField] private VfxController _boltImpactVfx = null;
 
         public void OnBoltDissipate(Vector3 position, Vector3 forward)
         {

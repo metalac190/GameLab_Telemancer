@@ -57,11 +57,6 @@ namespace Mechanics.WarpBolt
 
 
         // The direction that the warp bolt is traveling in. Can be modified by the ResetDirection() function below
-        public Vector3 Direction { get; private set; } = Vector3.zero;
-
-        public void ResetDirection(Vector3 direction)
-        {
-            Direction = direction;
-        }
+        public Vector3 Direction { get; set; } = Vector3.zero;
     }
 }
