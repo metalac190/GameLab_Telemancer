@@ -386,7 +386,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 81, y: -14}
+  m_AnchoredPosition: {x: 33, y: -25}
   m_SizeDelta: {x: 1300, y: 223.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &329357835
@@ -408,9 +408,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. '
+  m_text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -438,10 +437,10 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 49
-  m_fontSizeBase: 36
+  m_fontSize: 51
+  m_fontSizeBase: 51
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -479,12 +478,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 329357835}
-    characterCount: 232
+    characterCount: 148
     spriteCount: 0
-    spaceCount: 36
-    wordCount: 36
+    spaceCount: 23
+    wordCount: 24
     linkCount: 0
-    lineCount: 4
+    lineCount: 3
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -2259,8 +2258,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterName: Ted
-  talkToNode: TedTalks
-  scriptToLoad: {fileID: 2480198943629176163, guid: decdff8e043baf941acb666f7d2383b9,
+  talkToNode: TedTalks1
+  scriptToLoad: {fileID: 2480198943629176163, guid: 12243524e5a740f4688cc2dbe8f9cc3f,
     type: 3}
 --- !u!1 &1974875361
 GameObject:
@@ -2462,6 +2461,8 @@ MonoBehaviour:
   runner: {fileID: 5935829473836071480}
   player: {fileID: 2008301761}
   interactionRadius: 5
+  dialogueText: {fileID: 329357835}
+  speaker: {fileID: 1703213699}
 --- !u!114 &1498404885176515027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2816,7 +2817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueContainer: {fileID: 5935829474371053788}
-  textSpeed: 0.025
+  textSpeed: 0.01
   optionButtons:
   - {fileID: 1528430210439893450}
   - {fileID: 1498404885176515027}
@@ -2851,17 +2852,6 @@ MonoBehaviour:
   onLineStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 329357833}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
       - m_Target: {fileID: 9020856951687157449}
         m_MethodName: SetActive
         m_Mode: 6
@@ -2904,17 +2894,6 @@ MonoBehaviour:
   onLineEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 329357833}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 9020856951687157449}
         m_MethodName: SetActive
         m_Mode: 6
