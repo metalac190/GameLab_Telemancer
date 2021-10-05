@@ -22,11 +22,11 @@ public class Door : LevelActivatable
     IEnumerator MoveDoor(float target, bool opening)
     {
         Debug.Log("Opening Door");
-        while(opening == IsCurrentlyActive && transform.position.y != target)
+        while(opening == IsCurrentlyActive && transform.localPosition.y != target)
         {
-            float newPos = Mathf.Lerp(transform.position.y, target, Time.fixedDeltaTime * _moveSpeed);
+            float newPos = Mathf.Lerp(transform.localPosition.y, target, Time.fixedDeltaTime * _moveSpeed);
             //transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * _moveSpeed);
-            transform.position = new Vector3(transform.position.x, newPos, transform.position.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, newPos, transform.localPosition.z);
             yield return new WaitForEndOfFrame();
         }
         Debug.Log("Door open");
