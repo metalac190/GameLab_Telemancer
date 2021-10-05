@@ -2,7 +2,6 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Mechanics.Player
 {
@@ -37,6 +36,22 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        public bool FlagCantAct
+        {
+            get => _flagCantAct;
+            set
+            {
+                if (value) {
+                    _warpBolt.Dissipate();
+                } else {
+                    _lockCasting = false;
+                    _lockWarp = false;
+                    _lockResidue = false;
+                }
+                _flagCantAct = value;
+            }
+        }
+
         #region Unity Functions
 
         private void OnEnable()
@@ -56,6 +71,7 @@ namespace Mechanics.Player
                 _warpBolt.OnResidueReady += OnResidueReady;
                 _warpBolt.OnWarpDissipate += OnWarpDissipate;
             }
+            FlagCantAct = false;
         }
 
         private void OnDisable()
@@ -81,9 +97,11 @@ namespace Mechanics.Player
 
         #region Public Functions - Input
 
+        // TODO: UIEvents should expose an 'bool IsPaused()' for other scripts to access. Ignores inputs during game paused
+
         public void CastBolt(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that casting is not locked and warp bolt exists
             if (_lockCasting) {
                 _playerFeedback.OnPrepareToCast(false);
@@ -98,7 +116,7 @@ namespace Mechanics.Player
 
         public void ActivateWarp(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that player has warp ability and warp bolt exists
             if (!_warpAbility) return;
 
@@ -114,7 +132,7 @@ namespace Mechanics.Player
 
         public void ActivateResidue(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that player has residue ability and warp bolt exists
             if (!_residueAbility) return;
 
@@ -339,6 +357,7 @@ namespace Mechanics.Player
 
         private bool _missingCamera;
         private bool _missingBoltFiringPosition;
+        private bool _flagCantAct;
 
         private void TransformNullCheck()
         {

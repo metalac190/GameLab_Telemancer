@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -106,6 +106,11 @@ public class HUD : MonoBehaviour
         // Unlock / lock Cursor
         Cursor.lockState = isEnabled? CursorLockMode.None : CursorLockMode.Locked;
         
+        // Reset the hud
+        _boltImage.color = _normalColor;
+        _warpImage.color = _normalColor;
+        _residueImage.color = _normalColor;
+
         // Add UI animations here
     }
 
@@ -156,7 +161,7 @@ public class HUD : MonoBehaviour
     {
         // Debug HUD coloring
         if (_debugMode)
-            _warpImage.color = isReady ? _readyToUseColor : _usedColor;
+            _warpImage.color = isReady ? _readyToUseColor : _normalColor;
     }
     
     private void CastResidue(bool actionSuccessful)
@@ -170,7 +175,7 @@ public class HUD : MonoBehaviour
     {
         // Debug HUD coloring
         if (_debugMode)
-            _residueImage.color = isReady ? _readyToUseColor : _usedColor;
+            _residueImage.color = isReady ? _readyToUseColor : _normalColor;
     }
 
     private void ChangeXhairColor(InteractableEnums target)
