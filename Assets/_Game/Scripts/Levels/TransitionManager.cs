@@ -60,7 +60,7 @@ public class TransitionManager : MonoBehaviour
                 title = "";
                 break;
         }
-        UIEvents.current.NotifyChapter(chapterNumber, title);
+        // UIEvents.current.NotifyChapter(chapterNumber, title);
     }
 
     private IEnumerator FadeToTransparent()

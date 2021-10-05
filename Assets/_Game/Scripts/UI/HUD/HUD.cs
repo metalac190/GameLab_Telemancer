@@ -68,15 +68,15 @@ public class HUD : MonoBehaviour
         UIEvents.current.OnResidueReady += ResidueReady;
         UIEvents.current.OnChangeXhairColor += ChangeXhairColor;
 
-        UIEvents.current.OnNotifyChapter += (i, s) =>
-            StartCoroutine(PlayChapterNotification(i, s));
-
         UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
         UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
     }
 
     private void Start()
     {
+        UIEvents.current.OnNotifyChapter += (i, s) =>
+            StartCoroutine(PlayChapterNotification(i, s));
+            
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
         //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
