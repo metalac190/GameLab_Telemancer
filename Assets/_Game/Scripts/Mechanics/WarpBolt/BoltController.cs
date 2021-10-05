@@ -355,15 +355,28 @@ namespace Mechanics.WarpBolt
             return _data;
         }
 
+        public void ExtraBoltExistsCheck()
+        {
+            var others = FindObjectsOfType<BoltController>();
+            foreach (var bolt in others) {
+                if (bolt == this) continue;
+                Debug.LogWarning("Too many warp bolts exist in scene: " + gameObject.name + " and " + bolt.gameObject.name, gameObject);
+                Destroy(bolt.gameObject);
+            }
+        }
+
         private bool _missingVisuals;
 
         private void VisualsNullCheck()
         {
             if (_visuals == null) {
-                _visuals = transform.Find("Art");
+                _visuals = transform.Find("Visuals");
                 if (_visuals == null) {
-                    _missingVisuals = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
+                    _visuals = transform.Find("Art");
+                    if (_visuals == null) {
+                        _missingVisuals = true;
+                        Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
+                    }
                 }
             }
         }

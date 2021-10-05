@@ -343,6 +343,7 @@ namespace Mechanics.Player
                     throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
                 }
             }
+            _warpBolt.ExtraBoltExistsCheck();
             PlayerController controller = GetComponent<PlayerController>();
             if (controller == null) {
                 controller = FindObjectOfType<PlayerController>();
