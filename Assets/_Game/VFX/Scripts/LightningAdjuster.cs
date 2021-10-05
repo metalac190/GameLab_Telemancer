@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LightningAdjuster : MonoBehaviour
 {
-    [SerializeField] Transform[] _endpoints;
+    [SerializeField] Transform[] _endpoints = { };
     private Vector3[] _finalEndpoints;
     private Quaternion[] _finalEndrotations;
     //private Vector3 _posLastFrame = new Vector3(0, 0, 0);

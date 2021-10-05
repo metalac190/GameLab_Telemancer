@@ -2,7 +2,6 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Mechanics.Player
 {
@@ -17,8 +16,10 @@ namespace Mechanics.Player
         [SerializeField] private float _timeToNextWarp = 1.5f;
         [SerializeField] private float _timeToNextResidue = 1.5f;
         [Header("Settings")]
+        [SerializeField] private bool _clearResidueOnFire = true;
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private float _timeToFire = 0;
+        [SerializeField] private LayerMask _lookAtMask = 1;
         [Header("External References")]
         [SerializeField] private BoltController _warpBolt;
         [Header("Internal References")]
@@ -34,6 +35,22 @@ namespace Mechanics.Player
         private bool _lockCasting;
         private bool _lockWarp;
         private bool _lockResidue;
+
+        public bool FlagCantAct
+        {
+            get => _flagCantAct;
+            set
+            {
+                if (value) {
+                    _warpBolt.Dissipate();
+                } else {
+                    _lockCasting = false;
+                    _lockWarp = false;
+                    _lockResidue = false;
+                }
+                _flagCantAct = value;
+            }
+        }
 
         #region Unity Functions
 
@@ -54,6 +71,7 @@ namespace Mechanics.Player
                 _warpBolt.OnResidueReady += OnResidueReady;
                 _warpBolt.OnWarpDissipate += OnWarpDissipate;
             }
+            FlagCantAct = false;
         }
 
         private void OnDisable()
@@ -79,9 +97,11 @@ namespace Mechanics.Player
 
         #region Public Functions - Input
 
+        // TODO: UIEvents should expose an 'bool IsPaused()' for other scripts to access. Ignores inputs during game paused
+
         public void CastBolt(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that casting is not locked and warp bolt exists
             if (_lockCasting) {
                 _playerFeedback.OnPrepareToCast(false);
@@ -96,7 +116,7 @@ namespace Mechanics.Player
 
         public void ActivateWarp(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that player has warp ability and warp bolt exists
             if (!_warpAbility) return;
 
@@ -112,7 +132,7 @@ namespace Mechanics.Player
 
         public void ActivateResidue(InputAction.CallbackContext value)
         {
-            if (!value.performed || _missingWarpBolt) return;
+            if (FlagCantAct || !value.performed || _missingWarpBolt) return;
             // Ensure that player has residue ability and warp bolt exists
             if (!_residueAbility) return;
 
@@ -134,7 +154,11 @@ namespace Mechanics.Player
 
         private void PrepareToCast()
         {
-            _warpBolt.PrepareToFire(GetBoltPosition(), GetCameraRotation(), _residueAbility);
+            _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
+            if (_clearResidueOnFire) {
+                _warpBolt.DisableResidue();
+                _playerFeedback.OnResidueReady(false);
+            }
         }
 
         // The main Coroutine for casting the warp bolt
@@ -163,7 +187,7 @@ namespace Mechanics.Player
 
         private void HoldPosition()
         {
-            _warpBolt.SetPosition(GetBoltPosition(), GetCameraRotation());
+            _warpBolt.SetPosition(GetBoltPosition(), GetBoltForward());
         }
 
         private void Fire()
@@ -229,19 +253,15 @@ namespace Mechanics.Player
 
         #region Helper Functions
 
-        private Quaternion GetCameraRotation()
-        {
-            return !_missingCamera ? _cameraLookDirection.rotation : Quaternion.identity;
-        }
-
         private Vector3 GetBoltForward()
         {
-            if (!_missingCamera) {
+            if (_missingCamera) {
                 return _boltFirePosition != null ? _boltFirePosition.forward : transform.forward;
             }
 
             Vector3 current = GetBoltPosition();
             Vector3 angle = GetRaycast() - current;
+
             return angle.normalized;
         }
 
@@ -250,7 +270,7 @@ namespace Mechanics.Player
             if (_missingCamera) return transform.position + transform.forward;
 
             Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-            Physics.Raycast(ray, out var hit, _boltLookDistance);
+            Physics.Raycast(ray, out var hit, _boltLookDistance, _lookAtMask, QueryTriggerInteraction.Ignore);
 
             if (hit.point != Vector3.zero) {
                 return hit.point;
@@ -337,6 +357,7 @@ namespace Mechanics.Player
 
         private bool _missingCamera;
         private bool _missingBoltFiringPosition;
+        private bool _flagCantAct;
 
         private void TransformNullCheck()
         {

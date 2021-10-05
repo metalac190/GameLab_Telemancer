@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -16,6 +17,14 @@ public class MainMenu : MonoBehaviour
         // Reset all save data to default
         
         // Load first scene 
+        SceneManager.LoadScene(1);
+        
+        // alternate method using loading screen
+        /*
+        PlayerPrefs.SetInt("CurrentLevel", 2);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(1);
+        */
     }
 
     public void ContinueGame()
@@ -26,7 +35,7 @@ public class MainMenu : MonoBehaviour
     public void OpenOptionsMenu()
     {
         // Fire OpenOptionsMenu event
-        MenuEvents.current.OpenOptionsMenu();
+        UIEvents.current.OpenOptionsMenu();
     }
 
     public void ExitGame()

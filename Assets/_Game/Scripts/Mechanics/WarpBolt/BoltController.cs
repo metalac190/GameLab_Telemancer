@@ -34,6 +34,8 @@ namespace Mechanics.WarpBolt
         private bool _isResidue;
         private bool _isAlive;
         private float _timeAlive;
+
+        private Vector3 _previousPosition;
         private Coroutine _redirectDelayRoutine = null;
 
         // -------------------------------------------------------------------------------------------
@@ -45,9 +47,10 @@ namespace Mechanics.WarpBolt
             VisualsNullCheck();
             RigidbodyNullCheck();
             ColliderNullCheck();
+            FeedbackNullCheck();
 
             Disable();
-            BoltData.ResetDirection(Vector3.zero);
+            BoltData.Direction = Vector3.zero;
         }
 
         private void Update()
@@ -64,21 +67,23 @@ namespace Mechanics.WarpBolt
             MoveBolt();
         }
 
-        // On Collision Enter causes some weird issues on impact
-        // Warning: If you want to switch to collision, change the value in Null Check to not make it trigger!
-        private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision other)
         {
             if (!_isAlive) return;
 
-            IWarpInteractable interactable = other.GetComponent<IWarpInteractable>();
+            var contact = other.GetContact(0);
+
+            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
             if (interactable != null) {
                 if (_isResidue) {
-                    SetResidue(interactable);
+                    SetResidue(interactable, contact.point, contact.normal);
                 } else {
-                    WarpInteract(interactable);
+                    WarpInteract(interactable, contact.point, contact.normal);
                 }
+            } else {
+                Dissipate();
+                PlayCollisionParticles(contact.point, contact.normal, false);
             }
-            Dissipate();
         }
 
         #endregion
@@ -104,21 +109,22 @@ namespace Mechanics.WarpBolt
         {
             if (timer == 0) {
                 transform.position = position;
-                transform.rotation = rotation;
+                _visuals.forward = rotation * Vector3.forward;
+                _data.Direction = rotation * Vector3.forward;
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
             }
         }
 
         // Called when the player presses the "cast bolt" button
-        public void PrepareToFire(Vector3 position, Quaternion rotation, bool isResidue)
+        public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
             if (_isAlive) {
                 Dissipate();
             }
             if (!_missingVisuals) {
                 _visuals.gameObject.SetActive(true);
-                SetPosition(position, rotation);
+                SetPosition(position, forward);
             }
             if (_redirectDelayRoutine != null) {
                 StopCoroutine(_redirectDelayRoutine);
@@ -129,11 +135,11 @@ namespace Mechanics.WarpBolt
         }
 
         // Update the bolt's position. Called to keep the bolt in the player's hand
-        public void SetPosition(Vector3 position, Quaternion rotation)
+        public void SetPosition(Vector3 position, Vector3 forward)
         {
             transform.position = position;
             if (!_missingVisuals) {
-                _visuals.rotation = rotation;
+                _visuals.forward = forward;
             }
         }
 
@@ -144,12 +150,20 @@ namespace Mechanics.WarpBolt
         }
 
         // Set the bolts position and direction and fire the bolt
-        public void Fire(Vector3 position, Vector3 direction)
+        public void Fire(Vector3 position, Vector3 forward)
         {
-            BoltData.ResetDirection(direction);
+            BoltData.Direction = forward;
             transform.position = position;
+            if (!_missingVisuals) {
+                _visuals.forward = forward;
+            }
             if (!_missingCollider) {
                 _collider.enabled = true;
+            }
+            if (!_missingRigidbody) {
+                // Ensure that the rigidbody doesn't have any velocity
+                _rb.velocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
             }
             _isAlive = true;
             _timeAlive = 0;
@@ -205,25 +219,28 @@ namespace Mechanics.WarpBolt
                 new Vector3(0, 0, -_playerRadius.z)
             };
 
-            Debug.Log("Warp Collision");
 
-            // Attempt to avoid collision at the following offsets
+            // Attempt to avoid collision at each of the offsets
             foreach (var offset in checkOffsets) {
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
                     float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
                     transform.position = originalPosition - dist * offset;
                     if (!WarpCollisionCheck()) {
+                        Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
                         return false;
                     }
                 }
             }
 
+            // Could not avoid collision
             transform.position = originalPosition;
+            Debug.Log("Warp Failed: Not enough space in area");
             return true;
         }
 
-        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask);
+        // Collision check for the warp bolt. Ignores triggers
+        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
 
         private IEnumerator RedirectDelay(Vector3 position, Quaternion rotation, float timer)
         {
@@ -231,20 +248,24 @@ namespace Mechanics.WarpBolt
             yield return new WaitForSecondsRealtime(timer);
             Enable();
             transform.position = position;
-            transform.rotation = rotation;
+            _visuals.forward = rotation * Vector3.forward;
+            _data.Direction = rotation * Vector3.forward;
         }
 
-        private void WarpInteract(IWarpInteractable interactable)
+        private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
             bool dissipate = interactable.OnWarpBoltImpact(BoltData);
             if (!_missingFeedback) {
                 _feedback.OnWarpInteract();
             }
 
-            if (dissipate) Dissipate();
+            if (dissipate) {
+                Dissipate();
+                PlayCollisionParticles(position, normal, true);
+            }
         }
 
-        private void SetResidue(IWarpInteractable interactable)
+        private void SetResidue(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
             DisableResidue();
 
@@ -254,12 +275,15 @@ namespace Mechanics.WarpBolt
                 OnResidueReady?.Invoke();
                 _residueInteractable = interactable;
                 Dissipate();
+                PlayCollisionParticles(position, normal, true);
             }
         }
 
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
+            _previousPosition = transform.position;
+
             _rb.MovePosition(transform.position + BoltData.Direction * _movementSpeed);
         }
 
@@ -271,20 +295,27 @@ namespace Mechanics.WarpBolt
             }
         }
 
-        private void DisableResidue()
+        public void DisableResidue()
         {
             _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
             ResidueReady = false;
         }
 
-        private void Dissipate()
+        public void Dissipate()
         {
             if (!_missingFeedback) {
-                _feedback.OnBoltDissipate();
+                _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
             OnWarpDissipate?.Invoke();
             Disable();
+        }
+
+        private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
+        {
+            if (!_missingFeedback) {
+                _feedback.OnBoltImpact(position, normal, hitInteractable);
+            }
         }
 
         private void Disable()
@@ -372,7 +403,7 @@ namespace Mechanics.WarpBolt
                 }
             }
             if (_collider != null) {
-                _collider.isTrigger = true;
+                _collider.isTrigger = false;
             }
         }
 
