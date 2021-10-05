@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 
 public class Watcher : MonoBehaviour
@@ -16,8 +17,12 @@ public class Watcher : MonoBehaviour
     private bool _isPlayerInRange = false;
     private bool _isPlayerInView = false;
 
+    private PlayerState _playerState;
+
     private void Start()
     {
+        _playerState = FindObjectOfType<PlayerState>();
+
         _trigger.center = _visionSource.transform.localPosition;
         _trigger.radius = _viewRadius;
 
@@ -92,11 +97,13 @@ public class Watcher : MonoBehaviour
     private void OnPlayerEnteredView()
     {
         Debug.Log("Player in view");
+        _playerState.SetWarpUnlock(false);
     }
 
     private void OnPlayerExitedView()
     {
         Debug.Log("Player Not in view");
+        _playerState.SetWarpUnlock(true);
     }
 
     private Vector3 DirFromAngles(float angleInDegrees, bool angleIsGlobal)

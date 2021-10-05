@@ -44,6 +44,18 @@ namespace Mechanics.Player
             UpdateUnlocks();
         }
 
+        public void SetWarpUnlock(bool unlocked)
+        {
+            _unlockedWarp = unlocked;
+            UpdateUnlocks();
+        }
+
+        public void SetResidueUnlock(bool unlocked)
+        {
+            _unlockedResidue = unlocked;
+            UpdateUnlocks();
+        }
+
         public void GamePaused(bool paused)
         {
             // TODO: (It works) But why is it !paused?
