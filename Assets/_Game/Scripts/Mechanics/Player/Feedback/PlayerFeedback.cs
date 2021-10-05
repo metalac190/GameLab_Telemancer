@@ -58,9 +58,12 @@ namespace Mechanics.Player
         }
 
         // Either a warp is ready to be used (currently midair -- ready = true) or not (cannot use warp -- ready = false)
-        public void OnWarpReady(bool ready = true)
+        public void OnWarpReady(bool ready = true, bool residue = true)
         {
             _playerToHud.OnWarpReady(ready);
+            if (!residue) {
+                _playerAnimator.OnNoAction();
+            }
         }
 
         public void PrepareToWarp()
@@ -101,9 +104,6 @@ namespace Mechanics.Player
             _playerToHud.OnActivateResidue(wasSuccessful);
             if (wasSuccessful) {
                 _playerSfx.ActivateResidue();
-                if (_playerAnimator != null) {
-                    _playerAnimator.OnUseResidue();
-                }
             }
         }
 

@@ -27,7 +27,7 @@ namespace Mechanics.WarpBolt
         public BoltData BoltData => GetBoltData();
         public bool ResidueReady { get; private set; }
         public event Action OnResidueReady = delegate { };
-        public event Action OnWarpDissipate = delegate { };
+        public event Action<bool> OnWarpDissipate = delegate { };
 
         private IWarpInteractable _residueInteractable = null;
 
@@ -119,9 +119,6 @@ namespace Mechanics.WarpBolt
         // Called when the player presses the "cast bolt" button
         public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
-            if (_isAlive) {
-                Dissipate();
-            }
             if (!_missingVisuals) {
                 _visuals.gameObject.SetActive(true);
                 SetPosition(position, forward);
@@ -314,10 +311,11 @@ namespace Mechanics.WarpBolt
 
         public void Dissipate()
         {
+            if (!_isAlive) return;
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
-            OnWarpDissipate?.Invoke();
+            OnWarpDissipate?.Invoke(ResidueReady);
             Disable();
         }
 

@@ -141,6 +141,7 @@ namespace Mechanics.Player
 
         private void PrepareToCast()
         {
+            _warpBolt.Dissipate();
             if (_clearResidueOnFire) {
                 _warpBolt.DisableResidue();
                 _playerFeedback.OnResidueReady(false);
@@ -278,9 +279,9 @@ namespace Mechanics.Player
             _playerFeedback.OnResidueReady();
         }
 
-        private void OnWarpDissipate()
+        private void OnWarpDissipate(bool residue = false)
         {
-            _playerFeedback.OnWarpReady(false);
+            _playerFeedback.OnWarpReady(false, residue);
         }
 
         #endregion

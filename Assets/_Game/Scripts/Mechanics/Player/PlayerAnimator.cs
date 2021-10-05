@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Mechanics.Player
 {
@@ -74,6 +75,9 @@ namespace Mechanics.Player
         public void OnCastBolt()
         {
             _animator.SetTrigger(_castBoltTrigger);
+            _animator.ResetTrigger(_warpTrigger);
+            _animator.ResetTrigger(_useResidueTrigger);
+            _animator.ResetTrigger(_boltDissipateTrigger);
         }
 
         public void OnUseResidue()
@@ -100,6 +104,12 @@ namespace Mechanics.Player
         {
             // Resets all triggers and returns animation to idle
             // For instance, after warping or after landing a fall
+            _animator.ResetTrigger(_castBoltTrigger);
+            _animator.ResetTrigger(_warpTrigger);
+            _animator.ResetTrigger(_useResidueTrigger);
+            _animator.ResetTrigger(_boltDissipateTrigger);
+            _animator.Rebind();
+            _animator.Update(0);
         }
     }
 }
