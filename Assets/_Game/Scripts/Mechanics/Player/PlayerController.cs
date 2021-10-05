@@ -35,7 +35,6 @@ public class PlayerController : MonoBehaviour {
 
     [Header("General Control")]
     public UnityEvent OnTeleport;
-    public UnityEvent OnPlayerDeath;
     public bool grounded;
     public bool flag_cantAct;
 
@@ -59,7 +58,6 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnPlayerDeath.AddListener(() => { flag_cantAct = true; });
         OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
     }
 
