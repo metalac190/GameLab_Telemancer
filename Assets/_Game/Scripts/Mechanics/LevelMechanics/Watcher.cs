@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Watcher : MonoBehaviour
 {
+    [Header("Watcher")]
     [SerializeField] private float _viewRadius = 5f;
     [SerializeField] [Range(1, 179)] private float _viewAngle = 75f;
 
+    [Header("Object References DO NOT CHANGE")]
     [SerializeField] private GameObject _visionSource = null;
     [SerializeField] private Light _visionLight = null;
     [SerializeField] SphereCollider _trigger = null;

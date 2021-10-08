@@ -6,7 +6,7 @@ public abstract class LevelActivatable : MonoBehaviour
 {
     [Header("LevelActivatable")]
     [SerializeField] private bool _isActiveOnStartup = false;
-    [SerializeField] private bool _isCurentlyActive;
+    private bool _isCurentlyActive;
     public bool IsCurrentlyActive { get => _isCurentlyActive; }
 
     private enum logicalOperators {AND, OR };
@@ -26,6 +26,10 @@ public abstract class LevelActivatable : MonoBehaviour
     private void Awake()
     {
         _isCurentlyActive = _isActiveOnStartup;
+        if (_isActiveOnStartup)
+            OnActivate();
+        else
+            OnDeactivate();
     }
 
     // any pressure plate or switch should run this on start so the activatable is aware the switch exists
