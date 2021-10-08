@@ -130,12 +130,19 @@ public class PlayerController : MonoBehaviour {
 
     public void Teleport(Transform other, Vector3 offset = default) {
         // TODO: Swap teleport player and other transform
-        Vector3 oldPlayerPos = transform.position;
 
         controller.enabled = false;
         OnTeleport.Invoke();
-        transform.position = other.position + offset;
-        other.position = oldPlayerPos;
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        if(collider) {
+            Vector3 oldPlayerPos = controller.bounds.min;
+            transform.position = collider.bounds.min;
+            other.position = oldPlayerPos;
+        } else {
+            Vector3 oldPlayerPos = transform.position;
+            transform.position = other.position + offset;
+            other.position = oldPlayerPos;
+        }
         controller.enabled = true;
 
         Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
