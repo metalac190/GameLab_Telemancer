@@ -8,8 +8,8 @@ public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager current;
     
-    [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private Checkpoint[] _checkpoints; // ordered list of checkpoints
+    private Transform _spawnPoint;
+    private Checkpoint[] _checkpoints; // ordered list of checkpoints
     
     [HideInInspector] public int CurrentCheckpoint;
     [HideInInspector] public Transform RespawnPoint;
@@ -21,14 +21,15 @@ public class CheckpointManager : MonoBehaviour
         current = this;
         
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
-        
-        RespawnPoint = _spawnPoint;
     }
 
     private void Start()
     {
         // listen for UIEvents
         UIEvents.current.OnRestartLevel += RestartLevel;
+
+        // get all checkpoints from CheckpointManager's children
+        _checkpoints = gameObject.GetComponentsInChildren<Checkpoint>();
         
         // find all the checkpoints and start listening
         for (var i = 0; i < _checkpoints.Length; i++)
@@ -36,7 +37,15 @@ public class CheckpointManager : MonoBehaviour
             var ckptNumber = i + 1;
             _checkpoints[i].OnCheckpointReached += tf => SetCheckpoint(ckptNumber, tf);
         }
-        
+
+        // Set the level SpawnPoint to the player prefab's position
+        GameObject go = new GameObject();
+        Transform player_tf = GameObject.FindGameObjectWithTag("Player").transform;
+        go.transform.position = player_tf.position;
+        go.transform.rotation = player_tf.rotation;
+        _spawnPoint = go.transform; // This is so we can reference spawnPoint in RestartLevel()
+        RespawnPoint = _spawnPoint;
+
         // load saved progress
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
@@ -46,24 +55,12 @@ public class CheckpointManager : MonoBehaviour
             SetCheckpoint(savedCkpt, rp);
             FindObjectOfType<PlayerController>().TeleportToPosition(rp.position); // yes, I know it's suboptimal
         }
-
-        // If someone forgets to add a spawnpoint in the level, default to the player object's transform
-        if (_spawnPoint != null) return;
-        
-        GameObject go = new GameObject();
-        Transform temp_tf = GameObject.FindGameObjectWithTag("Player").transform;
-        go.transform.position = temp_tf.position;
-        go.transform.rotation = temp_tf.rotation;
-        _spawnPoint = go.transform; // This is so we can reference spawnPoint in RestartLevel()
-        RespawnPoint = _spawnPoint;
-        
-        Debug.Log("SpawnPoint not set. Defaulting to player's position.");
     }
 
     private void SetCheckpoint(int ckptNumber, Transform spawn)
     {
         // don't re-activate previous or current checkpoint
-        if (ckptNumber <= CurrentCheckpoint) return;
+        if (ckptNumber == CurrentCheckpoint) return;
         
         RespawnPoint = spawn;
         CurrentCheckpoint = ckptNumber;
