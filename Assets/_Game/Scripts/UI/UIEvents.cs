@@ -148,6 +148,13 @@ public class UIEvents : MonoBehaviour
         OnPauseGame?.Invoke(isPaused);
     }
 
+    public event Action OnRestartLevel;
+
+    public void RestartLevel()
+    {
+        OnRestartLevel?.Invoke();
+    }
+
     public event Action OnPlayerDied;
 
     public void PlayerDied()

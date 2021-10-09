@@ -21,7 +21,14 @@ public class CheckpointManager : MonoBehaviour
         current = this;
         
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
+        
         RespawnPoint = _spawnPoint;
+    }
+
+    private void Start()
+    {
+        // listen for UIEvents
+        UIEvents.current.OnRestartLevel += RestartLevel;
         
         // find all the checkpoints and start listening
         for (var i = 0; i < _checkpoints.Length; i++)
@@ -34,34 +41,56 @@ public class CheckpointManager : MonoBehaviour
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
         if (savedLevel == _currentLevel && _checkpoints[savedCkpt - 1] != null)
-            SetCheckpoint(savedCkpt, _checkpoints[savedCkpt - 1].transform);
-    }
+        {
+            Transform rp = _checkpoints[savedCkpt - 1].RespawnPoint;
+            SetCheckpoint(savedCkpt, rp);
+            FindObjectOfType<PlayerController>().TeleportToPosition(rp.position); // yes, I know it's suboptimal
+        }
 
-    private void Start()
-    {
+        // If someone forgets to add a spawnpoint in the level, default to the player object's transform
         if (_spawnPoint != null) return;
         
-        // If someone forgets to add a spawnpoint in the level, default to the player object's transform
         GameObject go = new GameObject();
-        Transform tf = GameObject.FindGameObjectWithTag("Player").transform;
-        go.transform.position = tf.position;
-        go.transform.rotation = tf.rotation;
-        RespawnPoint = go.transform;
+        Transform temp_tf = GameObject.FindGameObjectWithTag("Player").transform;
+        go.transform.position = temp_tf.position;
+        go.transform.rotation = temp_tf.rotation;
+        _spawnPoint = go.transform; // This is so we can reference spawnPoint in RestartLevel()
+        RespawnPoint = _spawnPoint;
         
         Debug.Log("SpawnPoint not set. Defaulting to player's position.");
     }
 
     private void SetCheckpoint(int ckptNumber, Transform spawn)
     {
+        // don't re-activate previous or current checkpoint
         if (ckptNumber <= CurrentCheckpoint) return;
         
         RespawnPoint = spawn;
         CurrentCheckpoint = ckptNumber;
         
+        _checkpoints[ckptNumber - 1]?.EnableLight(); // turn on light
+        
+        // set player prefs
         PlayerPrefs.SetInt("Checkpoint", ckptNumber);
         PlayerPrefs.SetInt("Level", _currentLevel);
         PlayerPrefs.Save();
         
         Debug.Log("Checkpoint " + ckptNumber + " reached; Respawn point set to " + spawn.position);
+    }
+
+    private void RestartLevel()
+    {
+        CurrentCheckpoint = 0;
+        RespawnPoint = _spawnPoint;
+        
+        PlayerPrefs.DeleteKey("Checkpoint");
+        PlayerPrefs.DeleteKey("Level");
+        PlayerPrefs.Save();
+        
+        PlayerController pc = FindObjectOfType<PlayerController>();
+        pc.TeleportToPosition(RespawnPoint.position);
+        pc.GetComponentInParent<Transform>().rotation = RespawnPoint.rotation;
+        
+        UIEvents.current.PauseGame(false);
     }
 }
