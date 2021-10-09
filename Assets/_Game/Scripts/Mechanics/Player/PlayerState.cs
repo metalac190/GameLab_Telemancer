@@ -80,7 +80,10 @@ namespace Mechanics.Player
             _isAlive = true;
             _onPlayerRespawn.Invoke();
 
-            _playerController.TeleportToPosition(_lastCheckpoint);
+            _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
+            // TODO: This might need to be moved to the player controller script?
+            // Also set the player rotation on respawn
+            _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
 
             _playerController.flag_cantAct = FlagCantAct();
             _castingController.FlagCantAct = FlagCantAct();
