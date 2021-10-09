@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IResettable
 {
-    void OnSceneReset();
+    void OnPlayerRespawn();
 }

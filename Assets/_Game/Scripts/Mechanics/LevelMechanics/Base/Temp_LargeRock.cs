@@ -1,19 +1,32 @@
 ﻿using Mechanics.WarpBolt;
 using UnityEngine;
+using System;
 
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing
 /// Inherits from Warp Residue Interactable, and overrides the WarpBoltImpact() to swap itself with the player
-public class Temp_LargeRock : WarpResidueInteractable, IResettable
+public class Temp_LargeRock : WarpResidueInteractable
 {
     // A simple offset for the teleportation location
     [SerializeField] private Vector3 _teleportOffset = Vector3.up;
     // the position of the object on start
-    private Transform _spawnPoint = null; 
+    private Vector3 _spawnPos = new Vector3();
+    private Quaternion _spawnRot = new Quaternion();
 
     private void Start()
     {
-        _spawnPoint = transform;
+        _spawnPos = transform.position;
+        _spawnRot = transform.rotation;
+    }
+
+    private void OnEnable()
+    {
+        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     /// Called on either WarpBoltImpact or WarpResidueActivated, see WarpResidueInteractable
@@ -28,9 +41,9 @@ public class Temp_LargeRock : WarpResidueInteractable, IResettable
 
     // The other 3 functions can be inherited from for extra capabilities
 
-    public void OnSceneReset()
+    public void OnPlayerRespawn()
     {
-        transform.position = _spawnPoint.position;
-        transform.rotation = _spawnPoint.rotation;
+        transform.position = _spawnPos;
+        transform.rotation = _spawnRot;
     }
 }
