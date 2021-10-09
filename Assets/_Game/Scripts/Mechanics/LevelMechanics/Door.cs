@@ -19,6 +19,14 @@ public class Door : LevelActivatable
         StartCoroutine(MoveDoor(_closedY, false));
     }
 
+    protected override void OnReset()
+    {
+        if(!IsCurrentlyActive)
+            transform.localPosition = new Vector3(transform.localPosition.x, _closedY, transform.localPosition.z);
+        else
+            transform.localPosition = new Vector3(transform.localPosition.x, _openY, transform.localPosition.z);
+    }
+
     IEnumerator MoveDoor(float target, bool opening)
     {
         Debug.Log("Opening Door");

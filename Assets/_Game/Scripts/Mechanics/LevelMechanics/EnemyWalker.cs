@@ -33,6 +33,23 @@ public class EnemyWalker : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+    }
+
+    private void OnPlayerRespawn()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+
     // ---------------------------------------------------------------------------------------------------
     #region Movement
     private void Move()
