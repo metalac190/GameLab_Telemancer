@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeToNextFire: 0.5
-  _timeToNextWarp: 1
+  _timeToNextWarp: 2.5
   _timeToNextResidue: 1.5
   _clearResidueOnFire: 1
   _boltLookDistance: 20
@@ -163,7 +163,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939250879272954141}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: l_hand_bolt_SOCKET
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -534,17 +534,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 8.5
   groundAcceleration: 40
-  airAcceleration: 10
-  jumpForce: 3.5
-  risingGravity: 5
-  fallingGravity: 10
-  floatTime: 0.04
+  airAcceleration: 35
+  jumpForce: 6.2
+  risingGravity: 20
+  fallingGravity: 20
+  floatTime: 0
   OnTeleport:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPlayerDeath:
     m_PersistentCalls:
       m_Calls: []
   grounded: 0
@@ -761,7 +758,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5994795832995915946}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
