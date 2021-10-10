@@ -103,13 +103,13 @@ namespace AudioSystem
             }
         }
 
-        public void StopMusic(float fadeTime)
+        public void StopMusic()
         {
             if (activeMusicEvent == null)
                 return;
 
+            ActivePlayer.Stop(activeMusicEvent.StopSongFadeOutTime);
             activeMusicEvent = null;
-            ActivePlayer.Stop(fadeTime);
         }
 
         public void IncreaseLayerIndex(float fadeTime)
