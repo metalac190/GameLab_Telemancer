@@ -110,9 +110,7 @@ namespace Mechanics.WarpBolt
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
             if (timer == 0) {
-                transform.position = position;
-                _visuals.forward = rotation * Vector3.forward;
-                _data.Direction = rotation * Vector3.forward;
+                FinishRedirect(position, rotation);
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
             }
@@ -249,9 +247,15 @@ namespace Mechanics.WarpBolt
             Disable();
             yield return new WaitForSecondsRealtime(timer);
             Enable();
+            FinishRedirect(position, rotation);
+        }
+
+        private void FinishRedirect(Vector3 position, Quaternion rotation)
+        {
             transform.position = position;
             _visuals.forward = rotation * Vector3.forward;
             _data.Direction = rotation * Vector3.forward;
+            _timeAlive = 0;
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
