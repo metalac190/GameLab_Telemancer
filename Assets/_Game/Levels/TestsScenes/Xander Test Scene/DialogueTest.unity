@@ -719,7 +719,8 @@ GameObject:
   - component: {fileID: 613301529}
   - component: {fileID: 613301528}
   m_Layer: 5
-  m_Name: TMP SubMeshUI [SGARounded Atlas Material + LiberationSans SDF Atlas]
+  m_Name: TMP SubMeshUI [LiberationSansDialogue SDF Material + LiberationSans SDF
+    Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -768,7 +769,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 0
+  m_padding: 1.25
   m_canvasRenderer: {fileID: 613301529}
   m_TextComponent: {fileID: 329357835}
   m_materialReferenceIndex: 1
@@ -1746,6 +1747,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b55ce94b4858244daef433a9d46afe7, type: 3}
+--- !u!114 &1431280911 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8561128953603784824, guid: c85c9085917d18d40844227537954f9d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5994795833423906254}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 086b19cf45094e8478ddfe436faea9d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1466090137
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,18 +2368,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974875361}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2008301761 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1327872986168430472, guid: c85c9085917d18d40844227537954f9d,
-    type: 3}
-  m_PrefabInstance: {fileID: 5994795833423906254}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2024263824 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7801277640439604079, guid: 9b55ce94b4858244daef433a9d46afe7,
@@ -2459,7 +2460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runner: {fileID: 5935829473836071480}
-  player: {fileID: 2008301761}
+  player: {fileID: 1431280911}
   interactionRadius: 5
   dialogueText: {fileID: 329357835}
   speaker: {fileID: 1703213699}
@@ -2556,7 +2557,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4907615216628433762}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2565,8 +2566,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -729.3, y: 504.7}
+  m_SizeDelta: {x: 2344.0894, y: 1297.862}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &3230216783303262815
 PrefabInstance:
@@ -2650,39 +2651,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beb2bcfc2d9a74e40aa4e1e095c50a88, type: 3}
---- !u!114 &3745714144422375341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4907615216628433762}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: c47edc3976da2554c9fdab9b2d5e7744, type: 3}
-    m_FontSize: 20
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 2
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 
 --- !u!1 &4907615216628433762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2693,14 +2661,43 @@ GameObject:
   m_Component:
   - component: {fileID: 1836404654065107602}
   - component: {fileID: 6961713701172879214}
-  - component: {fileID: 3745714144422375341}
+  - component: {fileID: 4907615216628433763}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextAdvanceArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4907615216628433763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4907615216628433762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &5129383140908354130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2813,7 +2810,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5935829473836071485}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04317fce65da54f4997a5c4465b4e93c, type: 3}
+  m_Script: {fileID: 11500000, guid: 476a229e3530c314dbd65ae510d06416, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueContainer: {fileID: 5935829474371053788}
@@ -2855,6 +2852,20 @@ MonoBehaviour:
       - m_Target: {fileID: 9020856951687157449}
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onSpeakerChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1703213699}
+        m_MethodName: set_text
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

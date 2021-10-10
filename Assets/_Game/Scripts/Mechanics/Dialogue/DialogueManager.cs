@@ -9,13 +9,16 @@ using TMPro;
 public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueRunner runner;
-    [SerializeField] private PlayerController player;
+    [SerializeField] private PlayerState player;
     [SerializeField] private float interactionRadius = 5;
     [SerializeField] private TextMeshProUGUI dialogueText, speaker;
     void Start()
     {
+        // Null checks
         if (runner == null)
             runner = FindObjectOfType<DialogueRunner>();
+        if (player == null)
+            player = FindObjectOfType<PlayerState>();
     }
 
     public void CheckForNearbyNPC(InputAction.CallbackContext value)
@@ -48,7 +51,7 @@ public class DialogueManager : MonoBehaviour
     public void DialogueStart()
     {
         // Remove all player control when we're in dialogue
-        player.flag_cantAct = true;
+        player.GamePaused(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -56,7 +59,7 @@ public class DialogueManager : MonoBehaviour
     public void DialogueEnd()
     {
         // Allow player control once dialogue is finished
-        player.flag_cantAct = false;
+        player.GamePaused(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
