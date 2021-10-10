@@ -45,53 +45,67 @@ public class UIEvents : MonoBehaviour
         OnDisplayTooltip?.Invoke(message);
     }
 
-    public event Action<bool> OnCastBolt;
+    public event Action<bool> OnCastBolt; // Kept OnCastBolt to avoid errors in StatsMenu.cs
 
-    public void CastBolt(bool actionSuccessful)
+    public void SetCastBolt(bool wasSuccessful)
     {
-        OnCastBolt?.Invoke(actionSuccessful);
+        OnCastBolt?.Invoke(wasSuccessful);
     }
 
-    public event Action OnBoltReady;
+    public event Action<AbilityHudEnums> OnBoltDisplay;
 
-    public void BoltReady()
+    public void SetBoltDisplay(AbilityHudEnums displayType)
     {
-        OnBoltReady?.Invoke();
+        OnBoltDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnCastWarp;
+    public event Action<AbilityHudEnums> OnWarpDisplay;
 
-    public void CastWarp(bool actionSuccessful)
+    public void SetWarpDisplay(AbilityHudEnums displayType)
     {
-        OnCastWarp?.Invoke(actionSuccessful);
+        OnWarpDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnWarpReady;
+    public event Action<AbilityHudEnums> OnResidueDisplay;
 
-    public void WarpReady(bool isReady)
+    public void SetResidueDisplay(AbilityHudEnums displayType)
     {
-        OnWarpReady?.Invoke(isReady);
+        OnResidueDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnCastResidue;
+    public event Action<float> OnBoltCooldown;
 
-    public void CastResidue(bool actionSuccessful)
+    public void SetBoltCooldown(float cooldownDelta)
     {
-        OnCastResidue?.Invoke(actionSuccessful);
+        OnBoltCooldown?.Invoke(cooldownDelta);
     }
 
-    public event Action<bool> OnResidueReady;
+    public event Action<float> OnWarpCooldown;
 
-    public void ResidueReady(bool isReady)
+    public void SetWarpCooldown(float cooldownDelta)
     {
-        OnResidueReady?.Invoke(isReady);
+        OnWarpCooldown?.Invoke(cooldownDelta);
     }
 
+    public event Action<float> OnResidueCooldown;
+
+    public void SetResidueCooldown(float cooldownDelta)
+    {
+        OnResidueCooldown?.Invoke(cooldownDelta);
+    }
+    
     public event Action<InteractableEnums> OnChangeXhairColor;
 
     public void ChangeXhairColor(InteractableEnums type)
     {
         OnChangeXhairColor?.Invoke(type);
+    }
+
+    public event Action<bool> OnUnlockBoltAbility;
+
+    public void UnlockBoltAbility(bool isUnlocked)
+    {
+        OnUnlockBoltAbility?.Invoke(isUnlocked);
     }
 
     public event Action<bool> OnUnlockWarpAbility;

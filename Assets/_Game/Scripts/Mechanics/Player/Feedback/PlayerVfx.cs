@@ -15,10 +15,30 @@ public class PlayerVfx : MonoBehaviour
         }
     }
 
-    public void OnCastBolt()
+    public void OnBoltReady()
+    {
+    }
+
+    public void OnBoltUsed()
     {
         if (_castFlash != null) {
             _castFlash.Play();
         }
+    }
+
+    public void OnWarpReady()
+    {
+    }
+
+    public void OnWarpUsed()
+    {
+    }
+
+    public void OnResidueReady()
+    {
+    }
+
+    public void OnResidueUsed()
+    {
     }
 }
