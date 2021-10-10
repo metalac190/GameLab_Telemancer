@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
 {
+    [Header("Pressure Plate")]
     [SerializeField] private List<LevelActivatable> _activatables = new List<LevelActivatable>(); // the list of objects to be toggled by this pressure plate
     private int _id = 0;
     private bool _isPressed = false; // if two things are on the pressure plate at once, don't want to double activate it
+
+    [Header("Button Depression")]
+    [SerializeField] private GameObject _movingButton = null;
+    [SerializeField] private float _buttonOnPos = -0.001f;
+    [SerializeField] private float _buttonOffPos = 0.0004f;
+    [SerializeField] private float _buttonMoveSpeed = 2f;
 
     private void Awake()
     {
@@ -35,7 +42,7 @@ public class PressurePlate : MonoBehaviour
                     if (obj != null) { obj.Toggle(_id); }
                 }
                 Debug.Log("pressure plate entered: " + other.gameObject.name);
-
+                StartCoroutine(MoveButton(_buttonOnPos, true));
             }
         }
         
@@ -54,6 +61,7 @@ public class PressurePlate : MonoBehaviour
                 {
                     if (obj != null) { obj.Toggle(_id); }
                 }
+                StartCoroutine(MoveButton(_buttonOnPos, true));
             }
         }
     }
@@ -74,9 +82,21 @@ public class PressurePlate : MonoBehaviour
             }
             //StartCoroutine(DeactivateOnCooldown());
             Debug.Log("pressure plate exited: " + other.gameObject.name);
+            StartCoroutine(MoveButton(_buttonOffPos, false));
         }
         
     }
+    
+    IEnumerator MoveButton(float newZ, bool isActive)
+    {
+        while(isActive == _isPressed && newZ != _movingButton.transform.localPosition.z)
+        {
+            float newPos = Mathf.Lerp(_movingButton.transform.localPosition.z, newZ, Time.fixedDeltaTime * _buttonMoveSpeed);
+            _movingButton.transform.localPosition = new Vector3(_movingButton.transform.localPosition.x, _movingButton.transform.localPosition.x, newPos);
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    
 
     /*
     IEnumerator DeactivateOnCooldown()
@@ -99,5 +119,11 @@ public class PressurePlate : MonoBehaviour
         {
             if (obj != null) { Gizmos.DrawLine(transform.position, obj.transform.position); }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(_movingButton != null)
+            _movingButton.transform.localPosition = new Vector3(_movingButton.transform.localPosition.x, _movingButton.transform.localPosition.x, _buttonOffPos);
     }
 }

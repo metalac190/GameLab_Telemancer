@@ -140,11 +140,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timeToNextFire: 0.5
-  _timeToNextWarp: 1
+  _timeToNextWarp: 2.5
   _timeToNextResidue: 1.5
   _clearResidueOnFire: 1
   _boltLookDistance: 20
   _timeToFire: 0
+  _lookAtMask:
+    serializedVersion: 2
+    m_Bits: 1
   _warpBolt: {fileID: 0}
   _playerState: {fileID: 8561128953603784824}
   _playerAnimator: {fileID: 870152040626436047}
@@ -160,7 +163,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939250879272954141}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: l_hand_bolt_SOCKET
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,9 +230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0717b1f337b4a4a8df226874c883f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerVfx: {fileID: 5994795833423906257}
-  _playerToHud: {fileID: 5994795833423906258}
-  _playerSfx: {fileID: 5994795833423906259}
 --- !u!114 &5994795833423906259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,10 +242,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b49db269674a384799a9ef08c5d761f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activateWarpSound: {fileID: 0}
-  _boltCastSound: {fileID: 0}
-  _activateResidueSound: {fileID: 0}
-  _objectImpactResidueSound: {fileID: 0}
+  _activateWarpSound: {fileID: 11400000, guid: aa1b5978c8e0b8344b6f109737d50275, type: 2}
+  _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
+  _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
+    type: 2}
+  _objectImpactResidueSound: {fileID: 11400000, guid: 2fc304d03b3392a48a71a6fd197a8e29,
+    type: 2}
 --- !u!114 &5994795833423906258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -477,7 +479,7 @@ GameObject:
   - component: {fileID: 5994795833423906256}
   m_Layer: 10
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -532,12 +534,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  jumpForce: 3.5
-  risingGravity: 5
-  fallingGravity: 10
-  floatTime: 0.1
-  OnPlayerDeath:
+  moveSpeed: 8.5
+  groundAcceleration: 40
+  airAcceleration: 35
+  jumpForce: 6.2
+  risingGravity: 20
+  fallingGravity: 20
+  floatTime: 0
+  OnTeleport:
     m_PersistentCalls:
       m_Calls: []
   grounded: 0
@@ -590,17 +594,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3209979791028676465}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _respawnTime: 3
   _onPlayerRespawn:
     m_PersistentCalls:
@@ -615,17 +608,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3209979791028676465}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &5994795833423906256
 MonoBehaviour:
@@ -776,7 +758,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5994795832995915946}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
