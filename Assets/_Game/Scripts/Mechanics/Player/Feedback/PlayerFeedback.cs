@@ -34,9 +34,9 @@ namespace Mechanics.Player
 
         #endregion
 
-        [SerializeField] private AbilityStateEnum _boltState;
-        [SerializeField] private AbilityStateEnum _warpState;
-        [SerializeField] private AbilityStateEnum _residueState;
+        private AbilityStateEnum _boltState;
+        private AbilityStateEnum _warpState;
+        private AbilityStateEnum _residueState;
 
         private bool _boltCooldown;
         private bool _warpCooldown;
@@ -59,22 +59,22 @@ namespace Mechanics.Player
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
         {
-            _playerToHud.OnUpdateUnlockedAbilities(warpAbility, residueAbility);
+            _playerToHud.OnUpdateUnlockedAbilities(boltAbility, warpAbility, residueAbility);
 
             if (!boltAbility) {
                 _boltState = AbilityStateEnum.Disabled;
             } else if (_boltState == AbilityStateEnum.Disabled) {
-                _boltState = AbilityStateEnum.Ready;
+                SetBoltState(AbilityStateEnum.Ready, true);
             }
             if (!warpAbility) {
                 _warpState = AbilityStateEnum.Disabled;
             } else if (_warpState == AbilityStateEnum.Disabled) {
-                _warpState = AbilityStateEnum.Idle;
+                SetWarpState(AbilityStateEnum.Idle, true);
             }
             if (!residueAbility) {
                 _residueState = AbilityStateEnum.Disabled;
             } else if (_residueState == AbilityStateEnum.Disabled) {
-                _residueState = AbilityStateEnum.Idle;
+                SetResidueState(AbilityStateEnum.Idle, true);
             }
         }
 
@@ -84,7 +84,6 @@ namespace Mechanics.Player
         // - Disabled (Not unlocked, cannot be used)
         // - Idle (Ability unlocked but cant be used yet)
         // - Ready (Ability active and ready to be used)
-        // - Locked (Ability used, waiting for cooldown)
 
         // Ability Actions:
         // - InputDetected (Ability input detected)
@@ -94,9 +93,9 @@ namespace Mechanics.Player
 
         #region Bolt
 
-        public void SetBoltState(AbilityStateEnum state)
+        public void SetBoltState(AbilityStateEnum state, bool setDisabled = false)
         {
-            if (_boltState == AbilityStateEnum.Disabled) return;
+            if (_boltState == AbilityStateEnum.Disabled && !setDisabled) return;
 
             _boltState = state;
             if (_boltCooldown) return;
@@ -111,7 +110,13 @@ namespace Mechanics.Player
 
         public void OnBoltAction(AbilityActionEnum action)
         {
-            if (_boltCooldown || _boltState == AbilityStateEnum.Disabled) return;
+            if (_boltCooldown) {
+                if (action == AbilityActionEnum.AttemptedUnsuccessful) {
+                    _playerToHud.OnBoltAction(action);
+                }
+                return;
+            }
+            if (_boltState == AbilityStateEnum.Disabled) return;
 
             _playerToHud.OnBoltAction(action);
 
@@ -131,11 +136,11 @@ namespace Mechanics.Player
             SetBoltState(AbilityStateEnum.Idle);
             _boltCooldown = true;
             for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = 1 - t / duration;
+                float delta = t / duration;
                 _playerToHud.SetBoltCooldown(delta);
                 yield return null;
             }
-            _playerToHud.SetBoltCooldown(0);
+            _playerToHud.SetBoltCooldown(1);
             _boltCooldown = false;
             SetBoltState(AbilityStateEnum.Ready);
         }
@@ -144,9 +149,9 @@ namespace Mechanics.Player
 
         #region Warp
 
-        public void SetWarpState(AbilityStateEnum state)
+        public void SetWarpState(AbilityStateEnum state, bool setDisabled = false)
         {
-            if (_warpState == AbilityStateEnum.Disabled) return;
+            if (_warpState == AbilityStateEnum.Disabled && !setDisabled) return;
 
             _warpState = state;
             if (_warpCooldown) return;
@@ -180,11 +185,11 @@ namespace Mechanics.Player
         {
             _warpCooldown = true;
             for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = 1 - t / duration;
+                float delta = t / duration;
                 _playerToHud.SetWarpCooldown(delta);
                 yield return null;
             }
-            _playerToHud.SetWarpCooldown(0);
+            _playerToHud.SetWarpCooldown(1);
             _warpCooldown = false;
             _playerToHud.UpdateWarpState(_warpState);
         }
@@ -193,9 +198,9 @@ namespace Mechanics.Player
 
         #region Residue
 
-        public void SetResidueState(AbilityStateEnum state)
+        public void SetResidueState(AbilityStateEnum state, bool setDisabled = false)
         {
-            if (_residueState == AbilityStateEnum.Disabled) return;
+            if (_residueState == AbilityStateEnum.Disabled && !setDisabled) return;
 
             _residueState = state;
             if (_residueCooldown) return;
@@ -229,7 +234,7 @@ namespace Mechanics.Player
         {
             _residueCooldown = true;
             for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = 1 - t / duration;
+                float delta = t / duration;
                 _playerToHud.SetResidueCooldown(delta);
                 yield return null;
             }

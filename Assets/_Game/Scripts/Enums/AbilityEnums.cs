@@ -14,3 +14,13 @@ public enum AbilityActionEnum
     AttemptedSuccessful,   // After input, ability was successful
     Acted,                 // Acted On / Ability used
 }
+
+public enum AbilityHudEnums
+{
+    Disabled,
+    Normal,
+    ReadyToUse,
+    InputDetected,
+    Used,
+    Failed,
+}

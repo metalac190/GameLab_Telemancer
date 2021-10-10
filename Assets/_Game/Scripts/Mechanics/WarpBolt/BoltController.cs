@@ -35,6 +35,8 @@ namespace Mechanics.WarpBolt
         private bool _isAlive;
         private float _timeAlive;
 
+        public bool CanWarp => _isAlive;
+
         private Vector3 _previousPosition;
         private Coroutine _redirectDelayRoutine = null;
 

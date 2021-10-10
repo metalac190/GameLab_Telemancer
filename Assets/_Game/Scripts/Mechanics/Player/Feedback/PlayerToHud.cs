@@ -7,9 +7,6 @@ public class PlayerToHud : MonoBehaviour
     [SerializeField] private float _attemptDisplayTime = 0.1f;
 
     private InteractableEnums _previousTarget;
-    private bool _lockBoltDebug;
-    private bool _lockWarpDebug;
-    private bool _lockResidueDebug;
 
     public void OnHudColorChange(InteractableEnums type)
     {
@@ -20,47 +17,77 @@ public class PlayerToHud : MonoBehaviour
         _previousTarget = type;
     }
 
-    public void OnUpdateUnlockedAbilities(bool warpAbility, bool residueAbility)
+    public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
     {
+        UIEvents.current.UnlockBoltAbility(boltAbility);
         UIEvents.current.UnlockWarpAbility(warpAbility);
         UIEvents.current.UnlockResidueAbility(residueAbility);
+
+        _boltDisplay = boltAbility ? AbilityHudEnums.Normal : AbilityHudEnums.Disabled;
+        _warpDisplay = warpAbility ? AbilityHudEnums.Normal : AbilityHudEnums.Disabled;
+        _residueDisplay = residueAbility ? AbilityHudEnums.Normal : AbilityHudEnums.Disabled;
     }
 
-    #region Bolt
+    // Bolt Ability HUD Display
 
-    public void UpdateBoltState(AbilityStateEnum boltState)
+    public void SetBoltDisplay(AbilityHudEnums type)
     {
-        switch (boltState) {
-            case AbilityStateEnum.Idle:
-                break;
-            case AbilityStateEnum.Ready:
-                break;
-        }
-    }
-
-    public void OnBoltAction(AbilityActionEnum boltAction)
-    {
-        switch (boltAction) {
-            case AbilityActionEnum.InputDetected:
-                // Set Icon Yellow
-                break;
-            case AbilityActionEnum.AttemptedUnsuccessful:
-                // Set Icon Red
-                break;
-            case AbilityActionEnum.AttemptedSuccessful:
-                // Set Icon Green
-                break;
-            case AbilityActionEnum.Acted:
-                break;
-        }
+        UIEvents.current.SetBoltDisplay(type);
     }
 
     public void SetBoltCooldown(float delta)
     {
         if (_lockBoltDebug) return;
-        // Delta is a value from 0 to 1
+        UIEvents.current.SetBoltCooldown(delta);
+    }
 
-        // Set Icon Cooldown with var delta
+    #region Bolt Display Management
+
+    private AbilityHudEnums _boltDisplay;
+    private bool _lockBoltDebug;
+    private Coroutine _boltDebugDelay;
+
+    public void UpdateBoltState(AbilityStateEnum boltState)
+    {
+        switch (boltState) {
+            case AbilityStateEnum.Idle:
+                _boltDisplay = AbilityHudEnums.Normal;
+                break;
+            case AbilityStateEnum.Ready:
+                _boltDisplay = AbilityHudEnums.ReadyToUse;
+                break;
+        }
+
+        if (_lockBoltDebug) return;
+        SetBoltDisplay(_boltDisplay);
+    }
+
+    public void OnBoltAction(AbilityActionEnum boltAction)
+    {
+        if (boltAction == AbilityActionEnum.Acted) {
+            UIEvents.current.SetCastBolt(true);
+            return;
+        }
+
+        if (_boltDebugDelay != null) {
+            StopCoroutine(_boltDebugDelay);
+            SetBoltDisplay(_boltDisplay);
+        }
+
+        switch (boltAction) {
+            case AbilityActionEnum.InputDetected:
+                SetBoltDisplay(AbilityHudEnums.InputDetected);
+                _boltDebugDelay = StartCoroutine(BoltInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedUnsuccessful:
+                SetBoltDisplay(AbilityHudEnums.Failed);
+                _boltDebugDelay = StartCoroutine(BoltInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedSuccessful:
+                SetBoltDisplay(AbilityHudEnums.Used);
+                _boltDebugDelay = StartCoroutine(BoltInputDebugDelay());
+                break;
+        }
     }
 
     private IEnumerator BoltInputDebugDelay()
@@ -68,47 +95,69 @@ public class PlayerToHud : MonoBehaviour
         _lockBoltDebug = true;
         yield return new WaitForSecondsRealtime(_attemptDisplayTime);
         _lockBoltDebug = false;
+        _boltDebugDelay = null;
+        SetBoltDisplay(_boltDisplay);
     }
 
     #endregion
 
-    #region Warp
+    // Warp Ability HUD Display
 
-    public void UpdateWarpState(AbilityStateEnum warpState)
+    public void SetWarpDisplay(AbilityHudEnums type)
     {
-        switch (warpState) {
-            case AbilityStateEnum.Idle:
-                UIEvents.current.WarpReady(false);
-                break;
-            case AbilityStateEnum.Ready:
-                UIEvents.current.WarpReady(true);
-                break;
-        }
-    }
-
-    public void OnWarpAction(AbilityActionEnum warpAction)
-    {
-        switch (warpAction) {
-            case AbilityActionEnum.InputDetected:
-                // Set Icon Yellow
-                break;
-            case AbilityActionEnum.AttemptedUnsuccessful:
-                // Set Icon Red
-                break;
-            case AbilityActionEnum.AttemptedSuccessful:
-                // Set Icon Green
-                break;
-            case AbilityActionEnum.Acted:
-                break;
-        }
+        UIEvents.current.SetWarpDisplay(type);
     }
 
     public void SetWarpCooldown(float delta)
     {
         if (_lockWarpDebug) return;
-        // Delta is a value from 0 to 1
+        UIEvents.current.SetWarpCooldown(delta);
+    }
 
-        // Set Icon Cooldown with var delta
+    #region Warp Display Management
+
+    private AbilityHudEnums _warpDisplay;
+    private bool _lockWarpDebug;
+    private Coroutine _warpDebugDelay;
+
+    public void UpdateWarpState(AbilityStateEnum warpState)
+    {
+        switch (warpState) {
+            case AbilityStateEnum.Idle:
+                _warpDisplay = AbilityHudEnums.Normal;
+                break;
+            case AbilityStateEnum.Ready:
+                _warpDisplay = AbilityHudEnums.ReadyToUse;
+                break;
+        }
+
+        if (_lockWarpDebug) return;
+        SetWarpDisplay(_warpDisplay);
+    }
+
+    public void OnWarpAction(AbilityActionEnum warpAction)
+    {
+        if (warpAction == AbilityActionEnum.Acted) return;
+
+        if (_warpDebugDelay != null) {
+            StopCoroutine(_warpDebugDelay);
+            SetWarpDisplay(_warpDisplay);
+        }
+
+        switch (warpAction) {
+            case AbilityActionEnum.InputDetected:
+                SetWarpDisplay(AbilityHudEnums.InputDetected);
+                _warpDebugDelay = StartCoroutine(WarpInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedUnsuccessful:
+                SetWarpDisplay(AbilityHudEnums.Failed);
+                _warpDebugDelay = StartCoroutine(WarpInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedSuccessful:
+                SetWarpDisplay(AbilityHudEnums.Used);
+                _warpDebugDelay = StartCoroutine(WarpInputDebugDelay());
+                break;
+        }
     }
 
     private IEnumerator WarpInputDebugDelay()
@@ -116,47 +165,69 @@ public class PlayerToHud : MonoBehaviour
         _lockWarpDebug = true;
         yield return new WaitForSecondsRealtime(_attemptDisplayTime);
         _lockWarpDebug = false;
+        _warpDebugDelay = null;
+        SetWarpDisplay(_warpDisplay);
     }
 
     #endregion
 
-    #region Residue
+    // Residue Ability HUD Display
 
-    public void UpdateResidueState(AbilityStateEnum residueState)
+    public void SetResidueDisplay(AbilityHudEnums type)
     {
-        switch (residueState) {
-            case AbilityStateEnum.Idle:
-                UIEvents.current.ResidueReady(false);
-                break;
-            case AbilityStateEnum.Ready:
-                UIEvents.current.ResidueReady(true);
-                break;
-        }
-    }
-
-    public void OnResidueAction(AbilityActionEnum residueAction)
-    {
-        switch (residueAction) {
-            case AbilityActionEnum.InputDetected:
-                // Set Icon Yellow
-                break;
-            case AbilityActionEnum.AttemptedUnsuccessful:
-                // Set Icon Red
-                break;
-            case AbilityActionEnum.AttemptedSuccessful:
-                // Set Icon Green
-                break;
-            case AbilityActionEnum.Acted:
-                break;
-        }
+        UIEvents.current.SetResidueDisplay(type);
     }
 
     public void SetResidueCooldown(float delta)
     {
         if (_lockResidueDebug) return;
-        // Delta is a value from 0 to 1
+        UIEvents.current.SetResidueCooldown(delta);
+    }
 
-        // Set Icon Cooldown with var delta
+    #region Residue Display Management
+
+    private AbilityHudEnums _residueDisplay;
+    private bool _lockResidueDebug;
+    private Coroutine _residueDebugDelay;
+
+    public void UpdateResidueState(AbilityStateEnum residueState)
+    {
+        switch (residueState) {
+            case AbilityStateEnum.Idle:
+                _residueDisplay = AbilityHudEnums.Normal;
+                break;
+            case AbilityStateEnum.Ready:
+                _residueDisplay = AbilityHudEnums.ReadyToUse;
+                break;
+        }
+
+        if (_lockResidueDebug) return;
+        SetResidueDisplay(_residueDisplay);
+    }
+
+    public void OnResidueAction(AbilityActionEnum residueAction)
+    {
+        if (residueAction == AbilityActionEnum.Acted) return;
+
+        if (_residueDebugDelay != null) {
+            StopCoroutine(_residueDebugDelay);
+            SetResidueDisplay(_residueDisplay);
+        }
+
+        switch (residueAction) {
+            case AbilityActionEnum.InputDetected:
+                SetResidueDisplay(AbilityHudEnums.InputDetected);
+                _residueDebugDelay = StartCoroutine(ResidueInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedUnsuccessful:
+                SetResidueDisplay(AbilityHudEnums.Failed);
+                _residueDebugDelay = StartCoroutine(ResidueInputDebugDelay());
+                break;
+            case AbilityActionEnum.AttemptedSuccessful:
+                SetResidueDisplay(AbilityHudEnums.Used);
+                _residueDebugDelay = StartCoroutine(ResidueInputDebugDelay());
+                break;
+        }
     }
 
     private IEnumerator ResidueInputDebugDelay()
@@ -164,32 +235,9 @@ public class PlayerToHud : MonoBehaviour
         _lockResidueDebug = true;
         yield return new WaitForSecondsRealtime(_attemptDisplayTime);
         _lockResidueDebug = false;
+        _residueDebugDelay = null;
+        SetResidueDisplay(_residueDisplay);
     }
 
     #endregion
-
-    public void OnPrepareToCast(bool wasSuccessful = true)
-    {
-        UIEvents.current.CastBolt(wasSuccessful);
-    }
-
-    public void OnWarpReady(bool ready = true)
-    {
-        UIEvents.current.WarpReady(ready);
-    }
-
-    public void OnActivateWarp(bool wasSuccessful = true)
-    {
-        UIEvents.current.CastWarp(wasSuccessful);
-    }
-
-    public void OnActivateResidue(bool wasSuccessful = true)
-    {
-        UIEvents.current.CastResidue(wasSuccessful);
-    }
-
-    public void OnResidueReady(bool ready = true)
-    {
-        UIEvents.current.ResidueReady(ready);
-    }
 }
