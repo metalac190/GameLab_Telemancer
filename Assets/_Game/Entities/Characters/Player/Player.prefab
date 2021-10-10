@@ -142,9 +142,12 @@ MonoBehaviour:
   _timeToNextFire: 0.5
   _timeToNextWarp: 2.5
   _timeToNextResidue: 1.5
+  _delayBolt: 0
+  _timeToFire: 0
+  _delayWarp: 0
+  _delayResidue: 0
   _clearResidueOnFire: 1
   _boltLookDistance: 20
-  _timeToFire: 0
   _lookAtMask:
     serializedVersion: 2
     m_Bits: 1
@@ -260,6 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f38d4bd47d4ec14d982da2adfddc5a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _attemptDisplayTime: 0.1
 --- !u!114 &5994795833423906257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,6 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086b19cf45094e8478ddfe436faea9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1
   _lastCheckpoint: {x: 0, y: 0, z: 0}
