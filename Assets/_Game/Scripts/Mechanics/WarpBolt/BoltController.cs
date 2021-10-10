@@ -35,6 +35,8 @@ namespace Mechanics.WarpBolt
         private bool _isAlive;
         private float _timeAlive;
 
+        public bool CanWarp => _isAlive;
+
         private Vector3 _previousPosition;
         private Coroutine _redirectDelayRoutine = null;
 
@@ -108,9 +110,7 @@ namespace Mechanics.WarpBolt
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
             if (timer == 0) {
-                transform.position = position;
-                _visuals.forward = rotation * Vector3.forward;
-                _data.Direction = rotation * Vector3.forward;
+                FinishRedirect(position, rotation);
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
             }
@@ -254,9 +254,15 @@ namespace Mechanics.WarpBolt
             Disable();
             yield return new WaitForSecondsRealtime(timer);
             Enable();
+            FinishRedirect(position, rotation);
+        }
+
+        private void FinishRedirect(Vector3 position, Quaternion rotation)
+        {
             transform.position = position;
             _visuals.forward = rotation * Vector3.forward;
             _data.Direction = rotation * Vector3.forward;
+            _timeAlive = 0;
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
@@ -363,15 +369,28 @@ namespace Mechanics.WarpBolt
             return _data;
         }
 
+        public void ExtraBoltExistsCheck()
+        {
+            var others = FindObjectsOfType<BoltController>();
+            foreach (var bolt in others) {
+                if (bolt == this) continue;
+                Debug.LogWarning("Too many warp bolts exist in scene: " + gameObject.name + " and " + bolt.gameObject.name, gameObject);
+                Destroy(bolt.gameObject);
+            }
+        }
+
         private bool _missingVisuals;
 
         private void VisualsNullCheck()
         {
             if (_visuals == null) {
-                _visuals = transform.Find("Art");
+                _visuals = transform.Find("Visuals");
                 if (_visuals == null) {
-                    _missingVisuals = true;
-                    Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
+                    _visuals = transform.Find("Art");
+                    if (_visuals == null) {
+                        _missingVisuals = true;
+                        Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
+                    }
                 }
             }
         }

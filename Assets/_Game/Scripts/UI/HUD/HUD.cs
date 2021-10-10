@@ -47,9 +47,11 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject _debugStatsPnl;
 
     [Header("Debug HUD Ability Colors")]
-    [SerializeField] private Color _usedColor = new Color(0.5f, 0.75f, 0.5f, 0.75f);
     [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);
+    [SerializeField] private Color _inputDetectedColor = new Color(0.75f, 0.75f, 0.5f, 0.75f);
+    [SerializeField] private Color _usedColor = new Color(0.5f, 0.75f, 0.5f, 0.75f);
     [SerializeField] private Color _failedColor = new Color(0.75f, 0.5f, 0.5f, 0.5f);
+    [SerializeField] private Gradient _cooldownColor = new Gradient();
     private Color _disabledColor = new Color(1, 1, 1, 0.4f);
     private Color _normalColor = new Color(1, 1, 1, 1f);
     
@@ -58,18 +60,18 @@ public class HUD : MonoBehaviour
         // add listeners
         UIEvents.current.OnShowDebugHud += () => { _debugMode = true; DisplayDebugHUD(true); };
         UIEvents.current.OnHideDebugHud += () => { _debugMode = false; DisplayDebugHUD(false); };
-        UIEvents.current.OnUnlockWarpAbility += UnlockWarp;
-        UIEvents.current.OnUnlockResidueAbility += UnlockResidue;
-        UIEvents.current.OnCastBolt += CastBolt;
-        UIEvents.current.OnBoltReady += BoltReady;
-        UIEvents.current.OnCastWarp += CastWarp;
-        UIEvents.current.OnWarpReady += WarpReady;
-        UIEvents.current.OnCastResidue += CastResidue;
-        UIEvents.current.OnResidueReady += ResidueReady;
-        UIEvents.current.OnChangeXhairColor += ChangeXhairColor;
 
-        UIEvents.current.OnNotifyChapter += (i, s) =>
-            StartCoroutine(PlayChapterNotification(i, s));
+        UIEvents.current.OnUnlockBoltAbility += UnlockBolt;
+        UIEvents.current.OnBoltDisplay += BoltDisplay;
+        UIEvents.current.OnBoltCooldown += BoltCooldown;
+        UIEvents.current.OnUnlockWarpAbility += UnlockWarp;
+        UIEvents.current.OnWarpDisplay += WarpDisplay;
+        UIEvents.current.OnWarpCooldown += WarpCooldown;
+        UIEvents.current.OnUnlockResidueAbility += UnlockResidue;
+        UIEvents.current.OnResidueDisplay += ResidueDisplay;
+        UIEvents.current.OnResidueCooldown += ResidueCooldown;
+
+        UIEvents.current.OnChangeXhairColor += ChangeXhairColor;
 
         UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
         UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
@@ -77,16 +79,12 @@ public class HUD : MonoBehaviour
 
     private void Start()
     {
+        UIEvents.current.OnNotifyChapter += (i, s) =>
+            StartCoroutine(PlayChapterNotification(i, s));
+            
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
         //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
-    }
-
-    private IEnumerator InputDebug(Image image, bool successful)
-    {
-        image.color = successful ? _usedColor : _failedColor;
-        yield return new WaitForSecondsRealtime(0.1f); // Change value for longer flash after input
-        image.color = _normalColor;
     }
 
     private void DisplayDebugHUD(bool isEnabled)
@@ -114,6 +112,19 @@ public class HUD : MonoBehaviour
         // Add UI animations here
     }
 
+    // Ability HUD Unlocks:
+    // -  After an ability is unlocked, this is called first and then Ability HUD Display, so a color change may not be noticeable
+    // -  This is called when the Watcher disables player's abilities
+    // -  Place animations and other effects as separate HUD elements above the ability image to avoid issues stated on the first line
+
+    private void UnlockBolt(bool isUnlocked)
+    {
+        // Add ability unlocked HUD animation here...
+
+        // Debug HUD coloring
+        _boltImage.color = isUnlocked ? _normalColor : _disabledColor;
+    }
+
     private void UnlockWarp(bool isUnlocked)
     {
         // Add ability unlocked HUD animation here...
@@ -121,7 +132,7 @@ public class HUD : MonoBehaviour
         // Debug HUD coloring
         _warpImage.color = isUnlocked ? _normalColor : _disabledColor;
     }
-    
+
     private void UnlockResidue(bool isUnlocked)
     {
         // Add ability unlocked HUD animation here...
@@ -129,6 +140,126 @@ public class HUD : MonoBehaviour
         // Debug HUD coloring
         _residueImage.color = isUnlocked ? _normalColor : _disabledColor;
     }
+
+    // Ability HUD Display:
+    // -  Disabled.         The ability is not unlocked. Use OnAbilityUnlocked(bool unlocked) for control
+    // -  Normal.           The ability is idle, cannot be used
+    // -  Ready To Use.     The ability is idle, ready to be used
+    // -  Input Detected.   User attempted to use ability. Used/Failed may have animation delay. This is immediate.
+    // -  Used.             The ability was successfully used
+    // -  Failed.           The ability was attempted and failed to be used.
+
+    private void BoltDisplay(AbilityHudEnums displayType)
+    {
+        switch (displayType) {
+            case AbilityHudEnums.Disabled:
+                _boltImage.color = _disabledColor;
+                break;
+            case AbilityHudEnums.Normal:
+                _boltImage.color = _normalColor;
+                break;
+            case AbilityHudEnums.ReadyToUse:
+                if (_debugMode)
+                    _boltImage.color = _readyToUseColor;
+                break;
+            case AbilityHudEnums.InputDetected:
+                if (_debugMode)
+                    _boltImage.color = _inputDetectedColor;
+                break;
+            case AbilityHudEnums.Used:
+                if (_debugMode)
+                    _boltImage.color = _usedColor;
+                break;
+            case AbilityHudEnums.Failed:
+                if (_debugMode)
+                    _boltImage.color = _failedColor;
+                break;
+        }
+    }
+
+    private void WarpDisplay(AbilityHudEnums displayType)
+    {
+        switch (displayType)
+        {
+            case AbilityHudEnums.Disabled:
+                _warpImage.color = _disabledColor;
+                break;
+            case AbilityHudEnums.Normal:
+                _warpImage.color = _normalColor;
+                break;
+            case AbilityHudEnums.ReadyToUse:
+                if (_debugMode)
+                    _warpImage.color = _readyToUseColor;
+                break;
+            case AbilityHudEnums.InputDetected:
+                if (_debugMode)
+                    _warpImage.color = _inputDetectedColor;
+                break;
+            case AbilityHudEnums.Used:
+                if (_debugMode)
+                    _warpImage.color = _usedColor;
+                break;
+            case AbilityHudEnums.Failed:
+                if (_debugMode)
+                    _warpImage.color = _failedColor;
+                break;
+        }
+    }
+
+    private void ResidueDisplay(AbilityHudEnums displayType)
+    {
+        switch (displayType)
+        {
+            case AbilityHudEnums.Disabled:
+                _residueImage.color = _disabledColor;
+                break;
+            case AbilityHudEnums.Normal:
+                _residueImage.color = _normalColor;
+                break;
+            case AbilityHudEnums.ReadyToUse:
+                if (_debugMode)
+                    _residueImage.color = _readyToUseColor;
+                break;
+            case AbilityHudEnums.InputDetected:
+                if (_debugMode)
+                    _residueImage.color = _inputDetectedColor;
+                break;
+            case AbilityHudEnums.Used:
+                if (_debugMode)
+                    _residueImage.color = _usedColor;
+                break;
+            case AbilityHudEnums.Failed:
+                if (_debugMode)
+                    _residueImage.color = _failedColor;
+                break;
+        }
+    }
+
+    // Ability HUD Cool-downs
+    // -  These are controlled by PlayerToHud.cs
+    // -  CooldownDelta goes from 0 to 1. 0 means the cooldown just started, 1 means the cooldown will end next frame
+    // -  TODO: Note: I assume that FillBoltStatusBar(0.5f) is an early implementation of a cooldown bar, does this work better for the purposes at hand?
+    // -              AbilityCooldown already accesses the animation data and cooldown duration timers through the CooldownDelta.
+
+    private void BoltCooldown(float cooldownDelta)
+    {
+        if (_debugMode)
+            _boltImage.color = _cooldownColor.Evaluate(cooldownDelta);
+    }
+
+    private void WarpCooldown(float cooldownDelta)
+    {
+        if (_debugMode)
+            _warpImage.color = _cooldownColor.Evaluate(cooldownDelta);
+    }
+
+    private void ResidueCooldown(float cooldownDelta)
+    {
+        if (_debugMode)
+            _residueImage.color = _cooldownColor.Evaluate(cooldownDelta);
+    }
+
+    /* TODO: I did not want to delete any of your code, so I just commented it out.
 
     private void CastBolt(bool actionSuccessful)
     {
@@ -177,6 +308,8 @@ public class HUD : MonoBehaviour
         if (_debugMode)
             _residueImage.color = isReady ? _readyToUseColor : _normalColor;
     }
+
+    */
 
     private void ChangeXhairColor(InteractableEnums target)
     {
