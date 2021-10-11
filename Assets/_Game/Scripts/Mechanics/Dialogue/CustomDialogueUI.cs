@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 The MIT License (MIT)
 
@@ -331,9 +331,28 @@ namespace Yarn.Unity {
             if (textSpeed > 0.0f) {
                 // Display the line one character at a time
                 var stringBuilder = new StringBuilder ();
+                int mkupChars = 0;
+                bool markup = false;
 
                 foreach (char c in text) {
                     stringBuilder.Append (c);
+
+                    // Hold line update until text affect is fully appended
+                    if(c == '<') {
+                        mkupChars = 0;
+                        markup = true;
+                        continue;
+                    }
+                    if(markup && mkupChars < 4) {
+                        mkupChars++;
+                        
+                        if(c == '>')
+                            markup = false;
+                        else
+                            continue;
+                    }
+                    else { markup = false; }
+
                     onLineUpdate?.Invoke(stringBuilder.ToString ());
                     if (userRequestedNextLine) {
                         // We've requested a skip of the entire line.

@@ -44,7 +44,7 @@ public class DialogueManager : MonoBehaviour
     string RandomTedTalk()
     {
         string nodeString = "TedTalk";
-        nodeString += Random.Range(1, 18);
+        nodeString += Random.Range(1, 20);
         return nodeString;
     }
 
@@ -66,7 +66,6 @@ public class DialogueManager : MonoBehaviour
 
     public void SetText(string textAndSpeaker)
     {
-        Debug.Log(textAndSpeaker);
         string[] fullLine = textAndSpeaker.Split(':');
         string text = fullLine[1].Trim(' ');
         string name = fullLine[0];
