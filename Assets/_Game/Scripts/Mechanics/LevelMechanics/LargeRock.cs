@@ -5,7 +5,7 @@ using System;
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing
 /// Inherits from Warp Residue Interactable, and overrides the WarpBoltImpact() to swap itself with the player
-public class Temp_LargeRock : WarpResidueInteractable
+public class LargeRock : WarpResidueInteractable
 {
     // A simple offset for the teleportation location
     [SerializeField] private Vector3 _teleportOffset = Vector3.up;
