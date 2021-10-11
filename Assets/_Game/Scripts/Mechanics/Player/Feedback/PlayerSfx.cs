@@ -1,4 +1,5 @@
-﻿using AudioSystem;
+﻿using System;
+using AudioSystem;
 using UnityEngine;
 
 public class PlayerSfx : MonoBehaviour
@@ -9,29 +10,36 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _activateResidueSound = null;
     [SerializeField] private SFXOneShot _objectImpactResidueSound = null;
 
+    public void OnBoltReady()
+    {
+    }
 
-    public void CastBolt()
+    public void OnBoltUsed()
     {
         if (_boltCastSound != null) {
             _boltCastSound.PlayOneShot(transform.position);
         }
     }
 
-    public void ActivateWarp()
+    public void OnWarpReady()
+    {
+    }
+
+    public void OnWarpUsed()
     {
         if (_activateWarpSound != null) {
             _activateWarpSound.PlayOneShot(transform.position);
         }
     }
 
-    public void ResidueReady()
+    public void OnResidueReady()
     {
         if (_objectImpactResidueSound != null) {
             _objectImpactResidueSound.PlayOneShot(transform.position);
         }
     }
 
-    public void ActivateResidue()
+    public void OnResidueUsed()
     {
         if (_activateResidueSound != null) {
             _activateResidueSound.PlayOneShot(transform.position);
