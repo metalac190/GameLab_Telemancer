@@ -13,12 +13,16 @@ namespace Mechanics.Player
         [SerializeField] private string _useResidueTrigger = "interactTrigger";
         [SerializeField] private string _boltDissipateTrigger = "dissipateTrigger";
 
+        private bool _missingAnimator;
         private float _fallTime;
 
         private void Awake()
         {
             if (_animator == null) {
                 _animator = GetComponentInChildren<Animator>();
+                if (_animator == null) {
+                    _missingAnimator = true;
+                }
             }
         }
 
@@ -74,6 +78,7 @@ namespace Mechanics.Player
 
         public void OnCastBolt()
         {
+            if (_missingAnimator) return;
             _animator.SetTrigger(_castBoltTrigger);
             _animator.ResetTrigger(_warpTrigger);
             _animator.ResetTrigger(_useResidueTrigger);
@@ -82,26 +87,31 @@ namespace Mechanics.Player
 
         public void OnUseResidue()
         {
+            if (_missingAnimator) return;
             _animator.SetTrigger(_useResidueTrigger);
         }
 
         public void OnInstantWarp()
         {
+            if (_missingAnimator) return;
             _animator.SetTrigger(_warpTrigger);
         }
 
         public void OnInteractableWarp()
         {
+            if (_missingAnimator) return;
             _animator.SetTrigger(_useResidueTrigger);
         }
 
         public void OnNoAction()
         {
+            if (_missingAnimator) return;
             _animator.SetTrigger(_boltDissipateTrigger);
         }
 
         public void ResetToIdle()
         {
+            if (_missingAnimator) return;
             // Resets all triggers and returns animation to idle
             // For instance, after warping or after landing a fall
             _animator.ResetTrigger(_castBoltTrigger);

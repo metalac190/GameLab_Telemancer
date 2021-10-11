@@ -34,6 +34,11 @@ namespace Mechanics.Player
             }
         }
 
+        private void OnEnable()
+        {
+            AnimatorNullCheck();
+        }
+
         #endregion
 
         private AbilityStateEnum _boltState;
@@ -122,6 +127,11 @@ namespace Mechanics.Player
 
             _playerToHud.OnBoltAction(action);
 
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnCastBolt();
+            }
+
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnBoltUsed();
                 _playerVfx.OnBoltUsed();
@@ -172,6 +182,11 @@ namespace Mechanics.Player
 
             _playerToHud.OnWarpAction(action);
 
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnInstantWarp();
+            }
+
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnWarpUsed();
                 _playerVfx.OnWarpUsed();
@@ -221,6 +236,11 @@ namespace Mechanics.Player
 
             _playerToHud.OnResidueAction(action);
 
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnUseResidue();
+            }
+
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnResidueUsed();
                 _playerVfx.OnResidueUsed();
@@ -243,6 +263,24 @@ namespace Mechanics.Player
             _playerToHud.SetResidueCooldown(0);
             _residueCooldown = false;
             _playerToHud.UpdateResidueState(_residueState);
+        }
+
+        #endregion
+
+        #region Null Checks
+
+        private bool _missingAnimator;
+
+        private void AnimatorNullCheck()
+        {
+            if (_playerAnimator != null) return;
+
+            Transform parent = transform.parent;
+            _playerAnimator = parent != null ? parent.GetComponentInChildren<PlayerAnimator>() : GetComponentInChildren<PlayerAnimator>();
+            if (_playerAnimator == null) {
+                Debug.LogWarning("PlayerFeedback missing Player Animator");
+                _missingAnimator = true;
+            }
         }
 
         #endregion

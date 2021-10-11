@@ -2,7 +2,6 @@
 using Mechanics.WarpBolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Android;
 
 namespace Mechanics.Player
 {
@@ -324,7 +323,7 @@ namespace Mechanics.Player
             _playerFeedback.SetResidueState(AbilityStateEnum.Ready);
         }
 
-        private void OnWarpDissipate()
+        private void OnWarpDissipate(bool residueReady)
         {
             _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
         }
@@ -373,7 +372,6 @@ namespace Mechanics.Player
         private void NullChecks()
         {
             StateNullCheck();
-            AnimatorNullCheck();
             FeedbackNullCheck();
             WarpBoltNullCheck();
             TransformNullCheck();

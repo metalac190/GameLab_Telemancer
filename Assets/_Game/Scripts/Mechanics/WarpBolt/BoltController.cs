@@ -166,11 +166,6 @@ namespace Mechanics.WarpBolt
             _timeAlive = 0;
         }
 
-        public bool CanWarp()
-        {
-            return _isAlive;
-        }
-
         // Warp to the bolt's position
         public bool OnWarp()
         {
