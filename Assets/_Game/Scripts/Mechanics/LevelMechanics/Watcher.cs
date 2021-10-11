@@ -8,6 +8,9 @@ public class Watcher : MonoBehaviour
     [Header("Watcher")]
     [SerializeField] private float _viewRadius = 5f;
     [SerializeField] [Range(1, 179)] private float _viewAngle = 75f;
+    [SerializeField] private bool _DeactivateBolt = true;
+    [SerializeField] private bool _DeactivateWarp = false;
+    [SerializeField] private bool _DeactivateResidue = false;
 
     [Header("Object References DO NOT CHANGE")]
     [SerializeField] private GameObject _visionSource = null;
@@ -98,14 +101,24 @@ public class Watcher : MonoBehaviour
 
     private void OnPlayerEnteredView()
     {
-        Debug.Log("Player in view");
-        _playerState.SetWarpUnlock(false);
+        //Debug.Log("Player in view");
+        if(_DeactivateBolt)
+            _playerState.SetBoltUnlock(false);
+        if (_DeactivateWarp)
+            _playerState.SetWarpUnlock(false);
+        if (_DeactivateResidue)
+            _playerState.SetResidueUnlock(false);
     }
 
     private void OnPlayerExitedView()
     {
-        Debug.Log("Player Not in view");
-        _playerState.SetWarpUnlock(true);
+        //Debug.Log("Player Not in view");
+        if (_DeactivateBolt)
+            _playerState.SetBoltUnlock(true);
+        if (_DeactivateWarp)
+            _playerState.SetWarpUnlock(true);
+        if (_DeactivateResidue)
+            _playerState.SetResidueUnlock(true);
     }
 
     private Vector3 DirFromAnglesXZ(float angleInDegrees, bool angleIsGlobal)

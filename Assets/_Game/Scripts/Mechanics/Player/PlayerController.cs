@@ -35,7 +35,6 @@ public class PlayerController : MonoBehaviour {
 
     [Header("General Control")]
     public UnityEvent OnTeleport;
-    public UnityEvent OnPlayerDeath;
     public bool grounded;
     public bool flag_cantAct;
 
@@ -59,7 +58,6 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnPlayerDeath.AddListener(() => { flag_cantAct = true; });
         OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
     }
 
@@ -132,12 +130,19 @@ public class PlayerController : MonoBehaviour {
 
     public void Teleport(Transform other, Vector3 offset = default) {
         // TODO: Swap teleport player and other transform
-        Vector3 oldPlayerPos = transform.position;
 
         controller.enabled = false;
         OnTeleport.Invoke();
-        transform.position = other.position + offset;
-        other.position = oldPlayerPos;
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        if(collider) {
+            Vector3 oldPlayerPos = controller.bounds.min;
+            transform.position = collider.bounds.min;
+            other.position = oldPlayerPos;
+        } else {
+            Vector3 oldPlayerPos = transform.position;
+            transform.position = other.position + offset;
+            other.position = oldPlayerPos;
+        }
         controller.enabled = true;
 
         Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
