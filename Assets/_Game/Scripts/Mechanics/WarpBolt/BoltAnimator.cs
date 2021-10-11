@@ -6,6 +6,7 @@ namespace Mechanics.WarpBolt
     {
         [SerializeField] private float _maxDistanceToGround = 5;
         [SerializeField] private Transform _groundReference = null;
+        [SerializeField] private bool _maintainLastOffset = false;
         [SerializeField] private Vector3 _defaultOffset = Vector3.down;
         [SerializeField] private float _smoothStep = 5;
 
@@ -29,7 +30,9 @@ namespace Mechanics.WarpBolt
             Physics.Raycast(transform.position, Vector3.down, out var hit, _maxDistanceToGround);
 
             if (hit.collider == null) {
-                _currentOffset = Vector3.Lerp(_currentOffset, _defaultOffset, _smoothStep * Time.deltaTime);
+                if (!_maintainLastOffset) {
+                    _currentOffset = Vector3.Lerp(_currentOffset, _defaultOffset, _smoothStep * Time.deltaTime);
+                }
                 _groundReference.position = transform.position + _currentOffset;
                 return;
             }
