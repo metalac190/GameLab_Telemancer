@@ -14,7 +14,7 @@ namespace Mechanics.Player
         [SerializeField] private bool _unlockedWarp = false;
         [SerializeField] private bool _unlockedResidue = false;
         // Temporary Checkpoint holder -- TODO: Make actual check points and a respawn script
-        [SerializeField] private Vector3 _lastCheckpoint = Vector3.zero;
+        [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
         [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
         [SerializeField] private float _respawnTime = 3;
         [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
@@ -40,6 +40,7 @@ namespace Mechanics.Player
 
         private void Start()
         {
+            _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
             UIEvents.current.OnPauseGame += GamePaused;
             UpdateUnlocks();
@@ -86,6 +87,11 @@ namespace Mechanics.Player
         {
             _isAlive = true;
             _onPlayerRespawn.Invoke();
+
+            if (CheckpointManager.current == null) {
+                _playerController.TeleportToPosition(_defaultCheckpoint);
+                return;
+            }
 
             _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
             // TODO: This might need to be moved to the player controller script?
