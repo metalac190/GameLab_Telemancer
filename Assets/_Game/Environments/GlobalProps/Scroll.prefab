@@ -1752,6 +1752,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3783172549598201832}
   - component: {fileID: 5482659377243933359}
+  - component: {fileID: 1345650683}
   m_Layer: 0
   m_Name: Scroll
   m_TagString: Untagged
@@ -1792,6 +1793,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.9739298, y: 5.4753685, z: 5.7326937}
   m_Center: {x: -0.01521779, y: 2.7374601, z: -0.7989277}
+--- !u!114 &1345650683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4596864392783404370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c378c80a560d3044847377cd008e02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _disintigrateVFX: {fileID: 368734681774555535}
+  _chainsGroup: {fileID: 3321825856261824764}
+  _scroll: {fileID: 4596864392410057993}
+  _scrollUnlock: 0
 --- !u!1 &4803568452404946670
 GameObject:
   m_ObjectHideFlags: 0
@@ -3197,6 +3214,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb01bd8dbf4bfb841b0277c0570ecdc9, type: 3}
+--- !u!1 &4596864392410057993 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bb01bd8dbf4bfb841b0277c0570ecdc9,
+    type: 3}
+  m_PrefabInstance: {fileID: 3677820346992652376}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3783172549963028403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bb01bd8dbf4bfb841b0277c0570ecdc9,
