@@ -129,23 +129,27 @@ public class PlayerController : MonoBehaviour {
     #region Teleport & Movement
 
     public void Teleport(Transform other, Vector3 offset = default) {
-        // TODO: Swap teleport player and other transform
+        StartCoroutine(TeleportWithTransform(other, offset));
 
+        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+    }
+
+    private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
         controller.enabled = false;
         OnTeleport.Invoke();
+
         BoxCollider collider = other.GetComponent<BoxCollider>();
         if(collider) {
             Vector3 oldPlayerPos = controller.bounds.min;
-            transform.position = collider.bounds.min;
+            transform.position = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
             other.position = oldPlayerPos;
         } else {
             Vector3 oldPlayerPos = transform.position;
             transform.position = other.position + offset;
             other.position = oldPlayerPos;
         }
+        yield return null;
         controller.enabled = true;
-
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
@@ -156,6 +160,8 @@ public class PlayerController : MonoBehaviour {
 
         Debug.Log("Teleport to raw position " + other);
     }
+
+    // -------------------
 
     private IEnumerator Float() {
         if(!floating) {
