@@ -1,4 +1,4 @@
-/*
+﻿/*
 
 The MIT License (MIT)
 
@@ -63,6 +63,18 @@ namespace Yarn.Unity {
         /// </summary>
         [Tooltip("How quickly to show the text, in seconds per character")]
         public float textSpeed = 0.025f;
+
+        /// <summary>
+        /// Whether or not to pause typing for a set time upon encountering an end mark
+        /// </summary>
+        [Tooltip("Whether or not to pause typing for a set time upon encountering an end mark")]
+        public bool endMarkPause = true;
+
+        /// <summary>
+        /// How long to pause typing after encountering an end mark
+        /// </summary>
+        [Tooltip("How long to pause the text display after encountering an end mark")]
+        public float endMarkPauseAmt = 0.2f;
 
         /// <summary>
         /// The buttons that let the user choose an option.
@@ -360,7 +372,16 @@ namespace Yarn.Unity {
                         onLineUpdate?.Invoke(text);
                         break;
                     }
-                    yield return new WaitForSeconds (textSpeed);
+
+                    // Delay typing if end mark encountered
+                    if (endMarkPause)
+                    {
+                        if (c == ',' || c == '.' || c == '?' || c == '!') { 
+                            yield return new WaitForSeconds(endMarkPauseAmt);
+                        }
+                        else { yield return new WaitForSeconds(textSpeed); }
+                    }
+                    else { yield return new WaitForSeconds(textSpeed); }
                 }
             } else {
                 // Display the entire line immediately if textSpeed <= 0
