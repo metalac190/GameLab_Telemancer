@@ -47,6 +47,13 @@ public class MovingPlatform : LevelActivatable
         StartCoroutine(MoveToStart());
     }
 
+    protected override void OnReset()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+
     // ---------------------------------------------------------------------------------------------------
     #region Movement
     private void MovePlatform()

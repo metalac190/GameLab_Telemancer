@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public abstract class LevelActivatable : MonoBehaviour
 {
@@ -30,6 +31,16 @@ public abstract class LevelActivatable : MonoBehaviour
             OnActivate();
         else
             OnDeactivate();
+    }
+
+    private void OnEnable()
+    {
+        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     // any pressure plate or switch should run this on start so the activatable is aware the switch exists
@@ -77,4 +88,12 @@ public abstract class LevelActivatable : MonoBehaviour
 
     protected abstract void OnActivate();
     protected abstract void OnDeactivate();
+    protected abstract void OnReset();
+
+
+    private void OnPlayerRespawn()
+    {
+        _isCurentlyActive = _isActiveOnStartup;
+        OnReset();
+    }
 }

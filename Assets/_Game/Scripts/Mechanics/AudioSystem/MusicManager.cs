@@ -62,6 +62,7 @@ namespace AudioSystem
             else
             {
                 instance = this;
+                DontDestroyOnLoad(instance.gameObject);
             }
 
             SetupMusicPlayers();
@@ -103,13 +104,13 @@ namespace AudioSystem
             }
         }
 
-        public void StopMusic(float fadeTime)
+        public void StopMusic()
         {
             if (activeMusicEvent == null)
                 return;
 
+            ActivePlayer.Stop(activeMusicEvent.StopSongFadeOutTime);
             activeMusicEvent = null;
-            ActivePlayer.Stop(fadeTime);
         }
 
         public void IncreaseLayerIndex(float fadeTime)
@@ -121,6 +122,14 @@ namespace AudioSystem
             // Are these needed?
             if (activeMusicEvent == null)
                 return;
+
+            // If next layer is empty, stop it from playing
+            if (activeMusicEvent.MusicLayers[newLayerIndex] == null)
+            {
+                Debug.LogWarning("MusicEvent.IncreaseLayerIndex(): Reached empty music layer at layer "
+                    + newLayerIndex + ". Can go no further.");
+                return;
+            }
 
             // Trying to increase it but already at max leads to this
             if (newLayerIndex == activeLayerIndex)
