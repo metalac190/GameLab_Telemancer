@@ -38,11 +38,11 @@ public class AudioTester : MonoBehaviour
         {
             MusicManager.Instance.IncreaseLayerIndex(increaseMusicLayerTransitionTime);
         }
-        if (Keyboard.current.dKey.wasPressedThisFrame)
+        if (Keyboard.current.aKey.wasPressedThisFrame)
         {
             MusicManager.Instance.StopMusic();
         }
-        if (Keyboard.current.aKey.wasPressedThisFrame)
+        if (Keyboard.current.dKey.wasPressedThisFrame)
         {
             MusicManager.Instance.SetLayerIndex(setMusicLayerNumber,
                 setMusicLayerTransitionTime);

@@ -56,5 +56,71 @@ namespace AudioSystem
 
             MusicManager.Instance.PlayMusic(this, CrossfadeTime);
         }
+
+        public void Stop()
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.StopMusic();
+        }
+
+        public void IncreaseLayerIndex(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.IncreaseLayerIndex(fadeTime);
+        }
+
+        public void DecreaseLayerIndex(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.DecreaseLayerIndex(fadeTime);
+        }
+
+        public void SetLayerIndex0(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(0, fadeTime);
+        }
+
+        public void SetLayerIndex1(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(1, fadeTime);
+        }
+
+        public void SetLayerIndex2(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(2, fadeTime);
+        }
     }
 }
