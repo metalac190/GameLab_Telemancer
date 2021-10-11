@@ -6,7 +6,23 @@ using UnityEngine;
 /// </summary>
 public class UIEvents : MonoBehaviour
 {
-    public static UIEvents current;
+    private static UIEvents _current;
+
+    // OnEnable and Awake can happen simultaneously, causing errors
+    // This is a hotfix to make calling current Find this object if it is null
+    // Was a major issue in Level 1
+    // TODO: Actual fix, this was a hotfix by Brandon
+    public static UIEvents current
+    {
+        get
+        {
+            if (_current == null) {
+                _current = FindObjectOfType<UIEvents>();
+            }
+            return _current;
+        }
+        set => _current = value;
+    }
 
     private void Awake()
     {
@@ -93,7 +109,7 @@ public class UIEvents : MonoBehaviour
     {
         OnResidueCooldown?.Invoke(cooldownDelta);
     }
-    
+
     public event Action<InteractableEnums> OnChangeXhairColor;
 
     public void ChangeXhairColor(InteractableEnums type)
