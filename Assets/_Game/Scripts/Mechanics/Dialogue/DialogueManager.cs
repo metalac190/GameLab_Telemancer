@@ -4,16 +4,21 @@ using UnityEngine;
 using Mechanics.Player;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueRunner runner;
-    [SerializeField] private PlayerController player;
+    [SerializeField] private PlayerState player;
     [SerializeField] private float interactionRadius = 5;
+    [SerializeField] private TextMeshProUGUI dialogueText, speaker;
     void Start()
     {
+        // Null checks
         if (runner == null)
             runner = FindObjectOfType<DialogueRunner>();
+        if (player == null)
+            player = FindObjectOfType<PlayerState>();
     }
 
     public void CheckForNearbyNPC(InputAction.CallbackContext value)
@@ -31,15 +36,22 @@ public class DialogueManager : MonoBehaviour
             if (target != null)
             {
                 // Kick off the dialogue at this node.
-                runner.StartDialogue(target.talkToNode);
+                runner.StartDialogue(RandomTedTalk());
             }
         }
+    }
+
+    string RandomTedTalk()
+    {
+        string nodeString = "TedTalk";
+        nodeString += Random.Range(1, 20);
+        return nodeString;
     }
 
     public void DialogueStart()
     {
         // Remove all player control when we're in dialogue
-        player.flag_cantAct = true;
+        player.GamePaused(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -47,8 +59,18 @@ public class DialogueManager : MonoBehaviour
     public void DialogueEnd()
     {
         // Allow player control once dialogue is finished
-        player.flag_cantAct = false;
+        player.GamePaused(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void SetText(string textAndSpeaker)
+    {
+        string[] fullLine = textAndSpeaker.Split(':');
+        string text = fullLine[1].Trim(' ');
+        string name = fullLine[0];
+
+        dialogueText.text = text;
+        speaker.text = name;
     }
 }
