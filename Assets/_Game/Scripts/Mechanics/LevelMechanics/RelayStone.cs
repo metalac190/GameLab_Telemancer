@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RelayStone : MonoBehaviour, IWarpInteractable
+public class RelayStone : WarpResidueInteractable
 {
     [Header("Relay Stone")]
     [SerializeField] private RelayStone _relayPair = null;
@@ -11,7 +11,7 @@ public class RelayStone : MonoBehaviour, IWarpInteractable
     [Header("Debuging")]
     [SerializeField] private float _trajectoryRayGizmo = 5;
 
-    public bool OnWarpBoltImpact(BoltData data)
+    public override bool OnWarpBoltImpact(BoltData data)
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
@@ -20,23 +20,6 @@ public class RelayStone : MonoBehaviour, IWarpInteractable
 
         // Don't dissipate the warp bolt!
         return false;
-    }
-
-    public bool OnSetWarpResidue(BoltData data)
-    {
-        // Ignore Warp Residue, instead call WarpBoltImpact
-        OnWarpBoltImpact(data);
-
-        // Don't dissipate the warp bolt!
-        return false;
-    }
-
-    // Warp Residue doesn't matter for relay stone
-    public void OnActivateWarpResidue(BoltData data)
-    {
-    }
-    public void OnDisableWarpResidue()
-    {
     }
 
     
