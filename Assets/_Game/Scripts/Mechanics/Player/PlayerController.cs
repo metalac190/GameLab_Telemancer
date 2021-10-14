@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Horizontal Movement")]
     [SerializeField] [Range(0, 20)] private float moveSpeed;
-    [Tooltip("WARNING: Not yet implemented, currently does nothing")]
-    [SerializeField] [Range(0, 50)] private float groundAcceleration;
     [SerializeField] [Range(0, 50)] private float airAcceleration;
 
     private Vector3 moveVelocity;
