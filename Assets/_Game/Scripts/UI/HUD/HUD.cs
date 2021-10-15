@@ -29,6 +29,11 @@ public class HUD : MonoBehaviour
 
     [Header("Respawn Menu")] 
     [SerializeField] private GameObject _respawnMenu;
+    
+    [Header("Scroll Acquired Animation")] 
+    [SerializeField] private GameObject _scrollAcquiredScreen;
+    [SerializeField] private Text _spellNameTxt;
+    [SerializeField] private Text _spellDescTxt;
 
     [Header("Area Notification")] 
     [SerializeField] private Text _chapterNumber;
@@ -75,6 +80,10 @@ public class HUD : MonoBehaviour
 
         UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
         UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
+
+        UIEvents.current.OnAcquireWarpScroll += () => DisplayScrollAcquiredScreen("WARP");
+        UIEvents.current.OnAcquireResidueScroll += () => DisplayScrollAcquiredScreen("RESIDUE");
+        UIEvents.current.OnCloseScrollAcquiredScreen += () => DisplayScrollAcquiredScreen("CLOSE");
     }
 
     private void Start()
@@ -84,7 +93,7 @@ public class HUD : MonoBehaviour
             
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
-        //UIEvents.current.NotifyChapter("CHAPTER III", "gm_flatgrass");
+        _scrollAcquiredScreen.SetActive(false);
     }
 
     private void DisplayDebugHUD(bool isEnabled)
@@ -259,58 +268,6 @@ public class HUD : MonoBehaviour
             _residueImage.color = _cooldownColor.Evaluate(cooldownDelta);
     }
 
-    /* TODO: I did not want to delete any of your code, so I just commented it out.
-
-    private void CastBolt(bool actionSuccessful)
-    {
-        // Update debug hud
-        if (_debugMode)
-            StartCoroutine(InputDebug(_boltImage, actionSuccessful));
-        
-        if (!actionSuccessful) return;
-        
-        // Play status bar animation
-        StartCoroutine(FillBoltStatusBar(0.5f)); //TODO: add reference to bolt cast duration
-    }
-
-    private void BoltReady()
-    {
-        // Debug HUD coloring
-        if (_debugMode)
-            _boltImage.color = _readyToUseColor;
-
-    }
-
-    private void CastWarp(bool actionSuccessful)
-    {
-        // Update debug hud
-        if (_debugMode)
-            StartCoroutine(InputDebug(_warpImage, actionSuccessful));
-    }
-    
-    private void WarpReady(bool isReady)
-    {
-        // Debug HUD coloring
-        if (_debugMode)
-            _warpImage.color = isReady ? _readyToUseColor : _normalColor;
-    }
-    
-    private void CastResidue(bool actionSuccessful)
-    {
-        // Update debug hud
-        if (_debugMode)
-            StartCoroutine(InputDebug(_residueImage, actionSuccessful));
-    }
-    
-    private void ResidueReady(bool isReady)
-    {
-        // Debug HUD coloring
-        if (_debugMode)
-            _residueImage.color = isReady ? _readyToUseColor : _normalColor;
-    }
-
-    */
-
     private void ChangeXhairColor(InteractableEnums target)
     {
         // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
@@ -345,6 +302,30 @@ public class HUD : MonoBehaviour
         }
         _chargeBarL.fillAmount = SB_MaxPercent;
         _chargeBarR.fillAmount = SB_MaxPercent;
+    }
+
+    private void DisplayScrollAcquiredScreen(string scroll)
+    {
+        switch (scroll)
+        {
+            case "WARP":
+                _spellNameTxt.text = "WARP BOLT";
+                _spellDescTxt.text =
+                    "Press [LMB] to cast a swirling ball of energy that has teleporting properties depending on the object it.";
+                _debugSpellsPnl.SetActive(false);
+                _scrollAcquiredScreen.SetActive(true);
+                break;
+            case "RESIDUE":
+                _spellNameTxt.text = "WARP RESIDUE";
+                _spellDescTxt.text = "Lorem Ipsum";
+                _debugSpellsPnl.SetActive(false);
+                _scrollAcquiredScreen.SetActive(true);
+                break;
+            default:
+                _debugSpellsPnl.SetActive(_debugMode);
+                _scrollAcquiredScreen.SetActive(false);
+                break;
+        }
     }
 
     private IEnumerator PlayChapterNotification(string chapter, string title)

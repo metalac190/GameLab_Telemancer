@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,8 +41,10 @@ public class CameraController : MonoBehaviour {
     }
 
     public void UpdateSettings() {
-        mainCamera.fieldOfView = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString());
-        sensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
+        float newFov = Mathf.Clamp(PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString()), 60, Mathf.Infinity);
+        mainCamera.fieldOfView = newFov;
+        float newSensitivity = Mathf.Clamp(PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString()), 1, Mathf.Infinity);
+        sensitivity = newSensitivity;
     }
 
 }
