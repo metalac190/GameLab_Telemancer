@@ -332,8 +332,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unlockedBolt: 1
-  _unlockedWarp: 0
-  _unlockedResidue: 0
+  _unlockedWarp: 1
+  _unlockedResidue: 1
   _defaultCheckpoint: {x: 0, y: 0, z: 0}
   _onPlayerDeath:
     m_PersistentCalls:
@@ -860,10 +860,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 6445537369078446938}
-  _castBoltTrigger: pointTrigger
-  _warpTrigger: snapTrigger
-  _useResidueTrigger: interactTrigger
-  _boltDissipateTrigger: dissipateTrigger
+  _petToadTrigger: pet_toad
+  _startledTrigger: startled
+  _idleTwitchTrigger: idle_twitch
+  _jumpTrigger: jump
+  _airTimeFloat: air_time
+  _landTrigger: land
+  _residueUnlockedBool: residue_unlocked
+  _castBoltTrigger: point_cast
+  _warpTrigger: snap_teleport
+  _useResidueTrigger: interact_hitInteractable
+  _boltDissipateTrigger: dissipate
 --- !u!1 &8165399778769351662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1022,7 +1029,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 86e12bd5c7997204b86a0da7ea4b72a7,
         type: 3}
       propertyPath: m_Name
-      value: September@None
+      value: September
       objectReference: {fileID: 0}
     - target: {fileID: 3156926315056494749, guid: 86e12bd5c7997204b86a0da7ea4b72a7,
         type: 3}
