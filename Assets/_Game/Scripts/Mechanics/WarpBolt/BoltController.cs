@@ -109,7 +109,7 @@ namespace Mechanics.WarpBolt
 
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
-            if (timer == 0) {
+            if (timer == 0 && !_isResidue) {
                 FinishRedirect(position, rotation);
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
