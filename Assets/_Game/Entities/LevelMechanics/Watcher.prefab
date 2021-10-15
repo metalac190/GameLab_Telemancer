@@ -110,6 +110,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _viewRadius: 10
   _viewAngle: 75
+  _DeactivateBolt: 1
+  _DeactivateWarp: 0
+  _DeactivateResidue: 0
   _visionSource: {fileID: 3101615462625498744}
   _visionLight: {fileID: 3101615464042938393}
   _trigger: {fileID: 3101615463697260099}
@@ -269,7 +272,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.9528302, g: 0.24719654, b: 0.69615227, a: 1}
-  m_Intensity: 15000000
+  m_Intensity: 1500000
   m_Range: 10
   m_SpotAngle: 75
   m_InnerSpotAngle: 1
@@ -338,7 +341,7 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 1
   m_AreaLightShape: 0
-  m_Intensity: 150000
+  m_Intensity: 15000
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 10
   m_InnerSpotPercent: 90
