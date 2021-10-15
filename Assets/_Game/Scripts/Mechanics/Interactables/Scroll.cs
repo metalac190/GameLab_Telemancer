@@ -78,6 +78,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         // load next level
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);
+        // TODO: Add level switch code here 
 
     }
 }
