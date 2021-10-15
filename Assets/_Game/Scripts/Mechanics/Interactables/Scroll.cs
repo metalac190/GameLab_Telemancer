@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 
 /// <summary>
@@ -60,8 +61,24 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         
         // HUD - Show ability unlocked 
         if (_scrollUnlock == unlockEnum.WarpBolt)
+        {
             UIEvents.current.UnlockWarpAbility(true);
+            UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
+        }
         else
+        {
             UIEvents.current.UnlockResidueAbility(true);
+            UIEvents.current.AcquireResidueScroll();
+        }
+        
+        // Hack fraud way of waiting for player input
+        while (!Keyboard.current.eKey.wasPressedThisFrame)
+            yield return null;
+        
+        // load next level
+        UIEvents.current.CloseScrollAcquiredScreen();
+        UIEvents.current.PauseGame(false);
+        // TODO: Add level switch code here 
+
     }
 }
