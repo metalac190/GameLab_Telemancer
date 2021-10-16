@@ -15,6 +15,7 @@ namespace Mechanics.Player
         [SerializeField] private string _idleTwitchTrigger = "idle_twitch";
         [Header("Jumping / Landing Parameters")]
         [SerializeField] private string _jumpTrigger = "jump";
+        [SerializeField] private string _fallTrigger = "fall";
         [SerializeField] private string _airTimeFloat = "air_time";
         [SerializeField] private string _landTrigger = "land";
         [Header("Casting Parameters")]
@@ -61,6 +62,13 @@ namespace Mechanics.Player
             if (_missingAnimator) return;
             ResetActionTriggers();
             _animator.SetTrigger(_jumpTrigger);
+            _jumpTime = Time.time;
+        }
+
+        public void OnFall()
+        {
+            if (_missingAnimator) return;
+            _animator.SetTrigger(_fallTrigger);
             _jumpTime = Time.time;
         }
 
@@ -144,6 +152,7 @@ namespace Mechanics.Player
             _animator.ResetTrigger(_startledTrigger);
             _animator.ResetTrigger(_idleTwitchTrigger);
             _animator.ResetTrigger(_jumpTrigger);
+            _animator.ResetTrigger(_fallTrigger);
             _animator.ResetTrigger(_landTrigger);
         }
 

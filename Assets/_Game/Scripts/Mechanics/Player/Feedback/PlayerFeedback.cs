@@ -10,7 +10,7 @@ namespace Mechanics.Player
     [RequireComponent(typeof(PlayerSfx), typeof(PlayerVfx), typeof(PlayerToHud))]
     public class PlayerFeedback : MonoBehaviour
     {
-        [SerializeField] private PlayerAnimator _playerAnimator = null;
+        [SerializeField] private PlayerAnimator _playerAnimator;
 
         #region Feedback Script References
 
@@ -49,6 +49,9 @@ namespace Mechanics.Player
         private bool _warpCooldown;
         private bool _residueCooldown;
 
+        private bool _isJumping;
+        private bool _isPlayerGrounded;
+
         /* Player Crosshair
          * - Looking at nothing (empty air)
          * - Looking at object (not interactable)
@@ -82,6 +85,47 @@ namespace Mechanics.Player
                 _residueState = AbilityStateEnum.Disabled;
             } else if (_residueState == AbilityStateEnum.Disabled) {
                 SetResidueState(AbilityStateEnum.Idle, true);
+            }
+        }
+
+        #endregion
+
+        #region Player Movement
+
+        // Player jumped
+        public void OnPlayerJump()
+        {
+            _isJumping = true;
+            _playerSfx.OnPlayerLand();
+            _playerAnimator.OnJump();
+        }
+
+        // Player walked off a platform. No longer grounded
+        public void OnPlayerFall()
+        {
+            if (_isJumping) return;
+            _playerAnimator.OnFall();
+        }
+
+        // Player was falling and hit ground
+        public void OnPlayerLand()
+        {
+            _isJumping = false;
+            _playerSfx.OnPlayerLand();
+            _playerAnimator.OnLand();
+        }
+
+        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
+        {
+            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
+
+            if (_isPlayerGrounded != isGrounded) {
+                _isPlayerGrounded = isGrounded;
+                if (isGrounded) {
+                    OnPlayerLand();
+                } else {
+                    OnPlayerFall();
+                }
             }
         }
 

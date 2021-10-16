@@ -96,6 +96,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf1738db16cbbd40816ea22b18556bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _petToadTrigger: pet_toad
+  _startledTrigger: startled
+  _idleTwitchTrigger: idle_twitch
+  _jumpTrigger: jump
+  _airTimeFloat: air_time
+  _landTrigger: land
+  _residueUnlockedBool: residue_unlocked
+  _castBoltTrigger: point_cast
+  _warpTrigger: snap_teleport
+  _interactableTrigger: interact_hitInteractable
+  _boltDissipateTrigger: dissipate
 --- !u!1 &3209979791028676465
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +165,6 @@ MonoBehaviour:
     m_Bits: 1
   _warpBolt: {fileID: 0}
   _playerState: {fileID: 8561128953603784824}
-  _playerAnimator: {fileID: 870152040626436047}
   _playerFeedback: {fileID: 1294586047155214018}
   _boltFirePosition: {fileID: 1939250879272954141}
   _cameraLookDirection: {fileID: 6728132942592493119}
@@ -233,6 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0717b1f337b4a4a8df226874c883f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerAnimator: {fileID: 0}
 --- !u!114 &5994795833423906259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -547,6 +559,7 @@ MonoBehaviour:
   OnTeleport:
     m_PersistentCalls:
       m_Calls: []
+  playerFeedback: {fileID: 1294586047155214018}
   grounded: 0
   flag_cantAct: 0
   infiniteJumps: 0
