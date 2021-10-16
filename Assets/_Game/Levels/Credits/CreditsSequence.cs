@@ -25,9 +25,7 @@ public class CreditsSequence : MonoBehaviour
 
         while (time < _scrollDuration)
         {
-            float t = time / _scrollDuration;
-            t = t * t * (3f - 2f * t);
-            float y = Mathf.Lerp(yInitial, _finalYPosition, t);
+            float y = Mathf.Lerp(yInitial, _finalYPosition, time / _scrollDuration);
             _creditsContainer.transform.localPosition = new Vector3(ccPos.x, y, ccPos.z);
             
             time += Time.deltaTime;
