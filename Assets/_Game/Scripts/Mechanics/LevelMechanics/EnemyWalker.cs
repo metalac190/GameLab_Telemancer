@@ -40,7 +40,8 @@ public class EnemyWalker : MonoBehaviour
 
     private void OnDisable()
     {
-        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+        if (UIEvents.current != null)
+            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     private void OnPlayerRespawn()
