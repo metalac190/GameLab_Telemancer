@@ -69,7 +69,7 @@ namespace Mechanics.Player
             }
             if (!_missingWarpBolt) {
                 _warpBolt.OnResidueReady += OnResidueReady;
-                _warpBolt.OnWarpDissipate += OnWarpDissipate;
+                _warpBolt.OnWarpDissipate += OnBoltDissipate;
             }
             FlagCantAct = false;
         }
@@ -81,7 +81,7 @@ namespace Mechanics.Player
             }
             if (!_missingWarpBolt) {
                 _warpBolt.OnResidueReady -= OnResidueReady;
-                _warpBolt.OnWarpDissipate -= OnWarpDissipate;
+                _warpBolt.OnWarpDissipate -= OnBoltDissipate;
             }
         }
 
@@ -323,9 +323,10 @@ namespace Mechanics.Player
             _playerFeedback.SetResidueState(AbilityStateEnum.Ready);
         }
 
-        private void OnWarpDissipate(bool residueReady)
+        private void OnBoltDissipate(bool residueReady)
         {
             _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
+            _playerFeedback.OnBoltDissipate(residueReady);
         }
 
         #endregion

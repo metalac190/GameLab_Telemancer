@@ -19,10 +19,10 @@ namespace Mechanics.Player
         [SerializeField] private string _airTimeFloat = "air_time";
         [SerializeField] private string _landTrigger = "land";
         [Header("Casting Parameters")]
-        [SerializeField] private string _residueUnlockedBool = "residue_unlocked";
         [SerializeField] private string _castBoltTrigger = "point_cast";
         [SerializeField] private string _warpTrigger = "snap_teleport";
         [SerializeField] private string _interactableTrigger = "interact_hitInteractable";
+        [SerializeField] private string _residueIdleTrigger = "residue_idle";
         [SerializeField] private string _boltDissipateTrigger = "dissipate";
 
         private bool _missingAnimator;
@@ -88,12 +88,6 @@ namespace Mechanics.Player
 
         #region Casting Actions
 
-        public void SetResidueUnlocked(bool unlocked)
-        {
-            if (_missingAnimator) return;
-            _animator.SetBool(_residueUnlockedBool, unlocked);
-        }
-
         public void OnCastBolt()
         {
             if (_missingAnimator) return;
@@ -125,10 +119,16 @@ namespace Mechanics.Player
         }
 
         // Player was holding magic, but the bolt dissipated. Return to Idle
-        public void OnBoltDissipate()
+        public void OnBoltDissipate(bool residueReady)
         {
             if (_missingAnimator) return;
-            _animator.SetTrigger(_boltDissipateTrigger);
+            if (residueReady) {
+                _animator.SetTrigger(_residueIdleTrigger);
+            } else {
+                ResetActionTriggers();
+                ResetCastingTriggers();
+                _animator.SetTrigger(_boltDissipateTrigger);
+            }
         }
 
         #endregion

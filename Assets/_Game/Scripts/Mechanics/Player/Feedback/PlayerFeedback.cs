@@ -52,6 +52,8 @@ namespace Mechanics.Player
         private bool _isJumping;
         private bool _isPlayerGrounded;
 
+        #region Crosshair
+
         /* Player Crosshair
          * - Looking at nothing (empty air)
          * - Looking at object (not interactable)
@@ -59,12 +61,61 @@ namespace Mechanics.Player
          * - Looking at ted (can talk to)
          */
 
-        #region Crosshair
-
         public void OnCrosshairColorChange(InteractableEnums type)
         {
             _playerToHud.OnHudColorChange(type);
         }
+
+        #endregion
+
+        #region Player Movement
+
+        // Player jumped
+        public void OnPlayerJump()
+        {
+            _isJumping = true;
+            _playerSfx.OnPlayerLand();
+            if (!_missingAnimator) {
+                _playerAnimator.OnJump();
+            }
+        }
+
+        // Player walked off a platform. No longer grounded
+        public void OnPlayerFall()
+        {
+            if (_isJumping) return;
+            if (!_missingAnimator) {
+                _playerAnimator.OnFall();
+            }
+        }
+
+        // Player was falling and hit ground
+        public void OnPlayerLand()
+        {
+            _isJumping = false;
+            _playerSfx.OnPlayerLand();
+            if (!_missingAnimator) {
+                _playerAnimator.OnLand();
+            }
+        }
+
+        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
+        {
+            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
+
+            if (_isPlayerGrounded != isGrounded) {
+                _isPlayerGrounded = isGrounded;
+                if (isGrounded) {
+                    OnPlayerLand();
+                } else {
+                    OnPlayerFall();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Abilities
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
@@ -85,47 +136,6 @@ namespace Mechanics.Player
                 _residueState = AbilityStateEnum.Disabled;
             } else if (_residueState == AbilityStateEnum.Disabled) {
                 SetResidueState(AbilityStateEnum.Idle, true);
-            }
-        }
-
-        #endregion
-
-        #region Player Movement
-
-        // Player jumped
-        public void OnPlayerJump()
-        {
-            _isJumping = true;
-            _playerSfx.OnPlayerLand();
-            _playerAnimator.OnJump();
-        }
-
-        // Player walked off a platform. No longer grounded
-        public void OnPlayerFall()
-        {
-            if (_isJumping) return;
-            _playerAnimator.OnFall();
-        }
-
-        // Player was falling and hit ground
-        public void OnPlayerLand()
-        {
-            _isJumping = false;
-            _playerSfx.OnPlayerLand();
-            _playerAnimator.OnLand();
-        }
-
-        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
-        {
-            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
-
-            if (_isPlayerGrounded != isGrounded) {
-                _isPlayerGrounded = isGrounded;
-                if (isGrounded) {
-                    OnPlayerLand();
-                } else {
-                    OnPlayerFall();
-                }
             }
         }
 
@@ -199,6 +209,12 @@ namespace Mechanics.Player
             _playerToHud.SetBoltCooldown(1);
             _boltCooldown = false;
             SetBoltState(AbilityStateEnum.Ready);
+        }
+
+        public void OnBoltDissipate(bool residueReady)
+        {
+            if (_missingAnimator) return;
+            _playerAnimator.OnBoltDissipate(residueReady);
         }
 
         #endregion
