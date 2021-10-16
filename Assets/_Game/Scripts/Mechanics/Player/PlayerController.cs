@@ -8,25 +8,35 @@ public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
 
+    [Header("Components")]
     private CharacterController controller;
 
+    // ---
+
     [Header("Horizontal Movement")]
-    [Range(0,50)] public float moveSpeed;
+    [SerializeField] [Range(0, 20)] private float moveSpeed;
+    [SerializeField] [Range(0, 50)] private float airAcceleration;
 
     private Vector3 moveVelocity;
     private Vector3 xzInput;
 
+    // ---
+
     [Header("Vertical Movement")]
-    [SerializeField] [Range(0,20)] private float jumpForce;
-    [SerializeField] [Range(0,50)] private float risingGravity, fallingGravity;
-    [SerializeField] [Range(0,1)] private float floatTime;
+    [SerializeField] [Range(0, 20)] private float jumpForce;
+    [SerializeField] [Range(0, 50)] private float risingGravity, fallingGravity;
+    [SerializeField] [Range(0, 0.5f)] private float floatTime;
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
+    // ---
+
     [Header("General Control")]
-    public UnityEvent OnPlayerDeath;
+    public UnityEvent OnTeleport;
     public bool grounded;
     public bool flag_cantAct;
+
+    // ---
 
     [Header("Debug/Testing")]
     [SerializeField] private bool infiniteJumps;
@@ -46,16 +56,26 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnPlayerDeath.AddListener(() => {
-            flag_cantAct = true;
-        });
+        OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
     }
 
     private void FixedUpdate() {
         // Movement
         if(!flag_cantAct) {
-            // XZ Axis
-            moveVelocity = (((xzInput.x * transform.right) + (xzInput.z * transform.forward)) * moveSpeed) + (moveVelocity.y * transform.up);
+            #region XZ Plane
+            Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
+            if(grounded) {
+                moveVelocity = (inputToMovement * moveSpeed) + (moveVelocity.y * transform.up);
+            } else {
+                float upVelocity = moveVelocity.y;
+                moveVelocity.y = 0;
+                moveVelocity += airAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, moveSpeed);
+                moveVelocity += upVelocity * transform.up;
+            }
+            #endregion
+
+            // -----
 
             #region Y Axis
             if(flag_jump) { // Jump
@@ -74,6 +94,8 @@ public class PlayerController : MonoBehaviour {
                 moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
+
+            // -----
 
             // Apply
             controller.Move(moveVelocity * Time.fixedDeltaTime);
@@ -105,35 +127,50 @@ public class PlayerController : MonoBehaviour {
     #region Teleport & Movement
 
     public void Teleport(Transform other, Vector3 offset = default) {
-        // TODO: Swap teleport player and other transform
-        Vector3 oldPlayerPos = transform.position;
+        StartCoroutine(TeleportWithTransform(other, offset));
 
+        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+    }
+
+    private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
         controller.enabled = false;
-        transform.position = other.position + offset;
-        other.position = oldPlayerPos;
-        controller.enabled = true;
+        OnTeleport.Invoke();
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        if(collider) {
+            Vector3 oldPlayerPos = controller.bounds.min;
+            transform.position = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
+            other.position = oldPlayerPos;
+        } else {
+            Vector3 oldPlayerPos = transform.position;
+            transform.position = other.position + offset;
+            other.position = oldPlayerPos;
+        }
+        yield return null;
+        controller.enabled = true;
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
         controller.enabled = false;
+        OnTeleport.Invoke();
         transform.position = other + offset;
         controller.enabled = true;
 
         Debug.Log("Teleport to raw position " + other);
     }
 
+    // -------------------
+
     private IEnumerator Float() {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            yield return new WaitForSeconds(floatTime);
+            if(floatTime > 0)
+                yield return new WaitForSeconds(floatTime);
             floating = false;
-        } else {
+        } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
-            yield return null;
-        }
+        yield return null;
     }
 
     #endregion

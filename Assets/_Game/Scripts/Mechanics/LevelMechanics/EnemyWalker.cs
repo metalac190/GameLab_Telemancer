@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class EnemyWalker : MonoBehaviour
 {
+    private enum _movementTypes { LOOP_LINEAR, LOOP_CIRCULAR};
     [Header("EnemyWalker")]
+    [SerializeField] private _movementTypes _movementType = _movementTypes.LOOP_LINEAR;
     [SerializeField] private List<Vector3> _path = new List<Vector3>(); // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
-    private int _pointsListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
+    private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
 
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _delayTime = 0f; // how long the platform should pause at it's destination before moving again
@@ -31,6 +33,26 @@ public class EnemyWalker : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        if (UIEvents.current != null)
+            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+    }
+
+    private void OnPlayerRespawn()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+    #region Movement
     private void Move()
     {
         // get direction and distance to move
@@ -50,29 +72,50 @@ public class EnemyWalker : MonoBehaviour
         }
     }
 
-    // after platform reaches it's target, get the next target, and wait if at either end of path
     private void UpdateTarget()
+    {
+        switch(_movementType)
+        {
+            case _movementTypes.LOOP_LINEAR:
+                UpdateTargetLoopLinear();
+                break;
+            case _movementTypes.LOOP_CIRCULAR:
+                UpdateTargetLoopCircular();
+                break;
+        }
+    }
+
+    // after platform reaches it's target, get the next target, and wait if at either end of path
+    private void UpdateTargetLoopLinear()
     {
         if (Time.time - _delayStartTime >= _delayTime) // wait for _delayTime to move targets
         {
             // get next target
-            _currentTarget += _pointsListDirection;
+            _currentTarget += _pathListDirection;
             if (_currentTarget < 0 || _currentTarget >= _path.Count)
             {
-                _pointsListDirection = _pointsListDirection * -1;
-                _currentTarget += _pointsListDirection * 2;
+                _pathListDirection = _pathListDirection * -1;
+                _currentTarget += _pathListDirection * 2;
                 Mathf.Clamp(_currentTarget, 0, _path.Count);
             }
         }
         else if (_currentTarget > 0 && _currentTarget < _path.Count - 1) // if in middle of path, don't wait for _delayTime
         {
-            _currentTarget += _pointsListDirection;
+            _currentTarget += _pathListDirection;
         }
     }
 
+    private void UpdateTargetLoopCircular()
+    {
+        _currentTarget += _pathListDirection;
+        if (_currentTarget >= _path.Count)
+            _currentTarget = 0;
+    }
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+
     private void OnTriggerEnter(Collider other)
     {
-        // TODO: kill
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Debug.Log("Kill player");
@@ -85,11 +128,16 @@ public class EnemyWalker : MonoBehaviour
         if (_path.Count > 0)
         {
             Gizmos.DrawWireSphere(_path[0], 0.25f);
-            Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+            if (_movementType != _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+
             for (int i = 0; i < _path.Count - 1; i++)
             {
                 Gizmos.DrawLine(_path[i], _path[i + 1]);
             }
+
+            if (_movementType == _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawLine(_path[0], _path[_path.Count - 1]);
         }
     }
 }

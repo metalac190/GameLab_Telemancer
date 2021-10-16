@@ -23,7 +23,7 @@ Material:
   m_Name: ResidueBase Copy
   m_Shader: {fileID: -6465566751694194690, guid: 647110fcaaf515247bb20cf68ec941c7,
     type: 3}
-  m_ShaderKeywords: _NORMALMAP_TANGENT_SPACE
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,6 +41,10 @@ Material:
     m_TexEnvs:
     - MainTexture:
         m_Texture: {fileID: 2800000, guid: e10f0f6ecf3194f42a28fc1faa974efa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - NebulaTexture:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - StarMap:
@@ -139,6 +143,14 @@ Material:
     - EdgeOffset: 0.025
     - NoiseEdge: 0.25
     - NoiseScale: 2
+    - Vector1_2AA6D686: 5
+    - Vector1_6EC71C2C: 25
+    - Vector1_7E602F45: 5.18
+    - Vector1_8042A716: 0
+    - Vector1_9BAF16B6: 1
+    - Vector1_C618FAFF: 0.01
+    - Vector1_DCB04498: 1
+    - Vector1_FA944BFD: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -214,8 +226,10 @@ Material:
     - _PPDMinSamples: 5
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
-    - _ReceivesSSR: 1
+    - _ReceivesSSR: 0
     - _RefractionModel: 0
+    - _RenderQueueType: 1
+    - _RequireSplitLighting: 0
     - _SSRefractionProjectionModel: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
@@ -225,10 +239,10 @@ Material:
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
     - _StencilRef: 0
-    - _StencilRefDepth: 8
+    - _StencilRefDepth: 0
     - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 10
-    - _StencilRefMV: 40
+    - _StencilRefGBuffer: 2
+    - _StencilRefMV: 32
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 8
     - _StencilWriteMaskDistortionVec: 4
@@ -259,6 +273,8 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
+    - Color_42D2DC4C: {r: 0.8610078, g: 0.6933962, b: 1, a: 0}
+    - Color_F17D2D71: {r: 1, g: 1, b: 1, a: 0}
     - EdgeColor: {r: 2, g: 0.726415, b: 1.235053, a: 0}
     - NoiseSpeed: {r: 0, g: 0.5, b: 0, a: 0}
     - StarOffset: {r: 1, g: 0, b: 0, a: 0}

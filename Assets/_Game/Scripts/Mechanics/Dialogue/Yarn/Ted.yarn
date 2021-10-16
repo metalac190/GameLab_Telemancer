@@ -1,0 +1,40 @@
+﻿title: TedTalks
+tags:
+---
+<<if visited("Ted") is false>>
+    September: Hey, Ted.
+    Ted: *Ribbit*
+    September: Wait, what?
+    Ted: Just kidding.
+    Ted: So, what's on your mind, kid?
+<<else>>
+    September: Hey.
+    Ted: Hi.
+<<endif>>
+
+<<if not visited("Ted.Runes")>>
+    [[Is that the Minecraft Enchantment Table language over there?|Ted.Runes]]
+<<endif>>
+[[Nothing, see you later, alligator!|Ted.Exit]]
+===
+
+title: Ted.Runes
+tags: 
+colorID: 0
+position: 512,430
+---
+Ted: ...
+September: ...
+Ted: ..............no.
+September: Really?
+Ted: Okay fine, the programmer couldn't find a good font.
+===
+
+title: Ted.Exit
+tags: 
+colorID: 6
+position: 211,417
+---
+Ted: Later.
+Ted: *sigh*
+===

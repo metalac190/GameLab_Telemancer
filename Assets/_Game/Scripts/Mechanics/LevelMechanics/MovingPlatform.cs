@@ -5,7 +5,9 @@ using UnityEngine;
 //[RequireComponent(typeof(Rigidbody))]
 public class MovingPlatform : LevelActivatable
 {
+    private enum _movementTypes { LINEAR, LOOP_LINEAR, LOOP_CIRCULAR};
     [Header("MovingPlatform")]
+    [SerializeField] private _movementTypes _movementType = _movementTypes.LOOP_LINEAR;
     [SerializeField] private List<Vector3> _path = new List<Vector3>(); // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
     private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
@@ -13,7 +15,7 @@ public class MovingPlatform : LevelActivatable
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _delayTime = 2f; // how long the platform should pause at it's destination before moving again
     private float _delayStartTime;
-    private float _tolerance; 
+    private float _tolerance;
 
     private void Start()
     {
@@ -45,6 +47,15 @@ public class MovingPlatform : LevelActivatable
         StartCoroutine(MoveToStart());
     }
 
+    protected override void OnReset()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+    #region Movement
     private void MovePlatform()
     {
         // get direction and distance to move
@@ -62,8 +73,24 @@ public class MovingPlatform : LevelActivatable
         }
     }
 
-    // after platform reaches it's target, get the next target, and wait if at either end of path
     private void UpdateTarget()
+    {
+        switch(_movementType)
+        {
+            case _movementTypes.LOOP_LINEAR:
+                UpdateTargetLoopLinear();
+                break;
+            case _movementTypes.LOOP_CIRCULAR:
+                UpdateTargetLoopCircular();
+                break;
+            case _movementTypes.LINEAR:
+                UpdateTargetLinear();
+                break;
+        }
+    }
+
+    // after platform reaches it's target, get the next target, and wait if at either end of path
+    private void UpdateTargetLoopLinear()
     {
         if (Time.time - _delayStartTime >= _delayTime) // wait for _delayTime to move targets
         {
@@ -82,16 +109,19 @@ public class MovingPlatform : LevelActivatable
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void UpdateTargetLoopCircular()
     {
-        if(other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
-            other.transform.parent = transform;
+        _currentTarget += _pathListDirection;
+        if (_currentTarget >= _path.Count)
+            _currentTarget = 0;
     }
 
-    private void OnTriggerExit(Collider other)
+    private void UpdateTargetLinear()
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt"))
-            other.transform.parent = null;
+        if (_currentTarget >= _path.Count - 1)
+            return;
+        else
+            _currentTarget += _pathListDirection;
     }
 
     IEnumerator MoveToStart()
@@ -109,7 +139,7 @@ public class MovingPlatform : LevelActivatable
             }
             else
             {
-                UpdateTarget();
+                UpdateTargetLoopLinear();
             }
             yield return new WaitForFixedUpdate();
         }
@@ -117,16 +147,55 @@ public class MovingPlatform : LevelActivatable
         _pathListDirection = 1;
     }
 
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+
+    //other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        {
+            //if (other.transform.root != other.transform)
+            //other.transform.parent = transform;
+            other.transform.root.transform.parent = transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        {
+            Transform exitingObj = other.gameObject.transform;
+            while(exitingObj.parent != transform)
+            {
+                exitingObj = exitingObj.parent;
+            }
+            exitingObj.parent = null;
+        }
+    }
+
+    
+
     private void OnDrawGizmos()
     {
         if(_path.Count > 0)
         {
             Gizmos.DrawWireSphere(_path[0], 0.25f);
-            Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+            if(_movementType != _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+
             for (int i = 0; i < _path.Count - 1; i++)
             {
                 Gizmos.DrawLine(_path[i], _path[i + 1]);
             }
+
+            if (_movementType == _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawLine(_path[0], _path[_path.Count - 1]);
         }
     }
 }

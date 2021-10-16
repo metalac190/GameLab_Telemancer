@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Mechanics.Player
 {
@@ -34,11 +35,15 @@ namespace Mechanics.Player
 
         #region Public Functions
 
-        public void Interact()
+        public void Interact(InputAction.CallbackContext value)
         {
+            if (!value.performed) return;
+            
             var hit = GetRaycast(_maxInteractDistance);
             if (hit.collider == null) return;
-
+            
+            hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
+            
             // Find interactable and interact
             // Play Animations on player
         }
@@ -62,9 +67,11 @@ namespace Mechanics.Player
             }
 
             if (hit.distance < _maxInteractDistance) {
-                // Find interactable
-
-                //SetInteractable(InteractableEnums.PlayerInteractable);
+                var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
+                if (playerInteractable != null) {
+                    SetInteractable(InteractableEnums.PlayerInteractable);
+                    return;
+                }
             }
         }
 
@@ -77,7 +84,7 @@ namespace Mechanics.Player
         private void SetInteractable(InteractableEnums type)
         {
             if (!_missingFeedback) {
-                _playerFeedback.OnHudColorChange(type);
+                _playerFeedback.OnCrosshairColorChange(type);
             }
         }
 
