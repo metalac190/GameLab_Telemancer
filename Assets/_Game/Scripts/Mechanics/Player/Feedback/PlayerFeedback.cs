@@ -10,6 +10,8 @@ namespace Mechanics.Player
     [RequireComponent(typeof(PlayerSfx), typeof(PlayerVfx), typeof(PlayerToHud))]
     public class PlayerFeedback : MonoBehaviour
     {
+        [SerializeField] private PlayerAnimator _playerAnimator;
+
         #region Feedback Script References
 
         private PlayerToHud _playerToHud;
@@ -32,6 +34,11 @@ namespace Mechanics.Player
             }
         }
 
+        private void OnEnable()
+        {
+            AnimatorNullCheck();
+        }
+
         #endregion
 
         private AbilityStateEnum _boltState;
@@ -42,6 +49,11 @@ namespace Mechanics.Player
         private bool _warpCooldown;
         private bool _residueCooldown;
 
+        private bool _isJumping;
+        private bool _isPlayerGrounded;
+
+        #region Crosshair
+
         /* Player Crosshair
          * - Looking at nothing (empty air)
          * - Looking at object (not interactable)
@@ -49,12 +61,61 @@ namespace Mechanics.Player
          * - Looking at ted (can talk to)
          */
 
-        #region Crosshair
-
         public void OnCrosshairColorChange(InteractableEnums type)
         {
             _playerToHud.OnHudColorChange(type);
         }
+
+        #endregion
+
+        #region Player Movement
+
+        // Player jumped
+        public void OnPlayerJump()
+        {
+            _isJumping = true;
+            _playerSfx.OnPlayerLand();
+            if (!_missingAnimator) {
+                _playerAnimator.OnJump();
+            }
+        }
+
+        // Player walked off a platform. No longer grounded
+        public void OnPlayerFall()
+        {
+            if (_isJumping) return;
+            if (!_missingAnimator) {
+                _playerAnimator.OnFall();
+            }
+        }
+
+        // Player was falling and hit ground
+        public void OnPlayerLand()
+        {
+            _isJumping = false;
+            _playerSfx.OnPlayerLand();
+            if (!_missingAnimator) {
+                _playerAnimator.OnLand();
+            }
+        }
+
+        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
+        {
+            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
+
+            if (_isPlayerGrounded != isGrounded) {
+                _isPlayerGrounded = isGrounded;
+                if (isGrounded) {
+                    OnPlayerLand();
+                } else {
+                    OnPlayerFall();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Abilities
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
@@ -120,6 +181,11 @@ namespace Mechanics.Player
 
             _playerToHud.OnBoltAction(action);
 
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnCastBolt();
+            }
+
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnBoltUsed();
                 _playerVfx.OnBoltUsed();
@@ -143,6 +209,12 @@ namespace Mechanics.Player
             _playerToHud.SetBoltCooldown(1);
             _boltCooldown = false;
             SetBoltState(AbilityStateEnum.Ready);
+        }
+
+        public void OnBoltDissipate(bool residueReady)
+        {
+            if (_missingAnimator) return;
+            _playerAnimator.OnBoltDissipate(residueReady);
         }
 
         #endregion
@@ -169,6 +241,11 @@ namespace Mechanics.Player
             if (_warpCooldown || _warpState == AbilityStateEnum.Disabled) return;
 
             _playerToHud.OnWarpAction(action);
+
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnInstantWarp();
+            }
 
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnWarpUsed();
@@ -219,6 +296,11 @@ namespace Mechanics.Player
 
             _playerToHud.OnResidueAction(action);
 
+            // TODO: Attempt can still fail, but animation will play anyways
+            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+                _playerAnimator.OnUseResidue();
+            }
+
             if (action == AbilityActionEnum.Acted) {
                 _playerSfx.OnResidueUsed();
                 _playerVfx.OnResidueUsed();
@@ -241,6 +323,24 @@ namespace Mechanics.Player
             _playerToHud.SetResidueCooldown(0);
             _residueCooldown = false;
             _playerToHud.UpdateResidueState(_residueState);
+        }
+
+        #endregion
+
+        #region Null Checks
+
+        private bool _missingAnimator;
+
+        private void AnimatorNullCheck()
+        {
+            if (_playerAnimator != null) return;
+
+            Transform parent = transform.parent;
+            _playerAnimator = parent != null ? parent.GetComponentInChildren<PlayerAnimator>() : GetComponentInChildren<PlayerAnimator>();
+            if (_playerAnimator == null) {
+                Debug.LogWarning("PlayerFeedback missing Player Animator");
+                _missingAnimator = true;
+            }
         }
 
         #endregion
