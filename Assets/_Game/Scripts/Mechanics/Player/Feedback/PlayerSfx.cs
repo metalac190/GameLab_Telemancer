@@ -10,6 +10,24 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _activateResidueSound = null;
     [SerializeField] private SFXOneShot _objectImpactResidueSound = null;
 
+    // Player jumped
+    public void OnPlayerJump()
+    {
+
+    }
+
+    // Player hit ground
+    public void OnPlayerLand()
+    {
+
+    }
+
+    // Can be used for footsteps or slight wind noise when moving through air quickly
+    public void SetPlayerMovementSpeed(Vector3 speed, bool grounded)
+    {
+
+    }
+    
     public void OnBoltReady()
     {
     }
