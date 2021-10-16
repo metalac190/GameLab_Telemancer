@@ -43,6 +43,7 @@ public class OptionsMenu : MonoBehaviour
     {
         // Save changes made to player prefs
         PlayerPrefs.Save();
+        UIEvents.current.SaveCurrentSettings();
         
         // Hide the options menu
         _optionsMenu.SetActive(false);
