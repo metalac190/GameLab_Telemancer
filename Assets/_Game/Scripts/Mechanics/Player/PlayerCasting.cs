@@ -200,7 +200,7 @@ namespace Mechanics.Player
         {
             _warpBolt.Fire(GetBoltPosition(), GetBoltForward());
 
-            _playerFeedback.OnBoltAction(AbilityActionEnum.AttemptedSuccessful);
+            _playerFeedback.OnBoltAction(AbilityActionEnum.Acted);
             if (_warpAbility) {
                 _playerFeedback.SetWarpState(AbilityStateEnum.Ready);
             }
@@ -242,7 +242,7 @@ namespace Mechanics.Player
         private void OnWarp()
         {
             if (_warpBolt.OnWarp()) {
-                _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedSuccessful);
+                _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
                 _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
                 StartCoroutine(WarpTimer());
@@ -286,7 +286,7 @@ namespace Mechanics.Player
         private void OnUseResidue()
         {
             if (_warpBolt.OnActivateResidue()) {
-                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedSuccessful);
+                _playerFeedback.OnResidueAction(AbilityActionEnum.Acted);
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
 
                 StartCoroutine(ResidueTimer());
