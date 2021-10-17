@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour {
     [Header("General Control")]
     public UnityEvent OnTeleport;
     public PlayerFeedback playerFeedback;
-    public bool grounded;
+    public bool grounded, walking;
     public bool flag_cantAct;
 
     // ---
@@ -99,6 +99,9 @@ public class PlayerController : MonoBehaviour {
             #endregion
 
             // -----
+
+            // Is Walking
+            walking = grounded && moveVelocity.magnitude > 0.5f;
 
             // Apply
             playerFeedback.SetPlayerVelocity(moveVelocity, grounded);
