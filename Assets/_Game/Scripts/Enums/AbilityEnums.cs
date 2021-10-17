@@ -11,7 +11,6 @@ public enum AbilityActionEnum
 {
     InputDetected,         // Ability input detected
     AttemptedUnsuccessful, // After input, ability was not successful
-    AttemptedSuccessful,   // After input, ability was successful
     Acted,                 // Acted On / Ability used
 }
 
