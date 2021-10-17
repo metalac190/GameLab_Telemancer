@@ -35,8 +35,12 @@ public class DialogueManager : MonoBehaviour
             });
             if (target != null)
             {
-                // Kick off the dialogue at this node.
-                runner.StartDialogue(RandomTedTalk());
+                // If story beat, run dialogue at specified node
+                if(target.characterName == "Ted")
+                    runner.StartDialogue(target.talkToNode);
+                // Else kick off dialogue at random Ted Talk
+                else
+                    runner.StartDialogue(RandomTedTalk());
             }
         }
     }

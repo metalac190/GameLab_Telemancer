@@ -1,42 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Yarn.Unity;
 
 public class TranslateDialogue : MonoBehaviour
 {
     bool triggered = false;
-    public ParticleSystem ambientParticles, dissolveParticles;
-    [SerializeField] GameObject untranslated, translated;
-    [SerializeField] Material untranslatedMat, translatedMat;
+    [SerializeField] private GameObject untranslatedTxt, translatedTxt;
+    [SerializeField] private Material untranslatedMat, translatedMat;
+    [ColorUsageAttribute(true, true)]
+    [SerializeField] private Color color;
     private Material utM, tM;
     [SerializeField] private float fadeTime = 1, waitTime = 1;
 
     private void Start()
     {
-        untranslated.GetComponent<Renderer>().material = untranslatedMat;
-        translated.GetComponent<Renderer>().material = translatedMat;
-        utM = untranslated.GetComponent<Renderer>().material;
-        tM = translated.GetComponent<Renderer>().material;
+        // Set text material to new material instance
+        untranslatedTxt.GetComponent<Renderer>().material = untranslatedMat;
+        translatedTxt.GetComponent<Renderer>().material = translatedMat;
+        utM = untranslatedTxt.GetComponent<Renderer>().material;
+        tM = translatedTxt.GetComponent<Renderer>().material;
+        
+        // Update material color
+        utM.SetColor("_Color", color);
+        tM.SetColor("_Color", color);
 
+        // Set initial dissolve amounts
         utM.SetFloat("dissolveAmount", 0.001f);
         tM.SetFloat("dissolveAmount", 1f);
-    }
-
-    void play()
-    {
-        ambientParticles.Stop();
-        dissolveParticles.Emit(9999);
     }
 
     void OnTriggerEnter()
     {
         if (!triggered)
         {
-            play();
-            StartCoroutine(Dissolve(fadeTime));
-            StartCoroutine(Undissolve(fadeTime, waitTime));
-            triggered = true;
+            TriggerDissolve();
         }
+    }
+
+    [YarnCommand("StoryDissolve")]
+    public void StoryDissolve(){
+        TriggerDissolve();
+    }
+
+    void TriggerDissolve()
+    {
+        StartCoroutine(Dissolve(fadeTime));
+        StartCoroutine(Undissolve(fadeTime, waitTime));
+        triggered = true;
     }
 
     IEnumerator Dissolve(float duration)
