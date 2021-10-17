@@ -138,6 +138,27 @@ public class UIEvents : MonoBehaviour
         OnUnlockResidueAbility?.Invoke(isUnlocked);
     }
 
+    public event Action OnAcquireWarpScroll;
+
+    public void AcquireWarpScroll()
+    {
+        OnAcquireWarpScroll?.Invoke();
+    }
+
+    public event Action OnAcquireResidueScroll;
+
+    public void AcquireResidueScroll()
+    {
+        OnAcquireResidueScroll?.Invoke();
+    }
+
+    public event Action OnCloseScrollAcquiredScreen;
+
+    public void CloseScrollAcquiredScreen()
+    {
+        OnCloseScrollAcquiredScreen?.Invoke();
+    }
+    
     #endregion
 
     /* ----------------------------------------------------------------------------------------- */
