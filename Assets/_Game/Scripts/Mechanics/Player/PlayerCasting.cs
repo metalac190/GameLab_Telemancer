@@ -28,7 +28,6 @@ namespace Mechanics.Player
         [SerializeField] private BoltController _warpBolt;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
-        [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
@@ -70,7 +69,7 @@ namespace Mechanics.Player
             }
             if (!_missingWarpBolt) {
                 _warpBolt.OnResidueReady += OnResidueReady;
-                _warpBolt.OnWarpDissipate += OnWarpDissipate;
+                _warpBolt.OnWarpDissipate += OnBoltDissipate;
             }
             FlagCantAct = false;
         }
@@ -82,7 +81,7 @@ namespace Mechanics.Player
             }
             if (!_missingWarpBolt) {
                 _warpBolt.OnResidueReady -= OnResidueReady;
-                _warpBolt.OnWarpDissipate -= OnWarpDissipate;
+                _warpBolt.OnWarpDissipate -= OnBoltDissipate;
             }
         }
 
@@ -324,9 +323,10 @@ namespace Mechanics.Player
             _playerFeedback.SetResidueState(AbilityStateEnum.Ready);
         }
 
-        private void OnWarpDissipate()
+        private void OnBoltDissipate(bool residueReady)
         {
             _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
+            _playerFeedback.OnBoltDissipate(residueReady);
         }
 
         #endregion
@@ -373,7 +373,6 @@ namespace Mechanics.Player
         private void NullChecks()
         {
             StateNullCheck();
-            AnimatorNullCheck();
             FeedbackNullCheck();
             WarpBoltNullCheck();
             TransformNullCheck();
@@ -395,17 +394,6 @@ namespace Mechanics.Player
                 if (_playerState == null) {
                     _missingState = true;
                     Debug.LogWarning("Cannot find the Player State for the Player Casting Script", gameObject);
-                }
-            }
-        }
-
-        private void AnimatorNullCheck()
-        {
-            if (_playerAnimator == null) {
-                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
-                if (_playerAnimator == null) {
-                    _playerAnimator = gameObject.AddComponent<PlayerAnimator>();
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Casting Script", gameObject);
                 }
             }
         }

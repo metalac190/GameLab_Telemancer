@@ -40,7 +40,8 @@ public abstract class LevelActivatable : MonoBehaviour
 
     private void OnDisable()
     {
-        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+        if (UIEvents.current != null)
+            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     // any pressure plate or switch should run this on start so the activatable is aware the switch exists

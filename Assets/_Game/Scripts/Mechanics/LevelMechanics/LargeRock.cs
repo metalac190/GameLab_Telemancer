@@ -13,8 +13,11 @@ public class LargeRock : WarpResidueInteractable
     private Vector3 _spawnPos = new Vector3();
     private Quaternion _spawnRot = new Quaternion();
 
+    private Rigidbody _rb = null;
+
     private void Start()
     {
+        _rb = gameObject.GetComponent<Rigidbody>();
         _spawnPos = transform.position;
         _spawnRot = transform.rotation;
     }
@@ -26,7 +29,8 @@ public class LargeRock : WarpResidueInteractable
 
     private void OnDisable()
     {
-        UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+        if(UIEvents.current != null)
+            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     /// Called on either WarpBoltImpact or WarpResidueActivated, see WarpResidueInteractable
@@ -43,6 +47,7 @@ public class LargeRock : WarpResidueInteractable
 
     public void OnPlayerRespawn()
     {
+        _rb.velocity = new Vector3(0, 0, 0);
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
     }
