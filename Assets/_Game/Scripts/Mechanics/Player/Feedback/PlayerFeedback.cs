@@ -74,7 +74,7 @@ namespace Mechanics.Player
         public void OnPlayerJump()
         {
             _isJumping = true;
-            _playerSfx.OnPlayerLand();
+            _playerSfx.OnPlayerJump();
             if (!_missingAnimator) {
                 _playerAnimator.OnJump();
             }

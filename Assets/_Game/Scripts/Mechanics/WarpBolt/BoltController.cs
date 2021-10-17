@@ -194,9 +194,7 @@ namespace Mechanics.WarpBolt
         private bool Warp()
         {
             if (WarpCollisionTesting()) return false;
-            if (!_missingFeedback) {
-                _feedback.OnPlayerWarp();
-            }
+
             _data.PlayerController.TeleportToPosition(transform.position, Vector3.down);
             Disable();
             return true;

@@ -8,18 +8,39 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _activateWarpSound = null;
     [SerializeField] private SFXOneShot _boltCastSound = null;
     [SerializeField] private SFXOneShot _activateResidueSound = null;
-    [SerializeField] private SFXOneShot _objectImpactResidueSound = null;
+    [SerializeField] private SFXOneShot _playerJumpSound = null;
+    [SerializeField] private SFXOneShot _playerLandSound = null;
+    [SerializeField] private SFXOneShot _playerDeathSound = null;
+
+    private void Start()
+    {
+        UIEvents.current.OnPlayerDied += OnPlayerKilled;
+    }
+
+    public void OnPlayerKilled()
+    {
+        if (_playerDeathSound != null)
+        {
+            _playerDeathSound.PlayOneShot(transform.position);
+        }
+    }
 
     // Player jumped
     public void OnPlayerJump()
     {
-
+        if (_playerJumpSound != null)
+        {
+            _playerJumpSound.PlayOneShot(transform.position);
+        }
     }
 
     // Player hit ground
     public void OnPlayerLand()
     {
-
+        if (_playerLandSound != null)
+        {
+            _playerLandSound.PlayOneShot(transform.position);
+        }
     }
 
     // Can be used for footsteps or slight wind noise when moving through air quickly
@@ -52,9 +73,6 @@ public class PlayerSfx : MonoBehaviour
 
     public void OnResidueReady()
     {
-        if (_objectImpactResidueSound != null) {
-            _objectImpactResidueSound.PlayOneShot(transform.position);
-        }
     }
 
     public void OnResidueUsed()
