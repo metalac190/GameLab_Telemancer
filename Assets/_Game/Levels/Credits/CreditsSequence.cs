@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
 
 public class CreditsSequence : MonoBehaviour
 {
@@ -13,6 +16,12 @@ public class CreditsSequence : MonoBehaviour
     private void Start()
     {
         StartCoroutine(Scroll());
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            ExitToMainMenu();
     }
 
     private IEnumerator Scroll()
@@ -33,5 +42,12 @@ public class CreditsSequence : MonoBehaviour
         }
         
         ccPos = new Vector3(ccPos.x, _finalYPosition, ccPos.z);
+        
+        ExitToMainMenu();
+    }
+
+    private void ExitToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
