@@ -102,12 +102,13 @@ MonoBehaviour:
   _startledTrigger: startled
   _idleTwitchTrigger: idle_twitch
   _jumpTrigger: jump
+  _fallTrigger: fall
   _airTimeFloat: air_time
   _landTrigger: land
-  _residueUnlockedBool: residue_unlocked
   _castBoltTrigger: point_cast
   _warpTrigger: snap_teleport
   _interactableTrigger: interact_hitInteractable
+  _residueIdleTrigger: residue_idle
   _boltDissipateTrigger: dissipate
 --- !u!1 &3209979791028676465
 GameObject:
@@ -262,8 +263,9 @@ MonoBehaviour:
   _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
   _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
     type: 2}
-  _objectImpactResidueSound: {fileID: 11400000, guid: 2fc304d03b3392a48a71a6fd197a8e29,
-    type: 2}
+  _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
+  _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
+  _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
 --- !u!114 &5994795833423906258
 MonoBehaviour:
   m_ObjectHideFlags: 0

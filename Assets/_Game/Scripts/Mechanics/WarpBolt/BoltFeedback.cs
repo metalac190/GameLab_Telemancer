@@ -12,6 +12,7 @@ namespace Mechanics.WarpBolt
         [Header("Audio")]
         [SerializeField] private SFXOneShot _playerWarpSound = null;
         [SerializeField] private SFXOneShot _warpInteractSound = null;
+        [SerializeField] private SFXOneShot _objectImpactSound = null;
 
         [Header("VFX on Impact")]
         [SerializeField] private VfxController _boltImpactVfx = null;
@@ -34,6 +35,12 @@ namespace Mechanics.WarpBolt
                 controller.Play(interactable);
 
                 controller.AutoKill(2);
+            }
+
+            if (_objectImpactSound != null)
+            {
+                // Play Object Impact Sound
+                _objectImpactSound.PlayOneShot(transform.position);
             }
         }
 
