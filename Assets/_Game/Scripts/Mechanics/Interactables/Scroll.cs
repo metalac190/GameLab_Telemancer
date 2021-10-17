@@ -12,6 +12,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private VisualEffect _disintigrateVFX;
     [SerializeField] private GameObject _chainsGroup;
     [SerializeField] private GameObject _scroll;
+    [SerializeField] private float _pauseLength;
     
     enum unlockEnum { WarpBolt, Residue }
 
@@ -57,7 +58,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
 
     IEnumerator DramaticPause()
     {
-        yield return new WaitForSecondsRealtime(0.4f);
+        yield return new WaitForSecondsRealtime(_pauseLength);
         
         // HUD - Show ability unlocked 
         if (_scrollUnlock == unlockEnum.WarpBolt)
