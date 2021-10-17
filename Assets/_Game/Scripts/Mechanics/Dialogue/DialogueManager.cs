@@ -10,7 +10,6 @@ public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueRunner runner;
     [SerializeField] private PlayerState player;
-    [SerializeField] private float interactionRadius = 5;
     [SerializeField] private TextMeshProUGUI dialogueText, speaker;
     void Start()
     {
@@ -19,37 +18,6 @@ public class DialogueManager : MonoBehaviour
             runner = FindObjectOfType<DialogueRunner>();
         if (player == null)
             player = FindObjectOfType<PlayerState>();
-    }
-
-    public void CheckForNearbyNPC(InputAction.CallbackContext value)
-    {
-        if (value.performed)
-        {
-            Debug.Log("performed");
-            var allParticipants = new List<NPC>(FindObjectsOfType<NPC>());
-            var target = allParticipants.Find(delegate (NPC p)
-            {
-                return string.IsNullOrEmpty(p.talkToNode) == false &&
-                (p.transform.position - player.gameObject.transform.position)
-                .magnitude <= interactionRadius;
-            });
-            if (target != null)
-            {
-                // If story beat, run dialogue at specified node
-                if(target.characterName == "Ted")
-                    runner.StartDialogue(target.talkToNode);
-                // Else kick off dialogue at random Ted Talk
-                else
-                    runner.StartDialogue(RandomTedTalk());
-            }
-        }
-    }
-
-    string RandomTedTalk()
-    {
-        string nodeString = "TedTalk";
-        nodeString += Random.Range(1, 20);
-        return nodeString;
     }
 
     public void DialogueStart()
