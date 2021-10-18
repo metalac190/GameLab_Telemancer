@@ -50,6 +50,7 @@ MonoBehaviour:
   _interactionMask:
     serializedVersion: 2
     m_Bits: 1
+  _cameraTransform: {fileID: 5994795831583482220}
   _playerFeedback: {fileID: 1294586047155214018}
 --- !u!1 &2981477514693991773
 GameObject:
@@ -265,6 +266,7 @@ MonoBehaviour:
   _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
   _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
   _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
+  _playerSnapSound: {fileID: 0}
   _playerWalkingSound: {fileID: 11400000, guid: 7b61c8d6861c44a47ab9523cc9355a2e,
     type: 2}
 --- !u!114 &5994795833423906258
@@ -621,7 +623,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _respawnTime: 3
   _onPlayerRespawn:
     m_PersistentCalls:
       m_Calls:

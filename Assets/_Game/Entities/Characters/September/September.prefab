@@ -237,6 +237,7 @@ MonoBehaviour:
   _interactionMask:
     serializedVersion: 2
     m_Bits: 1
+  _cameraTransform: {fileID: 1022407836}
   _playerFeedback: {fileID: 6895264153618991445}
 --- !u!114 &1535503049
 MonoBehaviour:
@@ -416,7 +417,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _respawnTime: 3
   _onPlayerRespawn:
     m_PersistentCalls:
       m_Calls:
@@ -872,7 +872,7 @@ MonoBehaviour:
   _delayWarp: 0.35
   _delayResidue: 0.3
   _clearResidueOnFire: 1
-  _boltLookDistance: 5
+  _boltLookDistance: 20
   _lookAtMask:
     serializedVersion: 2
     m_Bits: 1
