@@ -114,6 +114,7 @@ namespace Mechanics.Bolt
 
         public void DissipateBolt()
         {
+            _currentBolt = null;
             OnBoltDissipate?.Invoke(ResidueReady);
         }
 
