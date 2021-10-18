@@ -13,6 +13,7 @@ namespace Mechanics.Player
         [SerializeField] private float _maxInteractDistance = 5;
         [SerializeField] private LayerMask _interactionMask = 1;
         [Header("References")]
+        [SerializeField] private Transform _cameraTransform;
         [SerializeField] private PlayerFeedback _playerFeedback;
 
         #region Unity Fucntions
@@ -88,7 +89,9 @@ namespace Mechanics.Player
 
         private RaycastHit GetRaycast(float dist)
         {
-            Ray ray = new Ray(transform.position, transform.forward);
+            Transform start = _cameraTransform != null ? _cameraTransform : transform;
+
+            Ray ray = new Ray(start.position, start.forward);
 
             Physics.Raycast(ray, out var hit, dist, _interactionMask);
             return hit;
