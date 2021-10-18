@@ -119,7 +119,6 @@ namespace Mechanics.Player
 
         public void OnAnimationPoint()
         {
-
         }
 
         public void OnAnimationSnap()
@@ -130,6 +129,12 @@ namespace Mechanics.Player
         #endregion
 
         #region Abilities
+
+        public void SetWatcherLock(bool locked)
+        {
+            _playerToHud.InWatcherRange(locked);
+            _playerSfx.InWatcherRange(locked);
+        }
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)

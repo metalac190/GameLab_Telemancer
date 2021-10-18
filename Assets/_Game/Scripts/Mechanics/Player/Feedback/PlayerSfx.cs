@@ -22,8 +22,7 @@ public class PlayerSfx : MonoBehaviour
 
     public void OnPlayerKilled()
     {
-        if (_playerDeathSound != null)
-        {
+        if (_playerDeathSound != null) {
             _playerDeathSound.PlayOneShot(transform.position);
         }
     }
@@ -31,8 +30,7 @@ public class PlayerSfx : MonoBehaviour
     // Player jumped
     public void OnPlayerJump()
     {
-        if (_playerJumpSound != null)
-        {
+        if (_playerJumpSound != null) {
             _playerJumpSound.PlayOneShot(transform.position);
         }
     }
@@ -40,8 +38,7 @@ public class PlayerSfx : MonoBehaviour
     // Player hit ground
     public void OnPlayerLand()
     {
-        if (_playerLandSound != null)
-        {
+        if (_playerLandSound != null) {
             _playerLandSound.PlayOneShot(transform.position);
         }
     }
@@ -49,28 +46,32 @@ public class PlayerSfx : MonoBehaviour
     // Can be used for footsteps or slight wind noise when moving through air quickly
     public void SetPlayerMovementSpeed(Vector3 speed, bool grounded, bool walking)
     {
-        if(walking)
-        {
-            if (!isWalking)
-            {
+        if (walking) {
+            if (!isWalking) {
                 isWalking = true;
                 _playerWalkingSound.Play(transform.position);
             }
-        }
-        else
-        {
+        } else {
             isWalking = false;
         }
     }
 
     public void OnAnimationSnap()
     {
-        if (_playerSnapSound != null)
-        {
+        if (_playerSnapSound != null) {
             _playerSnapSound.PlayOneShot(transform.position);
         }
     }
-    
+
+    public void InWatcherRange(bool inRange)
+    {
+        if (inRange) {
+            // In sight of watcher
+        } else {
+            // No longer in sight of watcher
+        }
+    }
+
     public void OnBoltReady()
     {
     }
