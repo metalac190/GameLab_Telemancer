@@ -115,6 +115,20 @@ namespace Mechanics.Player
 
         #endregion
 
+        #region Player Animation Events
+
+        public void OnAnimationPoint()
+        {
+
+        }
+
+        public void OnAnimationSnap()
+        {
+            _playerSfx.OnAnimationSnap();
+        }
+
+        #endregion
+
         #region Abilities
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud

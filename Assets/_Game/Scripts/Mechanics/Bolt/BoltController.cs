@@ -26,10 +26,9 @@ namespace Mechanics.Bolt
         [SerializeField] private BoltFeedback _feedback;
 
         private bool _isResidue;
-        private bool _isAlive;
         private float _timeAlive;
 
-        private Coroutine _redirectDelayRoutine = null;
+        private Coroutine _redirectDelayRoutine;
 
         private BoltManager _manager;
 
@@ -50,6 +49,8 @@ namespace Mechanics.Bolt
             }
             private set => _manager = value;
         }
+
+        public bool IsAlive { get; private set; }
 
         // -------------------------------------------------------------------------------------------
 
@@ -74,21 +75,21 @@ namespace Mechanics.Bolt
 
         private void Update()
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             CheckLifetime();
         }
 
         private void FixedUpdate()
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             MoveBolt();
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             var contact = other.GetContact(0);
 
@@ -177,7 +178,7 @@ namespace Mechanics.Bolt
                 _rb.velocity = Vector3.zero;
                 _rb.angularVelocity = Vector3.zero;
             }
-            _isAlive = true;
+            IsAlive = true;
             _timeAlive = 0;
         }
 
@@ -294,6 +295,7 @@ namespace Mechanics.Bolt
 
         private void CheckLifetime()
         {
+            if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
             if (_timeAlive > _lifeSpan) {
                 Dissipate(false, true);
@@ -302,7 +304,7 @@ namespace Mechanics.Bolt
 
         public void Dissipate(bool stopMoving, bool coyoteTime)
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
             float dissipateTime = 0;
             if (!_missingFeedback) {
                 dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
@@ -312,14 +314,15 @@ namespace Mechanics.Bolt
 
         private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)
         {
-            if (stopMoving) _isAlive = false;
+            if (!_missingCollider) {
+                _collider.enabled = false;
+            }
+            if (stopMoving) IsAlive = false;
+            _timeAlive = 0;
             if (coyoteTime) {
                 yield return new WaitForSecondsRealtime(_coyoteTime);
             }
             Manager.DissipateBolt();
-            if (!_missingCollider) {
-                _collider.enabled = false;
-            }
             float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _coyoteTime : dissipateTime);
             yield return new WaitForSecondsRealtime(timer);
             Disable();
@@ -337,7 +340,7 @@ namespace Mechanics.Bolt
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
-            _isAlive = false;
+            IsAlive = false;
             Manager.AddController(this);
         }
 
@@ -346,7 +349,7 @@ namespace Mechanics.Bolt
             if (!_missingCollider) {
                 _collider.enabled = true;
             }
-            _isAlive = true;
+            IsAlive = true;
         }
 
         #endregion
@@ -354,16 +357,6 @@ namespace Mechanics.Bolt
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
-
-        public void ExtraBoltExistsCheck()
-        {
-            var others = FindObjectsOfType<BoltController>();
-            foreach (var bolt in others) {
-                if (bolt == this) continue;
-                Debug.LogWarning("Too many warp bolts exist in scene: " + gameObject.name + " and " + bolt.gameObject.name, gameObject);
-                Destroy(bolt.gameObject);
-            }
-        }
 
         private void VisualsNullCheck()
         {

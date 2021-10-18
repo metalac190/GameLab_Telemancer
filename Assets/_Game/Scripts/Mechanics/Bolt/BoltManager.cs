@@ -37,11 +37,11 @@ namespace Mechanics.Bolt
             }
         }
 
-        private IWarpInteractable _residueInteractable = null;
+        private IWarpInteractable _residueInteractable;
 
         public BoltController GetBolt => _currentBolt;
         public bool CanWarp => _currentBolt != null;
-        public bool ResidueReady => _currentBolt != null;
+        public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
         public event Action<bool> OnBoltDissipate = delegate { };
 
@@ -156,7 +156,7 @@ namespace Mechanics.Bolt
 
         public void Dissipate()
         {
-            if (_currentBolt == null) return;
+            if (_currentBolt == null || !_currentBolt.IsAlive) return;
             _currentBolt.Dissipate(false, false);
             _currentBolt = null;
         }
