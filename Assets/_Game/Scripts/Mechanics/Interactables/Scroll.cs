@@ -86,6 +86,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);
         // TODO: Add level switch code here 
+        MusicManager.Instance.StopMusic();
         TransitionManager.tm.ChangeLevel(nextlevelID); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
     }
 }
