@@ -8,10 +8,7 @@ namespace Mechanics.Player
     /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] private float _maxLookDistance = 20;
-        [SerializeField] private float _maxInteractDistance = 5;
-        [SerializeField] private LayerMask _interactionMask = 1;
+        [SerializeField] private GameSettingsData _settings;
         [Header("References")]
         [SerializeField] private PlayerFeedback _playerFeedback;
 
@@ -19,7 +16,7 @@ namespace Mechanics.Player
 
         private void OnEnable()
         {
-            FeedbackNullCheck();
+            NullChecks();
         }
 
         private void Update()
@@ -37,7 +34,7 @@ namespace Mechanics.Player
         {
             if (!value.performed) return;
 
-            var hit = GetRaycast(_maxInteractDistance);
+            var hit = GetRaycast(_settings.maxInteractDistance);
             if (hit.collider == null) return;
 
             hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
@@ -48,7 +45,7 @@ namespace Mechanics.Player
 
         public void LookAtInteractables()
         {
-            var hit = GetRaycast(_maxLookDistance);
+            var hit = GetRaycast(_settings.maxLookDistance);
             if (hit.collider == null) {
                 SetInteractable(InteractableEnums.Null);
                 return;
@@ -64,7 +61,7 @@ namespace Mechanics.Player
                 return;
             }
 
-            if (hit.distance < _maxInteractDistance) {
+            if (hit.distance < _settings.maxInteractDistance) {
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
@@ -90,7 +87,7 @@ namespace Mechanics.Player
         {
             Ray ray = new Ray(transform.position, transform.forward);
 
-            Physics.Raycast(ray, out var hit, dist, _interactionMask);
+            Physics.Raycast(ray, out var hit, dist, _settings.lookAtMask);
             return hit;
         }
 
@@ -99,6 +96,22 @@ namespace Mechanics.Player
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
+
+        private void NullChecks()
+        {
+            GameSettingsNullCheck();
+            FeedbackNullCheck();
+        }
+
+        private void GameSettingsNullCheck()
+        {
+            if (_settings == null) {
+                _settings = FindObjectOfType<GameSettingsData>();
+                if (_settings == null) {
+                    _settings = new GameSettingsData();
+                }
+            }
+        }
 
         private bool _missingFeedback;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -10,11 +9,8 @@ namespace Mechanics.Bolt
     /// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
-        [SerializeField] private float _lifeSpan = 4;
-        [SerializeField] private float _coyoteTime = 0.15f;
-        [Header("Warping")]
+        [SerializeField] private GameSettingsData _settings;
+        [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
@@ -58,10 +54,7 @@ namespace Mechanics.Bolt
 
         private void OnEnable()
         {
-            VisualsNullCheck();
-            RigidbodyNullCheck();
-            ColliderNullCheck();
-            FeedbackNullCheck();
+            NullChecks();
         }
 
         private void Start()
@@ -290,14 +283,14 @@ namespace Mechanics.Bolt
         {
             if (_missingRigidbody) return;
 
-            _rb.MovePosition(transform.position + _visuals.forward * _movementSpeed);
+            _rb.MovePosition(transform.position + _visuals.forward * _settings.movementSpeed);
         }
 
         private void CheckLifetime()
         {
             if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
-            if (_timeAlive > _lifeSpan) {
+            if (_timeAlive > _settings.lifeSpan) {
                 Dissipate(false, true);
             }
         }
@@ -320,10 +313,10 @@ namespace Mechanics.Bolt
             if (stopMoving) IsAlive = false;
             _timeAlive = 0;
             if (coyoteTime) {
-                yield return new WaitForSecondsRealtime(_coyoteTime);
+                yield return new WaitForSecondsRealtime(_settings.coyoteTime);
             }
             Manager.DissipateBolt();
-            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _coyoteTime : dissipateTime);
+            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _settings.coyoteTime : dissipateTime);
             yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
@@ -357,6 +350,25 @@ namespace Mechanics.Bolt
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
+
+        private void NullChecks()
+        {
+            GameSettingsNullCheck();
+            VisualsNullCheck();
+            RigidbodyNullCheck();
+            ColliderNullCheck();
+            FeedbackNullCheck();
+        }
+
+        private void GameSettingsNullCheck()
+        {
+            if (_settings == null) {
+                _settings = FindObjectOfType<GameSettingsData>();
+                if (_settings == null) {
+                    _settings = new GameSettingsData();
+                }
+            }
+        }
 
         private void VisualsNullCheck()
         {
