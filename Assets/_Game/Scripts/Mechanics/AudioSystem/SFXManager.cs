@@ -85,12 +85,12 @@ namespace AudioSystem
             ActivatePooledSound(newSource);
         }
 
-        public void PlayLoop(SFXLoop soundEvent, Vector3 soundPosition)
+        public AudioSource PlayLoop(SFXLoop soundEvent, Vector3 soundPosition)
         {
             if (soundEvent.Clip == null)
             {
                 Debug.LogWarning("SoundManager.PlayLoop: No Clip Specified");
-                return;
+                return null;
             }
 
             AudioSource newSource = soundPools.GetLoop();
@@ -117,6 +117,8 @@ namespace AudioSystem
             {
                 ActivateFiniteLoopedPooledSound(soundEvent, newSource);
             }
+
+            return newSource;
         }
 
         private void ActivateInfiniteLoopedPooledSound(AudioSource newSource)
