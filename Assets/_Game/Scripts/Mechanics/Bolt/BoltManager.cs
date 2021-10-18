@@ -17,7 +17,10 @@ namespace Mechanics.Bolt
             get
             {
                 if (!_boltData.Valid) {
-                    _boltData = new BoltData(this, _playerController);
+                    _boltData = new BoltData(this, PlayerController);
+                    if (!_boltData.Valid) {
+                        Debug.Log("Invalid data");
+                    }
                 }
                 return _boltData;
             }

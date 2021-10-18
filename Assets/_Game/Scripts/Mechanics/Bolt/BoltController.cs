@@ -60,8 +60,6 @@ namespace Mechanics.Bolt
             RigidbodyNullCheck();
             ColliderNullCheck();
             FeedbackNullCheck();
-
-            Disable();
         }
 
         private void Update()

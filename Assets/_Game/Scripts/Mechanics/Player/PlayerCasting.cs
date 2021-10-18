@@ -413,7 +413,19 @@ namespace Mechanics.Player
 
         private void WarpBoltNullCheck()
         {
-            if (_boltManager != null) return;
+            if (_boltManager != null) {
+                if (!_boltManager.gameObject.activeInHierarchy) {
+                    BoltManager manager = FindObjectOfType<BoltManager>();
+                    if (manager != null) {
+                        _boltManager = manager;
+                        Debug.LogWarning("Bolt Manager is active in scene but player was referencing a prefab", gameObject);
+                        return;
+                    }
+                    _boltManager = Instantiate(_boltManager);
+                    Debug.LogWarning("No Bolt Manager in scene, but one was referenced by the player. Instantiating", gameObject);
+                }
+                return;
+            }
             _boltManager = FindObjectOfType<BoltManager>();
             if (_boltManager == null) {
                 _missingWarpBolt = true;
