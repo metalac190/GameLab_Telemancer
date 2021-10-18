@@ -1,4 +1,4 @@
-﻿using Mechanics.WarpBolt;
+﻿using Mechanics.Bolt;
 
 /// Summary:
 /// Implement this interface for anything that should be interactable by the warp bolt

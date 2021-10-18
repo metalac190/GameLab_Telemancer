@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+using AudioSystem;
 
 /// <summary>
 /// Script for the unlock scroll that appears at the end of each level
@@ -12,6 +13,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private VisualEffect _disintigrateVFX;
     [SerializeField] private GameObject _chainsGroup;
     [SerializeField] private GameObject _scroll;
+    [SerializeField] private float _pauseLength;
+    [SerializeField] private SFXOneShot scrollOpenSFX;
+    [SerializeField] private int nextlevelID;
     
     enum unlockEnum { WarpBolt, Residue }
 
@@ -57,7 +61,10 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
 
     IEnumerator DramaticPause()
     {
-        yield return new WaitForSecondsRealtime(0.4f);
+        yield return new WaitForSecondsRealtime(_pauseLength);
+
+        //Play sound
+        scrollOpenSFX.PlayOneShot(transform.position);
         
         // HUD - Show ability unlocked 
         if (_scrollUnlock == unlockEnum.WarpBolt)
@@ -79,6 +86,6 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);
         // TODO: Add level switch code here 
-
+        TransitionManager.tm.ChangeLevel(nextlevelID); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
     }
 }
