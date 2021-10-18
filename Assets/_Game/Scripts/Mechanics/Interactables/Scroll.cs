@@ -15,6 +15,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private GameObject _scroll;
     [SerializeField] private float _pauseLength;
     [SerializeField] private SFXOneShot scrollOpenSFX;
+    [SerializeField] private int nextlevelID;
     
     enum unlockEnum { WarpBolt, Residue }
 
@@ -85,6 +86,6 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);
         // TODO: Add level switch code here 
-
+        TransitionManager.tm.ChangeLevel(nextlevelID); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
     }
 }
