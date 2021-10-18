@@ -10,8 +10,8 @@ namespace Mechanics.WarpBolt
         // @Brett should probably take over audio and hud Feedback
 
         [Header("Audio")]
-        [SerializeField] private SFXOneShot _playerWarpSound = null;
         [SerializeField] private SFXOneShot _warpInteractSound = null;
+        [SerializeField] private SFXOneShot _objectImpactSound = null;
 
         [Header("VFX on Impact")]
         [SerializeField] private VfxController _boltImpactVfx = null;
@@ -35,22 +35,20 @@ namespace Mechanics.WarpBolt
 
                 controller.AutoKill(2);
             }
+
+            if (_objectImpactSound != null)
+            {
+                // Play Object Impact Sound
+                _objectImpactSound.PlayOneShot(transform.position);
+            }
         }
 
         public void OnWarpInteract()
         {
             if (_warpInteractSound != null) {
                 // Play Warp Interact Sound
+                // Used in place of manual residue for big rocks in lvl 1 and 2
                 _warpInteractSound.PlayOneShot(transform.position);
-            }
-        }
-
-        public void OnPlayerWarp()
-        {
-            if (_playerWarpSound != null) {
-                // Maybe should be on Player Feedback Script?
-                // Play player warp sound
-                _playerWarpSound.PlayOneShot(transform.position);
             }
         }
     }

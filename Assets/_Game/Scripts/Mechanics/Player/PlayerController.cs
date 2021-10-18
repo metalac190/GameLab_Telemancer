@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -33,7 +34,8 @@ public class PlayerController : MonoBehaviour {
 
     [Header("General Control")]
     public UnityEvent OnTeleport;
-    public bool grounded;
+    public PlayerFeedback playerFeedback;
+    public bool grounded, walking;
     public bool flag_cantAct;
 
     // ---
@@ -80,6 +82,7 @@ public class PlayerController : MonoBehaviour {
             #region Y Axis
             if(flag_jump) { // Jump
                 moveVelocity.y = jumpForce;
+                playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
 
@@ -97,7 +100,11 @@ public class PlayerController : MonoBehaviour {
 
             // -----
 
+            // Is Walking
+            walking = grounded && moveVelocity.magnitude > 0.5f;
+
             // Apply
+            playerFeedback.SetPlayerVelocity(moveVelocity, grounded);
             controller.Move(moveVelocity * Time.fixedDeltaTime);
         }
     }

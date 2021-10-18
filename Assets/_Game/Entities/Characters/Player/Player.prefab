@@ -97,6 +97,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf1738db16cbbd40816ea22b18556bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _petToadTrigger: pet_toad
+  _startledTrigger: startled
+  _idleTwitchTrigger: idle_twitch
+  _jumpTrigger: jump
+  _fallTrigger: fall
+  _airTimeFloat: air_time
+  _landTrigger: land
+  _castBoltTrigger: point_cast
+  _warpTrigger: snap_teleport
+  _interactableTrigger: interact_hitInteractable
+  _residueIdleTrigger: residue_idle
+  _boltDissipateTrigger: dissipate
 --- !u!1 &3209979791028676465
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +167,6 @@ MonoBehaviour:
     m_Bits: 1
   _warpBolt: {fileID: 0}
   _playerState: {fileID: 8561128953603784824}
-  _playerAnimator: {fileID: 870152040626436047}
   _playerFeedback: {fileID: 1294586047155214018}
   _boltFirePosition: {fileID: 1939250879272954141}
   _cameraLookDirection: {fileID: 6728132942592493119}
@@ -234,6 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0717b1f337b4a4a8df226874c883f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerAnimator: {fileID: 0}
 --- !u!114 &5994795833423906259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,8 +263,9 @@ MonoBehaviour:
   _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
   _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
     type: 2}
-  _objectImpactResidueSound: {fileID: 11400000, guid: 2fc304d03b3392a48a71a6fd197a8e29,
-    type: 2}
+  _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
+  _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
+  _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
 --- !u!114 &5994795833423906258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,6 +562,7 @@ MonoBehaviour:
   OnTeleport:
     m_PersistentCalls:
       m_Calls: []
+  playerFeedback: {fileID: 1294586047155214018}
   grounded: 0
   flag_cantAct: 0
   infiniteJumps: 0
