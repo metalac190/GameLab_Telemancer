@@ -277,6 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea054d0990e6834b8621f2386b45101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _boltVfxSpawner: {fileID: 5429313811853431199}
   _warpInteractSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5, type: 2}
   _objectImpactSound: {fileID: 11400000, guid: 2fc304d03b3392a48a71a6fd197a8e29, type: 2}
   _boltImpactVfx: {fileID: 7133037124337845470, guid: e0aaac28d24401b43a763f24ee4cb7b9,
@@ -326,9 +327,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e04e4f10ac046c438c283657d5ef43e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectToSpawn: {fileID: 6577585602418833061, guid: 421b2f40e466dd045bbe3b7c7351b307,
+  _boltPrefab: {fileID: 6789601401774915477, guid: 421b2f40e466dd045bbe3b7c7351b307,
     type: 3}
   _transformOverride: {fileID: 0}
+  _objToDisable: {fileID: 433204771}
 --- !u!114 &803160740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,6 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 0.32
   _lifeSpan: 1.25
+  _stopMovingOnDissipate: 1
   _playerRadius: {x: 0.48, y: 0.96, z: 0.48}
   _overCorrection: 0.05
   _collisionMask:
@@ -434,4 +437,3 @@ MonoBehaviour:
   _collider: {fileID: 3230216783552704632}
   _visuals: {fileID: 3230216783236303938}
   _feedback: {fileID: 383780542762379984}
-  _data: {fileID: 11400000, guid: 751bff2440f3a7c4f97394e056d5a92c, type: 2}

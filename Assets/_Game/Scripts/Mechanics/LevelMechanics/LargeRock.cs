@@ -1,7 +1,7 @@
-﻿using Mechanics.WarpBolt;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using AudioSystem;
+using Mechanics.Bolt;
 
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing
@@ -21,8 +21,10 @@ public class LargeRock : WarpResidueInteractable
 
     [Header("Audio")]
     [SerializeField] private SFXOneShot _impactSound = null;
+    [SerializeField] private float timeToWaitForSound = .5f;
 
     private Rigidbody _rb = null;
+
 
     private void Start()
     {
@@ -51,7 +53,7 @@ public class LargeRock : WarpResidueInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+        if (Time.timeSinceLevelLoad > timeToWaitForSound && collision.gameObject.layer == LayerMask.NameToLayer("Default"))
             _impactSound?.PlayOneShot(transform.position);
     }
 

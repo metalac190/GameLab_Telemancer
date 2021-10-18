@@ -1,6 +1,6 @@
-﻿using Mechanics.WarpBolt;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Bolt;
 using UnityEngine;
 
 public class DelayStone : MonoBehaviour, IWarpInteractable
@@ -10,6 +10,7 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
 
     [Header("Debuging")]
     [SerializeField] private float _trajectoryRayGizmo = 5;
+
     public bool OnWarpBoltImpact(BoltData data)
     {
         // Redirect the warp bolt
@@ -34,10 +35,10 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
     public void OnActivateWarpResidue(BoltData data)
     {
     }
+
     public void OnDisableWarpResidue()
     {
     }
-
 
 
     private void OnDrawGizmos()
