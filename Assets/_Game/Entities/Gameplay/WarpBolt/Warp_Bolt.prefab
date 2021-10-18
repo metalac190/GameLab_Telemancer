@@ -330,7 +330,8 @@ MonoBehaviour:
   _boltPrefab: {fileID: 6789601401774915477, guid: 421b2f40e466dd045bbe3b7c7351b307,
     type: 3}
   _transformOverride: {fileID: 0}
-  _objToDisable: {fileID: 433204771}
+  _lightToDim: {fileID: 63241422}
+  _lightDimTimer: 0.25
 --- !u!114 &803160740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,7 +427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 0.32
   _lifeSpan: 1.25
-  _stopMovingOnDissipate: 1
+  _coyoteTime: 0.12
   _playerRadius: {x: 0.48, y: 0.96, z: 0.48}
   _overCorrection: 0.05
   _collisionMask:

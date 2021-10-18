@@ -13,6 +13,7 @@ namespace Mechanics.Bolt
         [Header("Settings")]
         [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
         [SerializeField] private float _lifeSpan = 4;
+        [SerializeField] private float _coyoteTime = 0.15f;
         [Header("Warping")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
@@ -99,7 +100,7 @@ namespace Mechanics.Bolt
                     WarpInteract(interactable, contact.point, contact.normal);
                 }
             } else {
-                Dissipate(true);
+                Dissipate(true, true);
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
         }
@@ -183,7 +184,7 @@ namespace Mechanics.Bolt
         // Warp to the bolt's position
         public bool OnWarp()
         {
-            return _isAlive && Warp();
+            return Warp();
         }
 
         #endregion
@@ -267,7 +268,7 @@ namespace Mechanics.Bolt
             }
 
             if (dissipate) {
-                Dissipate(true);
+                Dissipate(true, false);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -279,7 +280,7 @@ namespace Mechanics.Bolt
             bool activateResidue = interactable.OnSetWarpResidue(Manager.BoltData);
             if (activateResidue) {
                 Manager.SetResidue(interactable);
-                Dissipate(true);
+                Dissipate(true, false);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -295,31 +296,31 @@ namespace Mechanics.Bolt
         {
             _timeAlive += Time.deltaTime;
             if (_timeAlive > _lifeSpan) {
-                Dissipate(false);
+                Dissipate(false, true);
             }
         }
 
-        public void Dissipate(bool stopMoving)
+        public void Dissipate(bool stopMoving, bool coyoteTime)
         {
             if (!_isAlive) return;
             float dissipateTime = 0;
             if (!_missingFeedback) {
                 dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
-            Manager.DissipateBolt();
-            if (dissipateTime == 0) {
-                Disable();
-            } else {
-                StartCoroutine(DissipateTimer(stopMoving, dissipateTime));
-            }
+            StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
         }
 
-        private IEnumerator DissipateTimer(bool stopMoving, float timer)
+        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)
         {
             if (stopMoving) _isAlive = false;
+            if (coyoteTime) {
+                yield return new WaitForSecondsRealtime(_coyoteTime);
+            }
+            Manager.DissipateBolt();
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
+            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _coyoteTime : dissipateTime);
             yield return new WaitForSecondsRealtime(timer);
             Disable();
         }

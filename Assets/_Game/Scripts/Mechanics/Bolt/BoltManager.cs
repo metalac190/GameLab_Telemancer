@@ -70,7 +70,7 @@ namespace Mechanics.Bolt
         private void GetNewBolt()
         {
             if (_currentBolt != null) {
-                _currentBolt.Dissipate(false);
+                _currentBolt.Dissipate(false, false);
                 _currentBolt = null;
             }
             if (_boltControllers.Count == 0) {
@@ -157,7 +157,7 @@ namespace Mechanics.Bolt
         public void Dissipate()
         {
             if (_currentBolt == null) return;
-            _currentBolt.Dissipate(false);
+            _currentBolt.Dissipate(false, false);
             _currentBolt = null;
         }
 
