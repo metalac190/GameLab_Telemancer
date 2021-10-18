@@ -25,12 +25,14 @@ namespace Mechanics.Player
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private LayerMask _lookAtMask = 1;
         [Header("External References")]
-        [SerializeField] private BoltManager _boltManager;
+        [SerializeField] private BoltManager _boltManagerPrefab;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerFeedback _playerFeedback;
         [SerializeField] private Transform _boltFirePosition = null;
         [SerializeField] private Transform _cameraLookDirection = null;
+
+        private BoltManager _boltManager;
 
         private bool _boltAbility;
         private bool _warpAbility;
@@ -413,24 +415,20 @@ namespace Mechanics.Player
 
         private void WarpBoltNullCheck()
         {
-            if (_boltManager != null) {
-                if (!_boltManager.gameObject.activeInHierarchy) {
-                    BoltManager manager = FindObjectOfType<BoltManager>();
-                    if (manager != null) {
-                        _boltManager = manager;
-                        Debug.LogWarning("Bolt Manager is active in scene but player was referencing a prefab", gameObject);
-                        return;
-                    }
-                    _boltManager = Instantiate(_boltManager);
+            if (_boltManager != null) return;
+            _boltManager = FindObjectOfType<BoltManager>();
+            if (_boltManager != null) return;
+            if (_boltManagerPrefab != null) {
+                if (_boltManagerPrefab.gameObject.activeInHierarchy) {
+                    _boltManager = _boltManagerPrefab;
+                } else {
+                    _boltManager = Instantiate(_boltManagerPrefab);
                     Debug.LogWarning("No Bolt Manager in scene, but one was referenced by the player. Instantiating", gameObject);
                 }
                 return;
             }
-            _boltManager = FindObjectOfType<BoltManager>();
-            if (_boltManager == null) {
-                _missingWarpBolt = true;
-                throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
-            }
+            _missingWarpBolt = true;
+            throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
         }
 
         private bool _missingCamera;

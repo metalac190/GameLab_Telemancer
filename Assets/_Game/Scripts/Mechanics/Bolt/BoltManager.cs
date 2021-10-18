@@ -37,11 +37,11 @@ namespace Mechanics.Bolt
             }
         }
 
-        private IWarpInteractable _residueInteractable = null;
+        private IWarpInteractable _residueInteractable;
 
         public BoltController GetBolt => _currentBolt;
         public bool CanWarp => _currentBolt != null;
-        public bool ResidueReady => _currentBolt != null;
+        public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
         public event Action<bool> OnBoltDissipate = delegate { };
 
@@ -70,7 +70,7 @@ namespace Mechanics.Bolt
         private void GetNewBolt()
         {
             if (_currentBolt != null) {
-                _currentBolt.Dissipate(false);
+                _currentBolt.Dissipate(false, false);
                 _currentBolt = null;
             }
             if (_boltControllers.Count == 0) {
@@ -114,6 +114,7 @@ namespace Mechanics.Bolt
 
         public void DissipateBolt()
         {
+            _currentBolt = null;
             OnBoltDissipate?.Invoke(ResidueReady);
         }
 
@@ -156,8 +157,8 @@ namespace Mechanics.Bolt
 
         public void Dissipate()
         {
-            if (_currentBolt == null) return;
-            _currentBolt.Dissipate(false);
+            if (_currentBolt == null || !_currentBolt.IsAlive) return;
+            _currentBolt.Dissipate(false, false);
             _currentBolt = null;
         }
 

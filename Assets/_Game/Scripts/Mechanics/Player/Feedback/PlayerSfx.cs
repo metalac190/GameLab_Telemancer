@@ -11,6 +11,7 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _playerJumpSound = null;
     [SerializeField] private SFXOneShot _playerLandSound = null;
     [SerializeField] private SFXOneShot _playerDeathSound = null;
+    [SerializeField] private SFXOneShot _playerSnapSound = null;
     [SerializeField] private SFXLoop _playerWalkingSound = null;
     private bool isWalking = false;
 
@@ -59,6 +60,14 @@ public class PlayerSfx : MonoBehaviour
         else
         {
             isWalking = false;
+        }
+    }
+
+    public void OnAnimationSnap()
+    {
+        if (_playerSnapSound != null)
+        {
+            _playerSnapSound.PlayOneShot(transform.position);
         }
     }
     

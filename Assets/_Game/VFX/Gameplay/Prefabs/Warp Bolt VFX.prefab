@@ -907,12 +907,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72bd683ffc26f7f40b0843475b6fd8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _objToDisable:
+  - {fileID: 7951634628605388840}
+  - {fileID: 5608699501871143578}
+  - {fileID: 2145834031721915863}
+  - {fileID: 7093000474494359961}
   _endpoints:
   - {fileID: 914316275}
   - {fileID: 5157810820651200961}
   - {fileID: 1087662126641221491}
   - {fileID: 9181464396526497412}
-  _duration: 5
+  _growDuration: 3
+  _growDrag: 8
+  _shrinkDuration: 1.2
+  _shrinkDrag: 4
 --- !u!114 &6789601401774915477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,13 +933,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bd02bf1ffdf32443b01c98fade95717, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeToDissipate: 2
+  _timeToDissipate: 0.8
   _effectToPlay: {fileID: 2904421725289851946}
-  _objsToDisable:
-  - {fileID: 7951634628605388840}
-  - {fileID: 5608699501871143578}
-  - {fileID: 2145834031721915863}
-  - {fileID: 7093000474494359961}
+  _lightning: {fileID: 2514329137218377425}
 --- !u!1 &7093000474494359961
 GameObject:
   m_ObjectHideFlags: 0
