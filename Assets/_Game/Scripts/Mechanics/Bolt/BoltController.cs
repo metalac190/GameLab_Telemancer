@@ -13,7 +13,6 @@ namespace Mechanics.Bolt
         [Header("Settings")]
         [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
         [SerializeField] private float _lifeSpan = 4;
-        [SerializeField] private bool _stopMovingOnDissipate = false;
         [Header("Warping")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
@@ -100,7 +99,7 @@ namespace Mechanics.Bolt
                     WarpInteract(interactable, contact.point, contact.normal);
                 }
             } else {
-                Dissipate();
+                Dissipate(true);
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
         }
@@ -268,7 +267,7 @@ namespace Mechanics.Bolt
             }
 
             if (dissipate) {
-                Dissipate();
+                Dissipate(true);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -280,7 +279,7 @@ namespace Mechanics.Bolt
             bool activateResidue = interactable.OnSetWarpResidue(Manager.BoltData);
             if (activateResidue) {
                 Manager.SetResidue(interactable);
-                Dissipate();
+                Dissipate(true);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -296,11 +295,11 @@ namespace Mechanics.Bolt
         {
             _timeAlive += Time.deltaTime;
             if (_timeAlive > _lifeSpan) {
-                Dissipate();
+                Dissipate(false);
             }
         }
 
-        public void Dissipate()
+        public void Dissipate(bool stopMoving)
         {
             if (!_isAlive) return;
             float dissipateTime = 0;
@@ -311,13 +310,13 @@ namespace Mechanics.Bolt
             if (dissipateTime == 0) {
                 Disable();
             } else {
-                StartCoroutine(DissipateTimer(dissipateTime));
+                StartCoroutine(DissipateTimer(stopMoving, dissipateTime));
             }
         }
 
-        private IEnumerator DissipateTimer(float timer)
+        private IEnumerator DissipateTimer(bool stopMoving, float timer)
         {
-            if (_stopMovingOnDissipate) _isAlive = false;
+            if (stopMoving) _isAlive = false;
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
