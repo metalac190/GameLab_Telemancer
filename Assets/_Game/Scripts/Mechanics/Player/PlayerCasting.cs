@@ -11,7 +11,6 @@ namespace Mechanics.Player
     /// Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
-        [SerializeField] private GameSettingsData _settings;
         [Header("External References")]
         [SerializeField] private BoltManager _boltManagerPrefab = null;
         [Header("Internal References")]
@@ -145,7 +144,7 @@ namespace Mechanics.Player
         {
             _playerFeedback.OnBoltAction(AbilityActionEnum.InputDetected);
 
-            if (_settings.clearResidueOnFire) {
+            if (PlayerState.settings.clearResidueOnFire) {
                 _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
@@ -158,13 +157,13 @@ namespace Mechanics.Player
             _lockCasting = true;
 
             // Delay Casting
-            yield return new WaitForSecondsRealtime(_settings.delayBolt);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.delayBolt);
             _boltManager.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
 
             // Time to cast
-            if (_settings.timeToFire > 0) {
-                for (float t = 0; t <= _settings.timeToFire; t += Time.deltaTime) {
-                    float delta = t / _settings.timeToFire;
+            if (PlayerState.settings.timeToFire > 0) {
+                for (float t = 0; t <= PlayerState.settings.timeToFire; t += Time.deltaTime) {
+                    float delta = t / PlayerState.settings.timeToFire;
                     CastStatus(delta);
                     HoldPosition();
                     yield return null;
@@ -201,8 +200,8 @@ namespace Mechanics.Player
         private IEnumerator CastTimer()
         {
             _lockCasting = true;
-            _playerFeedback.SetBoltCooldown(_settings.timeToNextFire);
-            yield return new WaitForSecondsRealtime(_settings.timeToNextFire);
+            _playerFeedback.SetBoltCooldown(PlayerState.settings.timeToNextFire);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextFire);
             _lockCasting = false;
         }
 
@@ -225,7 +224,7 @@ namespace Mechanics.Player
         private IEnumerator Warp()
         {
             _lockWarp = true;
-            yield return new WaitForSecondsRealtime(_settings.delayWarp);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.delayWarp);
             OnWarp();
         }
 
@@ -245,8 +244,8 @@ namespace Mechanics.Player
         private IEnumerator WarpTimer()
         {
             _lockWarp = true;
-            _playerFeedback.SetWarpCooldown(_settings.timeToNextWarp);
-            yield return new WaitForSecondsRealtime(_settings.timeToNextWarp);
+            _playerFeedback.SetWarpCooldown(PlayerState.settings.timeToNextWarp);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextWarp);
             _lockWarp = false;
         }
 
@@ -269,7 +268,7 @@ namespace Mechanics.Player
         private IEnumerator Residue()
         {
             _lockResidue = true;
-            yield return new WaitForSecondsRealtime(_settings.delayResidue);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.delayResidue);
             OnUseResidue();
         }
 
@@ -289,8 +288,8 @@ namespace Mechanics.Player
         private IEnumerator ResidueTimer()
         {
             _lockResidue = true;
-            _playerFeedback.SetResidueCooldown(_settings.timeToNextResidue);
-            yield return new WaitForSecondsRealtime(_settings.timeToNextResidue);
+            _playerFeedback.SetResidueCooldown(PlayerState.settings.timeToNextResidue);
+            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextResidue);
             _lockResidue = false;
         }
 
@@ -340,12 +339,12 @@ namespace Mechanics.Player
             if (_missingCamera) return transform.position + transform.forward;
 
             Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-            Physics.Raycast(ray, out var hit, _settings.maxLookDistance, _settings.lookAtMask, QueryTriggerInteraction.Ignore);
+            Physics.Raycast(ray, out var hit, PlayerState.settings.maxLookDistance, PlayerState.settings.lookAtMask, QueryTriggerInteraction.Ignore);
 
             if (hit.point != Vector3.zero) {
                 return hit.point;
             }
-            return _cameraLookDirection.position + _cameraLookDirection.forward * _settings.maxLookDistance;
+            return _cameraLookDirection.position + _cameraLookDirection.forward * PlayerState.settings.maxLookDistance;
         }
 
         // A simple function to get the position of the warp bolt
@@ -362,21 +361,10 @@ namespace Mechanics.Player
 
         private void NullChecks()
         {
-            GameSettingsNullCheck();
             StateNullCheck();
             FeedbackNullCheck();
             WarpBoltNullCheck();
             TransformNullCheck();
-        }
-
-        private void GameSettingsNullCheck()
-        {
-            if (_settings == null) {
-                _settings = FindObjectOfType<GameSettingsData>();
-                if (_settings == null) {
-                    _settings = new GameSettingsData();
-                }
-            }
         }
 
         private bool _missingState;

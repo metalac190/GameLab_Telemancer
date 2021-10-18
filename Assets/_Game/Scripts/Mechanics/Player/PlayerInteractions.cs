@@ -8,9 +8,8 @@ namespace Mechanics.Player
     /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
-        [SerializeField] private GameSettingsData _settings;
         [Header("References")]
-        [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private Transform _cameraTransform = null;
         [SerializeField] private PlayerFeedback _playerFeedback;
 
         #region Unity Fucntions
@@ -35,7 +34,7 @@ namespace Mechanics.Player
         {
             if (!value.performed) return;
 
-            var hit = GetRaycast(_settings.maxInteractDistance);
+            var hit = GetRaycast(PlayerState.settings.maxInteractDistance);
             if (hit.collider == null) return;
 
             hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
@@ -46,7 +45,7 @@ namespace Mechanics.Player
 
         public void LookAtInteractables()
         {
-            var hit = GetRaycast(_settings.maxLookDistance);
+            var hit = GetRaycast(PlayerState.settings.maxLookDistance);
             if (hit.collider == null) {
                 SetInteractable(InteractableEnums.Null);
                 return;
@@ -62,7 +61,7 @@ namespace Mechanics.Player
                 return;
             }
 
-            if (hit.distance < _settings.maxInteractDistance) {
+            if (hit.distance < PlayerState.settings.maxInteractDistance) {
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
@@ -90,7 +89,7 @@ namespace Mechanics.Player
 
             Ray ray = new Ray(start.position, start.forward);
 
-            Physics.Raycast(ray, out var hit, dist, _settings.lookAtMask);
+            Physics.Raycast(ray, out var hit, dist, PlayerState.settings.lookAtMask);
             return hit;
         }
 
@@ -102,18 +101,7 @@ namespace Mechanics.Player
 
         private void NullChecks()
         {
-            GameSettingsNullCheck();
             FeedbackNullCheck();
-        }
-
-        private void GameSettingsNullCheck()
-        {
-            if (_settings == null) {
-                _settings = FindObjectOfType<GameSettingsData>();
-                if (_settings == null) {
-                    _settings = new GameSettingsData();
-                }
-            }
         }
 
         private bool _missingFeedback;

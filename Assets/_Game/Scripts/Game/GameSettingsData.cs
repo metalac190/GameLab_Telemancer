@@ -35,4 +35,10 @@ public class GameSettingsData : ScriptableObject
     [Range(0, 2)] public float movementSpeed = 1;
     public float lifeSpan = 4;
     public float coyoteTime = 0.15f;
+    [Header("Bolt Visuals")]
+    public float dissipateTime = 0.8f;
+    public float growDuration = 3f;
+    public float growDrag = 8f;
+    public float shrinkDuration = 1.2f;
+    public float shrinkDrag = 4f;
 }

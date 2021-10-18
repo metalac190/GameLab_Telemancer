@@ -9,6 +9,9 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
+        [SerializeField] private GameSettingsData _playerSettings;
+        public static GameSettingsData settings;
+
         [SerializeField] private bool _unlockedBolt;
         [SerializeField] private bool _unlockedWarp;
         [SerializeField] private bool _unlockedResidue;
@@ -106,6 +109,14 @@ namespace Mechanics.Player
 
         private void NullCheck()
         {
+            if (settings != null) _playerSettings = settings;
+            if (_playerSettings == null) {
+                _playerSettings = FindObjectOfType<GameSettingsData>();
+                if (_playerSettings == null) {
+                    _playerSettings = new GameSettingsData();
+                }
+            }
+            settings = _playerSettings;
             _playerController = GetComponent<PlayerController>();
             if (_playerController == null) {
                 _playerController = FindObjectOfType<PlayerController>();

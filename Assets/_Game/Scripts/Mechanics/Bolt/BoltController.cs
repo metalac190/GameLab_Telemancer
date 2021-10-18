@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Mechanics.Player;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -9,7 +10,6 @@ namespace Mechanics.Bolt
     /// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
-        [SerializeField] private GameSettingsData _settings;
         [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
@@ -283,14 +283,14 @@ namespace Mechanics.Bolt
         {
             if (_missingRigidbody) return;
 
-            _rb.MovePosition(transform.position + _visuals.forward * _settings.movementSpeed);
+            _rb.MovePosition(transform.position + _visuals.forward * PlayerState.settings.movementSpeed);
         }
 
         private void CheckLifetime()
         {
             if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
-            if (_timeAlive > _settings.lifeSpan) {
+            if (_timeAlive > PlayerState.settings.lifeSpan) {
                 Dissipate(false, true);
             }
         }
@@ -313,10 +313,10 @@ namespace Mechanics.Bolt
             if (stopMoving) IsAlive = false;
             _timeAlive = 0;
             if (coyoteTime) {
-                yield return new WaitForSecondsRealtime(_settings.coyoteTime);
+                yield return new WaitForSecondsRealtime(PlayerState.settings.coyoteTime);
             }
             Manager.DissipateBolt();
-            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _settings.coyoteTime : dissipateTime);
+            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - PlayerState.settings.coyoteTime : dissipateTime);
             yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
@@ -353,21 +353,10 @@ namespace Mechanics.Bolt
 
         private void NullChecks()
         {
-            GameSettingsNullCheck();
             VisualsNullCheck();
             RigidbodyNullCheck();
             ColliderNullCheck();
             FeedbackNullCheck();
-        }
-
-        private void GameSettingsNullCheck()
-        {
-            if (_settings == null) {
-                _settings = FindObjectOfType<GameSettingsData>();
-                if (_settings == null) {
-                    _settings = new GameSettingsData();
-                }
-            }
         }
 
         private void VisualsNullCheck()

@@ -22,7 +22,7 @@ namespace Mechanics.Bolt
                 InstantiateVisualEffect();
             }
             if (_instantiatedObject != null) {
-                _instantiatedObject.Reset();
+                _instantiatedObject.OnReset();
                 if (_lightToDim != null) {
                     if (_lightIntensity < 0) {
                         _lightIntensity = _lightToDim.intensity;

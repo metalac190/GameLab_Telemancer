@@ -45,11 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7665573d24ffa3a418ef375152b96b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxLookDistance: 20
-  _maxInteractDistance: 3
-  _interactionMask:
-    serializedVersion: 2
-    m_Bits: 1
   _cameraTransform: {fileID: 5994795831583482220}
   _playerFeedback: {fileID: 1294586047155214018}
 --- !u!1 &2981477514693991773
@@ -152,18 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcaf2607b423247adaa734851862fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeToNextFire: 0.5
-  _timeToNextWarp: 2.5
-  _timeToNextResidue: 1.5
-  _delayBolt: 0
-  _timeToFire: 0
-  _delayWarp: 0
-  _delayResidue: 0
-  _clearResidueOnFire: 1
-  _boltLookDistance: 20
-  _lookAtMask:
-    serializedVersion: 2
-    m_Bits: 1
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 8561128953603784824}
@@ -558,12 +541,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8.5
-  airAcceleration: 35
-  jumpForce: 6.2
-  risingGravity: 20
-  fallingGravity: 20
-  floatTime: 0
   OnTeleport:
     m_PersistentCalls:
       m_Calls: []
@@ -590,9 +567,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHolder: {fileID: 6728132942592493119}
   mainCamera: {fileID: 5994795831583482223}
-  maxLookDown: 90
-  maxLookUp: 90
-  sensitivity: 10
 --- !u!114 &8561128953603784824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,6 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086b19cf45094e8478ddfe436faea9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerSettings: {fileID: 11400000, guid: 71283b11d99ccab4fafe921a00dd106d, type: 2}
   _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1

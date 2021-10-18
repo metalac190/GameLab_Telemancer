@@ -8,10 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
-    [Header("Player Settings")]
-    [SerializeField] private GameSettingsData _settings;
-
+    
     [Header("Components")]
     private CharacterController controller;
 
@@ -62,12 +59,12 @@ public class PlayerController : MonoBehaviour {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
             if(grounded) {
-                moveVelocity = (inputToMovement * _settings.moveSpeed) + (moveVelocity.y * transform.up);
+                moveVelocity = (inputToMovement * PlayerState.settings.moveSpeed) + (moveVelocity.y * transform.up);
             } else {
                 float upVelocity = moveVelocity.y;
                 moveVelocity.y = 0;
-                moveVelocity += _settings.airAcceleration * Time.fixedDeltaTime * inputToMovement;
-                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, _settings.moveSpeed);
+                moveVelocity += PlayerState.settings.airAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.settings.moveSpeed);
                 moveVelocity += upVelocity * transform.up;
             }
             #endregion
@@ -76,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 
             #region Y Axis
             if(flag_jump) { // Jump
-                moveVelocity.y = _settings.jumpForce;
+                moveVelocity.y = PlayerState.settings.jumpForce;
                 playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
@@ -89,7 +86,7 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Float());
 
             } else { // Gravity
-                moveVelocity.y -= (moveVelocity.y > 0 ? _settings.risingGravity : _settings.fallingGravity) * Time.fixedDeltaTime;
+                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.settings.risingGravity : PlayerState.settings.fallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
 
@@ -167,8 +164,8 @@ public class PlayerController : MonoBehaviour {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            if(_settings.floatTime > 0)
-                yield return new WaitForSeconds(_settings.floatTime);
+            if(PlayerState.settings.floatTime > 0)
+                yield return new WaitForSeconds(PlayerState.settings.floatTime);
             floating = false;
         } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
