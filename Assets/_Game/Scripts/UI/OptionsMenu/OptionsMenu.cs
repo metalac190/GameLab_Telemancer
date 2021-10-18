@@ -28,6 +28,7 @@ public class OptionsMenu : MonoBehaviour
     {
         // Add listener
         UIEvents.current.OnOpenOptionsMenu += OnMenuOpen;
+        UIEvents.current.OnPauseGame += delegate(bool b) { if (!b) _optionsMenu.SetActive(false); };
         
         // Ensure menu is hidden
         _optionsMenu.SetActive(false);
@@ -35,6 +36,13 @@ public class OptionsMenu : MonoBehaviour
 
     private void OnMenuOpen()
     {
+        // Set prefs to default if they don't exist
+        foreach (var pref in _prefs)
+        {
+            if (!PlayerPrefs.HasKey(pref.Key))
+                PlayerPrefs.SetFloat(pref.Key, pref.Value);
+        }
+        
         UIEvents.current.ReloadSettings();
         _optionsMenu.SetActive(true);
     }
@@ -54,7 +62,7 @@ public class OptionsMenu : MonoBehaviour
         OnMenuClose();
     }
 
-    public void RestoreDefualtSettings()
+    public void RestoreDefaultSettings()
     {
         // Set all player prefs to default values
         foreach (var pref in _prefs)
