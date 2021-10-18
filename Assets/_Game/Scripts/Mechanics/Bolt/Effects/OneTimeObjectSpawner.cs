@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Mechanics.WarpBolt.Effects
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// A helper script to instantiate an object on awake.

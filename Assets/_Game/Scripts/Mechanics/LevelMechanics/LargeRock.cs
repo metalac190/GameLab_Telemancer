@@ -1,6 +1,6 @@
-﻿using Mechanics.WarpBolt;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+using Mechanics.Bolt;
 
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing

@@ -1,7 +1,7 @@
 ﻿using AudioSystem;
 using UnityEngine;
 
-namespace Mechanics.WarpBolt
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// The sound and visual feedback script for the Bolt Controller

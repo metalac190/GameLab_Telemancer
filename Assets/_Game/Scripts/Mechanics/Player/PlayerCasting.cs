@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Mechanics.WarpBolt;
+using Mechanics.Bolt;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,7 +25,7 @@ namespace Mechanics.Player
         [SerializeField] private float _boltLookDistance = 20f;
         [SerializeField] private LayerMask _lookAtMask = 1;
         [Header("External References")]
-        [SerializeField] private BoltController _warpBolt;
+        [SerializeField] private BoltManager _boltManager;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerFeedback _playerFeedback;
@@ -46,7 +46,7 @@ namespace Mechanics.Player
             set
             {
                 if (value) {
-                    _warpBolt.Dissipate();
+                    _boltManager.Dissipate();
                 } else {
                     _lockCasting = false;
                     _lockWarp = false;
@@ -68,8 +68,8 @@ namespace Mechanics.Player
                 SetUnlocks(false, false, false);
             }
             if (!_missingWarpBolt) {
-                _warpBolt.OnResidueReady += OnResidueReady;
-                _warpBolt.OnWarpDissipate += OnBoltDissipate;
+                _boltManager.OnResidueReady += OnResidueReady;
+                _boltManager.OnBoltDissipate += OnBoltDissipate;
             }
             FlagCantAct = false;
         }
@@ -80,8 +80,8 @@ namespace Mechanics.Player
                 _playerState.OnChangeUnlocks -= SetUnlocks;
             }
             if (!_missingWarpBolt) {
-                _warpBolt.OnResidueReady -= OnResidueReady;
-                _warpBolt.OnWarpDissipate -= OnBoltDissipate;
+                _boltManager.OnResidueReady -= OnResidueReady;
+                _boltManager.OnBoltDissipate -= OnBoltDissipate;
             }
         }
 
@@ -156,7 +156,7 @@ namespace Mechanics.Player
             _playerFeedback.OnBoltAction(AbilityActionEnum.InputDetected);
 
             if (_clearResidueOnFire) {
-                _warpBolt.DisableResidue();
+                _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
             StartCoroutine(Cast());
@@ -169,7 +169,7 @@ namespace Mechanics.Player
 
             // Delay Casting
             yield return new WaitForSecondsRealtime(_delayBolt);
-            _warpBolt.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
+            _boltManager.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
 
             // Time to cast
             if (_timeToFire > 0) {
@@ -188,17 +188,17 @@ namespace Mechanics.Player
 
         private void CastStatus(float status)
         {
-            _warpBolt.SetCastStatus(status);
+            _boltManager.SetCastStatus(status);
         }
 
         private void HoldPosition()
         {
-            _warpBolt.SetPosition(GetBoltPosition(), GetBoltForward());
+            _boltManager.SetPosition(GetBoltPosition(), GetBoltForward());
         }
 
         private void Fire()
         {
-            _warpBolt.Fire(GetBoltPosition(), GetBoltForward());
+            _boltManager.Fire(GetBoltPosition(), GetBoltForward());
 
             _playerFeedback.OnBoltAction(AbilityActionEnum.Acted);
             if (_warpAbility) {
@@ -222,7 +222,7 @@ namespace Mechanics.Player
 
         private void PrepareToWarp()
         {
-            if (!_warpBolt.CanWarp) {
+            if (!_boltManager.CanWarp) {
                 _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
                 return;
             }
@@ -241,7 +241,7 @@ namespace Mechanics.Player
 
         private void OnWarp()
         {
-            if (_warpBolt.OnWarp()) {
+            if (_boltManager.OnWarp()) {
                 _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
                 _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
@@ -266,7 +266,7 @@ namespace Mechanics.Player
 
         private void PrepareForResidue()
         {
-            if (!_warpBolt.ResidueReady) {
+            if (!_boltManager.ResidueReady) {
                 _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful);
                 return;
             }
@@ -285,7 +285,7 @@ namespace Mechanics.Player
 
         private void OnUseResidue()
         {
-            if (_warpBolt.OnActivateResidue()) {
+            if (_boltManager.OnActivateResidue()) {
                 _playerFeedback.OnResidueAction(AbilityActionEnum.Acted);
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
 
@@ -413,23 +413,11 @@ namespace Mechanics.Player
 
         private void WarpBoltNullCheck()
         {
-            if (_warpBolt == null) {
-                _warpBolt = FindObjectOfType<BoltController>();
-                if (_warpBolt == null) {
-                    _missingWarpBolt = true;
-                    throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
-                }
-            }
-            _warpBolt.ExtraBoltExistsCheck();
-            PlayerController controller = GetComponent<PlayerController>();
-            if (controller == null) {
-                controller = FindObjectOfType<PlayerController>();
-                if (controller == null) {
-                    Debug.LogError("Cannot find Player Controller", gameObject);
-                }
-            }
-            if (controller != null) {
-                _warpBolt.BoltData.SetPlayerReference(controller);
+            if (_boltManager != null) return;
+            _boltManager = FindObjectOfType<BoltManager>();
+            if (_boltManager == null) {
+                _missingWarpBolt = true;
+                throw new MissingComponentException("Missing the Warp Bolt Reference on the Player Casting Script on " + gameObject);
             }
         }
 
