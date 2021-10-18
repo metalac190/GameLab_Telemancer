@@ -13,6 +13,7 @@ namespace Mechanics.Bolt
         [Header("Settings")]
         [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
         [SerializeField] private float _lifeSpan = 4;
+        [SerializeField] private bool _stopMovingOnDissipate = false;
         [Header("Warping")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
@@ -316,6 +317,10 @@ namespace Mechanics.Bolt
 
         private IEnumerator DissipateTimer(float timer)
         {
+            if (_stopMovingOnDissipate) _isAlive = false;
+            if (!_missingCollider) {
+                _collider.enabled = false;
+            }
             yield return new WaitForSecondsRealtime(timer);
             Disable();
         }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEditor.UIElements;
+using UnityEngine;
 
 namespace Mechanics.Bolt
 {
@@ -9,7 +11,11 @@ namespace Mechanics.Bolt
     {
         [SerializeField] private BoltVfxController _boltPrefab = null;
         [SerializeField] private Transform _transformOverride = null;
+        [SerializeField] private Light _lightToDim = null;
+        [SerializeField] private float _lightDimTimer = 0.5f;
+
         private BoltVfxController _instantiatedObject;
+        private float _lightIntensity = -1;
 
         private void OnEnable()
         {
@@ -18,13 +24,31 @@ namespace Mechanics.Bolt
             }
             if (_instantiatedObject != null) {
                 _instantiatedObject.Reset();
+                if (_lightToDim != null) {
+                    if (_lightIntensity < 0) {
+                        _lightIntensity = _lightToDim.intensity;
+                    }
+                    _lightToDim.intensity = _lightIntensity;
+                }
             }
         }
 
         public float Dissipate()
         {
             if (_instantiatedObject == null) return 0;
+            if (_lightToDim != null) {
+                StartCoroutine(DimLight());
+            }
             return _instantiatedObject.Dissipate();
+        }
+
+        private IEnumerator DimLight()
+        {
+            for (float t = 0; t < _lightDimTimer; t += Time.deltaTime) {
+                float delta = t / _lightDimTimer;
+                _lightToDim.intensity = delta * _lightIntensity;
+                yield return null;
+            }
         }
 
         private void InstantiateVisualEffect()
