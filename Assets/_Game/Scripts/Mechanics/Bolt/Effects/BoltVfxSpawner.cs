@@ -44,10 +44,11 @@ namespace Mechanics.Bolt
         private IEnumerator DimLight()
         {
             for (float t = 0; t < _lightDimTimer; t += Time.deltaTime) {
-                float delta = t / _lightDimTimer;
+                float delta = 1 - t / _lightDimTimer;
                 _lightToDim.intensity = delta * _lightIntensity;
                 yield return null;
             }
+            _lightToDim.intensity = 0;
         }
 
         private void InstantiateVisualEffect()
