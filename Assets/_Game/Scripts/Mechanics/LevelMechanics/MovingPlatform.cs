@@ -43,7 +43,7 @@ public class MovingPlatform : LevelActivatable
 
     protected override void OnActivate()
     {
-        _movingPlatformSound.PlayOneShot(transform.position);
+        _movingPlatformSound?.PlayOneShot(transform.position);
     }
 
     protected override void OnDeactivate()

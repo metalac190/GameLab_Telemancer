@@ -52,7 +52,7 @@ public class LargeRock : WarpResidueInteractable
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Default"))
-            _impactSound.PlayOneShot(transform.position);
+            _impactSound?.PlayOneShot(transform.position);
     }
 
     /// Called on either WarpBoltImpact or WarpResidueActivated, see WarpResidueInteractable

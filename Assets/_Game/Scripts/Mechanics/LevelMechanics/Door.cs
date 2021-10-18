@@ -19,7 +19,7 @@ public class Door : LevelActivatable
         if (transform.localPosition.y != _openY)
         {
             StartCoroutine(MoveDoor(_openY, true));
-            _openDoorSound.PlayOneShot(transform.position);
+            _openDoorSound?.PlayOneShot(transform.position);
         }
     }
 
@@ -28,7 +28,7 @@ public class Door : LevelActivatable
         if (transform.localPosition.y != _closedY)
         {
             StartCoroutine(MoveDoor(_closedY, false));
-            _closeDoorSound.PlayOneShot(transform.position);
+            _closeDoorSound?.PlayOneShot(transform.position);
         }
     }
 
