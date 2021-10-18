@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Mechanics.WarpBolt.Effects
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// The controller / animator for the lightning.

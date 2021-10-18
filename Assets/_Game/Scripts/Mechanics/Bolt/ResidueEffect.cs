@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Mechanics.WarpResidue
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// The script to implement the Residue Effect

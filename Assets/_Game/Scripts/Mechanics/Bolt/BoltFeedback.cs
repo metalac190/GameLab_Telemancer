@@ -1,12 +1,14 @@
 ﻿using AudioSystem;
 using UnityEngine;
 
-namespace Mechanics.WarpBolt
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// The sound and visual feedback script for the Bolt Controller
     public class BoltFeedback : MonoBehaviour
     {
+        [SerializeField] private BoltVfxSpawner _boltVfxSpawner = null;
+
         // @Brett should probably take over audio and hud Feedback
 
         [Header("Audio")]
@@ -16,9 +18,12 @@ namespace Mechanics.WarpBolt
         [Header("VFX on Impact")]
         [SerializeField] private VfxController _boltImpactVfx = null;
 
-        public void OnBoltDissipate(Vector3 position, Vector3 forward)
+        public float OnBoltDissipate(Vector3 position, Vector3 forward)
         {
-            // Play dissipation particles
+            if (_boltVfxSpawner != null) {
+                return _boltVfxSpawner.Dissipate();
+            }
+            return 0;
         }
 
         public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)
@@ -36,8 +41,7 @@ namespace Mechanics.WarpBolt
                 controller.AutoKill(2);
             }
 
-            if (_objectImpactSound != null)
-            {
+            if (_objectImpactSound != null) {
                 // Play Object Impact Sound
                 _objectImpactSound.PlayOneShot(transform.position);
             }
