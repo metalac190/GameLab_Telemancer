@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 //[RequireComponent(typeof(Rigidbody))]
 public class MovingPlatform : LevelActivatable
@@ -16,6 +17,9 @@ public class MovingPlatform : LevelActivatable
     [SerializeField] private float _delayTime = 2f; // how long the platform should pause at it's destination before moving again
     private float _delayStartTime;
     private float _tolerance;
+
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _movingPlatformSound = null;
 
     private void Start()
     {
@@ -39,7 +43,7 @@ public class MovingPlatform : LevelActivatable
 
     protected override void OnActivate()
     {
-        // vfx & sfx?
+        _movingPlatformSound.PlayOneShot(transform.position);
     }
 
     protected override void OnDeactivate()
