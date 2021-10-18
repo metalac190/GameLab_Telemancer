@@ -48,6 +48,9 @@ namespace Mechanics.Player
             _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
             UIEvents.current.OnPauseGame += GamePaused;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
             UpdateUnlocks();
         }
 
