@@ -34,6 +34,13 @@ public class MainMenu : MonoBehaviour
             PlayerPrefs.Save();
             SceneManager.LoadScene(0);
         }
+        
+        else if (Keyboard.current.f6Key.wasPressedThisFrame)
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            SceneManager.LoadScene(0);
+        }
     }
 
     public void NewGame()
