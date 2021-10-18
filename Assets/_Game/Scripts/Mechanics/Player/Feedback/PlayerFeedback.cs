@@ -99,9 +99,9 @@ namespace Mechanics.Player
             }
         }
 
-        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
+        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded, bool walking)
         {
-            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
+            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded, walking);
 
             if (_isPlayerGrounded != isGrounded) {
                 _isPlayerGrounded = isGrounded;
@@ -111,6 +111,20 @@ namespace Mechanics.Player
                     OnPlayerFall();
                 }
             }
+        }
+
+        #endregion
+
+        #region Player Animation Events
+
+        public void OnAnimationPoint()
+        {
+
+        }
+
+        public void OnAnimationSnap()
+        {
+            _playerSfx.OnAnimationSnap();
         }
 
         #endregion

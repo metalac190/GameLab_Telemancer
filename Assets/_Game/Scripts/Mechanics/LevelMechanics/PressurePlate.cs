@@ -95,9 +95,9 @@ public class PressurePlate : MonoBehaviour
     IEnumerator MoveButton(float newZ, bool isActive)
     {
         if (_isPressed)
-            _pressurePlateDownSound.PlayOneShot(transform.position);
+            _pressurePlateDownSound?.PlayOneShot(transform.position);
         else
-            _pressurePlateUpSound.PlayOneShot(transform.position);
+            _pressurePlateUpSound?.PlayOneShot(transform.position);
 
         while(isActive == _isPressed && newZ != _movingButton.transform.localPosition.z)
         {

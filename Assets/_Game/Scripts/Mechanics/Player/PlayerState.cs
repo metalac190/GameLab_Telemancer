@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,13 +9,11 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
-        [SerializeField] private bool _unlockedBolt = false;
-        [SerializeField] private bool _unlockedWarp = false;
-        [SerializeField] private bool _unlockedResidue = false;
-        // Temporary Checkpoint holder -- TODO: Make actual check points and a respawn script
+        [SerializeField] private bool _unlockedBolt;
+        [SerializeField] private bool _unlockedWarp;
+        [SerializeField] private bool _unlockedResidue;
         [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
         [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
-        [SerializeField] private float _respawnTime = 3;
         [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
 
         public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };

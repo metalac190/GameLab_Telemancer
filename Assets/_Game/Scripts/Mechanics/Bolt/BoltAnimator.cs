@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Mechanics.WarpBolt
+namespace Mechanics.Bolt
 {
     public class BoltAnimator : MonoBehaviour
     {
