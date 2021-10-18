@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using AudioSystem;
 
 namespace Mechanics.Bolt
 {
@@ -12,10 +13,12 @@ namespace Mechanics.Bolt
     {
         // Required basic material that uses the Custom Residue Effect Shader
         [SerializeField] private Material _residueBaseMaterial = null;
+        [SerializeField] SFXLoop residueAudioSource = null;
 
         private List<MeshRenderer> _meshRenderers;
         private List<Material> _originalMaterials;
         private List<Material> _residueMaterials;
+        private AudioSource sfxAudioSource;
 
         #region Unity Functions
 
@@ -84,6 +87,7 @@ namespace Mechanics.Bolt
                 }
                 meshRenderer.material = _residueMaterials[i];
             }
+            if(residueAudioSource) sfxAudioSource = residueAudioSource.Play(transform.position);
         }
 
         // Called by another script to disable the residue effects
@@ -92,6 +96,7 @@ namespace Mechanics.Bolt
             for (var i = 0; i < _meshRenderers.Count; i++) {
                 _meshRenderers[i].material = _originalMaterials[i];
             }
+            if(sfxAudioSource) sfxAudioSource.Stop();
         }
 
         // Called on Destroy, clears all secondary materials
