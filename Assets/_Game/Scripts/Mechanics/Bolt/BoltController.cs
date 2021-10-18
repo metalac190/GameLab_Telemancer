@@ -62,6 +62,15 @@ namespace Mechanics.Bolt
             FeedbackNullCheck();
         }
 
+        private void Start()
+        {
+            // No extra bolt controller should exist
+            if (_manager == null) {
+                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Destroy(gameObject);
+            }
+        }
+
         private void Update()
         {
             if (!_isAlive) return;
@@ -293,10 +302,21 @@ namespace Mechanics.Bolt
         public void Dissipate()
         {
             if (!_isAlive) return;
+            float dissipateTime = 0;
             if (!_missingFeedback) {
-                _feedback.OnBoltDissipate(transform.position, transform.forward);
+                dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
             Manager.DissipateBolt();
+            if (dissipateTime == 0) {
+                Disable();
+            } else {
+                StartCoroutine(DissipateTimer(dissipateTime));
+            }
+        }
+
+        private IEnumerator DissipateTimer(float timer)
+        {
+            yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
 
