@@ -9,17 +9,25 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
-        [SerializeField] private bool _unlockedBolt;
-        [SerializeField] private bool _unlockedWarp;
-        [SerializeField] private bool _unlockedResidue;
+        [Header("Abilities")]
+        [SerializeField] private bool _unlockedBolt = true;
+        [SerializeField] private bool _unlockedWarp = false;
+        [SerializeField] private bool _unlockedResidue = false;
+        [Header("Death and Respawn")]
         [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
         [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
         [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
+        [Header("References")]
+        [SerializeField] private PlayerController _playerController;
+        [SerializeField] private PlayerCasting _castingController;
+        [SerializeField] private PlayerFeedback _playerFeedback;
 
         public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };
 
-        private PlayerController _playerController;
-        private PlayerCasting _castingController;
+        private bool _boltAbility;
+        private bool _warpAbility;
+        private bool _residueAbility;
+
         private bool _isAlive = true;
         private bool _isPaused = true;
 
@@ -43,21 +51,27 @@ namespace Mechanics.Player
             UpdateUnlocks();
         }
 
-        public void SetBoltUnlock(bool unlocked)
+        public void SetWatcherLocks(bool boltLocked, bool warpLocked, bool residueLocked)
         {
-            _unlockedBolt = unlocked;
+            if (boltLocked) {
+                _boltAbility = false;
+            }
+            if (warpLocked) {
+                _warpAbility = false;
+            }
+            if (residueLocked) {
+                _residueAbility = false;
+            }
+            _playerFeedback.SetWatcherLock(true);
             UpdateUnlocks();
         }
 
-        public void SetWarpUnlock(bool unlocked)
+        public void ResetWatcherLocks()
         {
-            _unlockedWarp = unlocked;
-            UpdateUnlocks();
-        }
-
-        public void SetResidueUnlock(bool unlocked)
-        {
-            _unlockedResidue = unlocked;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
+            _playerFeedback.SetWatcherLock(false);
             UpdateUnlocks();
         }
 
@@ -101,23 +115,36 @@ namespace Mechanics.Player
 
         private void UpdateUnlocks()
         {
-            OnChangeUnlocks.Invoke(_unlockedBolt, _unlockedWarp, _unlockedResidue);
+            OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
         }
 
         private void NullCheck()
         {
-            _playerController = GetComponent<PlayerController>();
             if (_playerController == null) {
-                _playerController = FindObjectOfType<PlayerController>();
+                _playerController = GetComponent<PlayerController>();
                 if (_playerController == null) {
-                    _playerController = gameObject.AddComponent<PlayerController>();
+                    _playerController = FindObjectOfType<PlayerController>();
+                    if (_playerController == null) {
+                        _playerController = gameObject.AddComponent<PlayerController>();
+                    }
                 }
             }
-            _castingController = GetComponentInChildren<PlayerCasting>();
             if (_castingController == null) {
-                _castingController = GetComponent<PlayerCasting>();
+                _castingController = GetComponentInChildren<PlayerCasting>();
                 if (_castingController == null) {
-                    Debug.LogError("No Player Casting component found on player");
+                    _castingController = GetComponent<PlayerCasting>();
+                    if (_castingController == null) {
+                        Debug.LogError("No Player Casting component found on player");
+                    }
+                }
+            }
+            if (_playerFeedback == null) {
+                _playerFeedback = GetComponentInChildren<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _playerFeedback = GetComponent<PlayerFeedback>();
+                    if (_playerFeedback == null) {
+                        Debug.LogError("No Player Feedback component found on player");
+                    }
                 }
             }
         }

@@ -102,23 +102,13 @@ public class Watcher : MonoBehaviour
     private void OnPlayerEnteredView()
     {
         //Debug.Log("Player in view");
-        if(_DeactivateBolt)
-            _playerState.SetBoltUnlock(false);
-        if (_DeactivateWarp)
-            _playerState.SetWarpUnlock(false);
-        if (_DeactivateResidue)
-            _playerState.SetResidueUnlock(false);
+        _playerState.SetWatcherLocks(_DeactivateBolt, _DeactivateWarp, _DeactivateResidue);
     }
 
     private void OnPlayerExitedView()
     {
         //Debug.Log("Player Not in view");
-        if (_DeactivateBolt)
-            _playerState.SetBoltUnlock(true);
-        if (_DeactivateWarp)
-            _playerState.SetWarpUnlock(true);
-        if (_DeactivateResidue)
-            _playerState.SetResidueUnlock(true);
+        _playerState.ResetWatcherLocks();
     }
 
     private Vector3 DirFromAnglesXZ(float angleInDegrees, bool angleIsGlobal)
