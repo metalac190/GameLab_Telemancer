@@ -17,13 +17,9 @@ public class PlayerToHud : MonoBehaviour
         _previousTarget = type;
     }
 
-    public void InWatcherRange(bool inRange)
+    public void InWatcherRange(bool inRange) 
     {
-        if (inRange) {
-            // In sight of watcher
-        } else {
-            // No longer in sight of watcher
-        }
+        UIEvents.current.PlayerWatched(inRange);
     }
 
     public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
