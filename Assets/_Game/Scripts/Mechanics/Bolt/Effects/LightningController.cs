@@ -67,7 +67,6 @@ namespace Mechanics.Bolt
 
                 vel += Time.deltaTime / _growDuration;
                 _delta += vel / _growDrag;
-                Debug.Log("Grow: " + _delta);
                 yield return null;
             }
             for (int i = 0; i < _endpoints.Count; i++) {
@@ -93,7 +92,6 @@ namespace Mechanics.Bolt
                 }
                 vel += Time.deltaTime / _shrinkDuration;
                 _delta -= vel / _shrinkDrag;
-                Debug.Log("Shrink: " + _delta);
                 yield return null;
             }
             foreach (var point in _endpoints) {
