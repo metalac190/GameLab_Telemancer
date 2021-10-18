@@ -11,17 +11,17 @@ namespace AudioSystem
         [HideInInspector] public bool IsLoopedInfinitely = true;
         [HideInInspector] public bool FiniteLoopingEnabled = false;
 
-        public void Play(Vector3 position)
+        public AudioSource Play(Vector3 position)
         {
             SetVariationValues();
 
             if (Clip == null)
             {
                 Debug.LogWarning("SFXLoop.Play: No Clips Specified");
-                return;
+                return null;
             }
 
-            SFXManager.Instance.PlayLoop(this, position);
+            return SFXManager.Instance.PlayLoop(this, position);
         }
 
         public void Stop(AudioSource audioSource)

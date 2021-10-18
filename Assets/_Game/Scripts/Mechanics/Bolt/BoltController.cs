@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Mechanics.WarpBolt
+namespace Mechanics.Bolt
 {
     /// Summary:
     /// The main controller for the bolt warp projectile
@@ -13,6 +13,7 @@ namespace Mechanics.WarpBolt
         [Header("Settings")]
         [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
         [SerializeField] private float _lifeSpan = 4;
+        [SerializeField] private float _coyoteTime = 0.15f;
         [Header("Warping")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
@@ -23,22 +24,33 @@ namespace Mechanics.WarpBolt
         [SerializeField] private Collider _collider;
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
-        [SerializeField] private BoltData _data;
-        public BoltData BoltData => GetBoltData();
-        public bool ResidueReady { get; private set; }
-        public event Action OnResidueReady = delegate { };
-        public event Action<bool> OnWarpDissipate = delegate { };
-
-        private IWarpInteractable _residueInteractable = null;
 
         private bool _isResidue;
-        private bool _isAlive;
         private float _timeAlive;
 
-        public bool CanWarp => _isAlive;
+        private Coroutine _redirectDelayRoutine;
 
-        private Vector3 _previousPosition;
-        private Coroutine _redirectDelayRoutine = null;
+        private BoltManager _manager;
+
+        public BoltManager Manager
+        {
+            get
+            {
+                if (_manager == null) {
+                    Transform parent = transform.parent;
+                    if (parent != null) {
+                        _manager = GetComponent<BoltManager>();
+                    }
+                    if (_manager == null) {
+                        throw new MissingReferenceException("Missing Bolt Manager in scene");
+                    }
+                }
+                return _manager;
+            }
+            private set => _manager = value;
+        }
+
+        public bool IsAlive { get; private set; }
 
         // -------------------------------------------------------------------------------------------
 
@@ -50,28 +62,34 @@ namespace Mechanics.WarpBolt
             RigidbodyNullCheck();
             ColliderNullCheck();
             FeedbackNullCheck();
+        }
 
-            Disable();
-            BoltData.Direction = Vector3.zero;
+        private void Start()
+        {
+            // No extra bolt controller should exist
+            if (_manager == null) {
+                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Destroy(gameObject);
+            }
         }
 
         private void Update()
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             CheckLifetime();
         }
 
         private void FixedUpdate()
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             MoveBolt();
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
 
             var contact = other.GetContact(0);
 
@@ -83,7 +101,7 @@ namespace Mechanics.WarpBolt
                     WarpInteract(interactable, contact.point, contact.normal);
                 }
             } else {
-                Dissipate();
+                Dissipate(true, true);
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
         }
@@ -102,6 +120,11 @@ namespace Mechanics.WarpBolt
 
         #region Public Functions
 
+        public void SetManager(BoltManager manager)
+        {
+            Manager = manager;
+        }
+
         public void Redirect(Transform reference, float timer)
         {
             Redirect(reference.position, reference.rotation, timer);
@@ -119,10 +142,8 @@ namespace Mechanics.WarpBolt
         // Called when the player presses the "cast bolt" button
         public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
-            if (!_missingVisuals) {
-                _visuals.gameObject.SetActive(true);
-                SetPosition(position, forward);
-            }
+            _visuals.gameObject.SetActive(true);
+            SetPosition(position, forward);
             if (_redirectDelayRoutine != null) {
                 StopCoroutine(_redirectDelayRoutine);
                 _redirectDelayRoutine = null;
@@ -135,9 +156,7 @@ namespace Mechanics.WarpBolt
         public void SetPosition(Vector3 position, Vector3 forward)
         {
             transform.position = position;
-            if (!_missingVisuals) {
-                _visuals.forward = forward;
-            }
+            _visuals.forward = forward;
         }
 
         // Size should go from 0 to 1 as the player is casting the bolt
@@ -149,11 +168,8 @@ namespace Mechanics.WarpBolt
         // Set the bolts position and direction and fire the bolt
         public void Fire(Vector3 position, Vector3 forward)
         {
-            BoltData.Direction = forward;
             transform.position = position;
-            if (!_missingVisuals) {
-                _visuals.forward = forward;
-            }
+            _visuals.forward = forward;
             if (!_missingCollider) {
                 _collider.enabled = true;
             }
@@ -162,27 +178,14 @@ namespace Mechanics.WarpBolt
                 _rb.velocity = Vector3.zero;
                 _rb.angularVelocity = Vector3.zero;
             }
-            _isAlive = true;
+            IsAlive = true;
             _timeAlive = 0;
         }
 
         // Warp to the bolt's position
         public bool OnWarp()
         {
-            return _isAlive && Warp();
-        }
-
-        public bool CanUseResidue()
-        {
-            return ResidueReady && _residueInteractable != null;
-        }
-
-        public bool OnActivateResidue()
-        {
-            if (!ResidueReady || _residueInteractable == null) return false;
-            _residueInteractable.OnActivateWarpResidue(BoltData);
-            DisableResidue();
-            return true;
+            return Warp();
         }
 
         #endregion
@@ -195,7 +198,8 @@ namespace Mechanics.WarpBolt
         {
             if (WarpCollisionTesting()) return false;
 
-            _data.PlayerController.TeleportToPosition(transform.position, Vector3.down);
+            // TODO: Fix this line
+            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down);
             Disable();
             return true;
         }
@@ -254,33 +258,30 @@ namespace Mechanics.WarpBolt
         {
             transform.position = position;
             _visuals.forward = rotation * Vector3.forward;
-            _data.Direction = rotation * Vector3.forward;
             _timeAlive = 0;
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
-            bool dissipate = interactable.OnWarpBoltImpact(BoltData);
+            bool dissipate = interactable.OnWarpBoltImpact(Manager.BoltData);
             if (!_missingFeedback) {
                 _feedback.OnWarpInteract();
             }
 
             if (dissipate) {
-                Dissipate();
+                Dissipate(true, false);
                 PlayCollisionParticles(position, normal, true);
             }
         }
 
         private void SetResidue(IWarpInteractable interactable, Vector3 position, Vector3 normal)
         {
-            DisableResidue();
+            Manager.DisableResidue();
 
-            bool activateResidue = interactable.OnSetWarpResidue(BoltData);
+            bool activateResidue = interactable.OnSetWarpResidue(Manager.BoltData);
             if (activateResidue) {
-                ResidueReady = true;
-                OnResidueReady?.Invoke();
-                _residueInteractable = interactable;
-                Dissipate();
+                Manager.SetResidue(interactable);
+                Dissipate(true, false);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -288,33 +289,42 @@ namespace Mechanics.WarpBolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
-            _previousPosition = transform.position;
 
-            _rb.MovePosition(transform.position + BoltData.Direction * _movementSpeed);
+            _rb.MovePosition(transform.position + _visuals.forward * _movementSpeed);
         }
 
         private void CheckLifetime()
         {
+            if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
             if (_timeAlive > _lifeSpan) {
-                Dissipate();
+                Dissipate(false, true);
             }
         }
 
-        public void DisableResidue()
+        public void Dissipate(bool stopMoving, bool coyoteTime)
         {
-            _residueInteractable?.OnDisableWarpResidue();
-            _residueInteractable = null;
-            ResidueReady = false;
-        }
-
-        public void Dissipate()
-        {
-            if (!_isAlive) return;
+            if (!IsAlive) return;
+            float dissipateTime = 0;
             if (!_missingFeedback) {
-                _feedback.OnBoltDissipate(transform.position, transform.forward);
+                dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
             }
-            OnWarpDissipate?.Invoke(ResidueReady);
+            StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
+        }
+
+        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)
+        {
+            if (!_missingCollider) {
+                _collider.enabled = false;
+            }
+            if (stopMoving) IsAlive = false;
+            _timeAlive = 0;
+            if (coyoteTime) {
+                yield return new WaitForSecondsRealtime(_coyoteTime);
+            }
+            Manager.DissipateBolt();
+            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _coyoteTime : dissipateTime);
+            yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
 
@@ -327,24 +337,19 @@ namespace Mechanics.WarpBolt
 
         private void Disable()
         {
-            if (!_missingVisuals) {
-                _visuals.gameObject.SetActive(false);
-            }
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
-            _isAlive = false;
+            IsAlive = false;
+            Manager.AddController(this);
         }
 
         private void Enable()
         {
-            if (!_missingVisuals) {
-                _visuals.gameObject.SetActive(true);
-            }
             if (!_missingCollider) {
                 _collider.enabled = true;
             }
-            _isAlive = true;
+            IsAlive = true;
         }
 
         #endregion
@@ -353,27 +358,6 @@ namespace Mechanics.WarpBolt
 
         #region NullCheck
 
-        private BoltData GetBoltData()
-        {
-            if (_data == null) {
-                _data = (BoltData)ScriptableObject.CreateInstance("BoltData");
-                _data.SetWarpBoltReference(this);
-            }
-            return _data;
-        }
-
-        public void ExtraBoltExistsCheck()
-        {
-            var others = FindObjectsOfType<BoltController>();
-            foreach (var bolt in others) {
-                if (bolt == this) continue;
-                Debug.LogWarning("Too many warp bolts exist in scene: " + gameObject.name + " and " + bolt.gameObject.name, gameObject);
-                Destroy(bolt.gameObject);
-            }
-        }
-
-        private bool _missingVisuals;
-
         private void VisualsNullCheck()
         {
             if (_visuals == null) {
@@ -381,7 +365,7 @@ namespace Mechanics.WarpBolt
                 if (_visuals == null) {
                     _visuals = transform.Find("Art");
                     if (_visuals == null) {
-                        _missingVisuals = true;
+                        _visuals = transform;
                         Debug.LogWarning("Cannot find Warp Bolt Visuals", gameObject);
                     }
                 }

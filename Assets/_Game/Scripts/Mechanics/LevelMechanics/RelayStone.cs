@@ -1,6 +1,6 @@
-﻿using Mechanics.WarpBolt;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Bolt;
 using UnityEngine;
 
 public class RelayStone : WarpResidueInteractable

@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour {
 
     [SerializeField] private Transform cameraHolder;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private float maxLookDown = 25f;
+    [SerializeField] private float maxLookUp = 60f;
     public float sensitivity = 1;
 
     private float xRotation; // Rotation around x-axis (vertical)
@@ -36,7 +38,7 @@ public class CameraController : MonoBehaviour {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
-            xRotation = Mathf.Clamp(xRotation - mouse.y, -90f, 90f);
+            xRotation = Mathf.Clamp(xRotation - mouse.y, -maxLookUp, maxLookDown);
             cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
     }

@@ -11,6 +11,9 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _playerJumpSound = null;
     [SerializeField] private SFXOneShot _playerLandSound = null;
     [SerializeField] private SFXOneShot _playerDeathSound = null;
+    [SerializeField] private SFXOneShot _playerSnapSound = null;
+    [SerializeField] private SFXLoop _playerWalkingSound = null;
+    private bool isWalking = false;
 
     private void Start()
     {
@@ -44,9 +47,28 @@ public class PlayerSfx : MonoBehaviour
     }
 
     // Can be used for footsteps or slight wind noise when moving through air quickly
-    public void SetPlayerMovementSpeed(Vector3 speed, bool grounded)
+    public void SetPlayerMovementSpeed(Vector3 speed, bool grounded, bool walking)
     {
+        if(walking)
+        {
+            if (!isWalking)
+            {
+                isWalking = true;
+                _playerWalkingSound.Play(transform.position);
+            }
+        }
+        else
+        {
+            isWalking = false;
+        }
+    }
 
+    public void OnAnimationSnap()
+    {
+        if (_playerSnapSound != null)
+        {
+            _playerSnapSound.PlayOneShot(transform.position);
+        }
     }
     
     public void OnBoltReady()
