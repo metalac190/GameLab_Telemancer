@@ -22,6 +22,7 @@ namespace Mechanics.Bolt
         [Header("References")]
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
+        public Collider Collider { get { return _collider; } }
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
 
