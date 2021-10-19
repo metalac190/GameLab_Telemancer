@@ -12,7 +12,7 @@ public class LightningAdjuster : MonoBehaviour
 
     private float _timeStart;
     private float _timeStop;
-    [SerializeField] float _duration;
+    [SerializeField] float _duration = 0;
     [SerializeField] float interpolator = 0f;
 
     private void OnEnable()

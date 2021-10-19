@@ -8,8 +8,8 @@ public class LevelMusicTrigger : MonoBehaviour
 {
     public UnityEvent OnTriggerMusic;
     public UnityEvent OnStopMusic;
-    [SerializeField] Button deathButton;
-    [SerializeField] Button restartButton;
+    [SerializeField] Button deathButton = null;
+    [SerializeField] Button restartButton = null;
 
     private void Start()
     {

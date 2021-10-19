@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class Xhair : MonoBehaviour
 {
     private float _maxPercentFilled = 0.19f;
-    [SerializeField] private Image _chargeBarL, _chargeBarR;
+    [SerializeField] private Image _chargeBarL = null, _chargeBarR = null;
 
     public IEnumerator FillBoltStatusBar(float duration)
     {

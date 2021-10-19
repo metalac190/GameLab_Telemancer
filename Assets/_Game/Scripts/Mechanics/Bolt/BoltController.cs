@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using Mechanics.Player;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -10,11 +10,7 @@ namespace Mechanics.Bolt
     /// Calls OnWarpBoltImpact() on objects that implement IWarpInteractable
     public class BoltController : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] [Range(0, 2)] private float _movementSpeed = 1;
-        [SerializeField] private float _lifeSpan = 4;
-        [SerializeField] private float _coyoteTime = 0.15f;
-        [Header("Warping")]
+        [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
@@ -27,8 +23,10 @@ namespace Mechanics.Bolt
 
         private bool _isResidue;
         private float _timeAlive;
+        private bool _stopMoving;
 
         private Coroutine _redirectDelayRoutine;
+        private Coroutine _dissipateRoutine;
 
         private BoltManager _manager;
 
@@ -58,10 +56,7 @@ namespace Mechanics.Bolt
 
         private void OnEnable()
         {
-            VisualsNullCheck();
-            RigidbodyNullCheck();
-            ColliderNullCheck();
-            FeedbackNullCheck();
+            NullChecks();
         }
 
         private void Start()
@@ -101,7 +96,7 @@ namespace Mechanics.Bolt
                     WarpInteract(interactable, contact.point, contact.normal);
                 }
             } else {
-                Dissipate(true, true);
+                Dissipate(true);
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
         }
@@ -171,7 +166,7 @@ namespace Mechanics.Bolt
         // Warp to the bolt's position
         public bool OnWarp()
         {
-            return Warp();
+            return IsAlive && Warp();
         }
 
         #endregion
@@ -254,7 +249,7 @@ namespace Mechanics.Bolt
             }
 
             if (dissipate) {
-                Dissipate(true, false);
+                Dissipate(true);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -266,50 +261,71 @@ namespace Mechanics.Bolt
             bool activateResidue = interactable.OnSetWarpResidue(Manager.BoltData);
             if (activateResidue) {
                 Manager.SetResidue(interactable);
-                Dissipate(true, false);
+                Dissipate(true);
+                IsAlive = false;
                 PlayCollisionParticles(position, normal, true);
             }
         }
 
         private void MoveBolt()
         {
-            if (_missingRigidbody) return;
+            if (_stopMoving || _missingRigidbody) return;
 
-            _rb.MovePosition(transform.position + _visuals.forward * _movementSpeed);
+            _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
         }
 
         private void CheckLifetime()
         {
             if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
-            if (_timeAlive > _lifeSpan) {
-                Dissipate(false, true);
+            if (_timeAlive > PlayerState.Settings.BoltLifeSpan) {
+                LifetimeDissipate();
             }
         }
 
-        public void Dissipate(bool stopMoving, bool coyoteTime)
+        public void LifetimeDissipate()
         {
             if (!IsAlive) return;
-            float dissipateTime = 0;
+            float dissipateTime = PlayerState.Settings.BoltAirFizzleTime;
             if (!_missingFeedback) {
-                dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
+                _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
             }
-            StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
+            _dissipateRoutine = StartCoroutine(LifetimeDissipateTimer(dissipateTime));
         }
 
-        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)
+        public IEnumerator LifetimeDissipateTimer(float dissipateTime)
+        {
+            _timeAlive = -2;
+            yield return new WaitForSecondsRealtime(dissipateTime);
+            Manager.DissipateBolt();
+            Disable();
+        }
+
+        public void Dissipate(bool stopMoving)
+        {
+            if (!IsAlive) return;
+            float dissipateTime = PlayerState.Settings.BoltHitFizzleTime;
+            if (!_missingFeedback) {
+                _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
+            }
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
+            _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving));
+        }
+
+        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving)
         {
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
-            if (stopMoving) IsAlive = false;
             _timeAlive = 0;
-            if (coyoteTime) {
-                yield return new WaitForSecondsRealtime(_coyoteTime);
-            }
+            if (stopMoving) _stopMoving = true;
+            yield return new WaitForSecondsRealtime(dissipateTime);
             Manager.DissipateBolt();
-            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - _coyoteTime : dissipateTime);
-            yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
 
@@ -341,6 +357,7 @@ namespace Mechanics.Bolt
             }
             IsAlive = true;
             _timeAlive = 0;
+            _stopMoving = false;
         }
 
         #endregion
@@ -348,6 +365,14 @@ namespace Mechanics.Bolt
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
+
+        private void NullChecks()
+        {
+            VisualsNullCheck();
+            RigidbodyNullCheck();
+            ColliderNullCheck();
+            FeedbackNullCheck();
+        }
 
         private void VisualsNullCheck()
         {

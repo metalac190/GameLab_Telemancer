@@ -3,8 +3,8 @@ using UnityEngine.Audio;
 
 public class VolumeSlider : OptionSlider
 {
-    [SerializeField] AudioMixerGroup mixer;
-    [SerializeField] string parameterName;
+    [SerializeField] AudioMixerGroup mixer = null;
+    [SerializeField] string parameterName = "";
 
      protected override void SetText(string s)
      {

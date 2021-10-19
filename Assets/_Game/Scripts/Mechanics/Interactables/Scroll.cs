@@ -11,17 +11,17 @@ using Mechanics.Player;
 /// </summary>
 public class Scroll : MonoBehaviour, IPlayerInteractable
 {
-    [SerializeField] private VisualEffect _disintigrateVFX;
-    [SerializeField] private GameObject _chainsGroup;
-    [SerializeField] private GameObject _scroll;
-    [SerializeField] private float _pauseLength;
-    [SerializeField] private SFXOneShot scrollOpenSFX;
+    [SerializeField] private VisualEffect _disintigrateVFX = null;
+    [SerializeField] private GameObject _chainsGroup = null;
+    [SerializeField] private GameObject _scroll = null;
+    [SerializeField] private float _pauseLength = 1;
+    [SerializeField] private SFXOneShot scrollOpenSFX = null;
     [SerializeField] private int loadingScreenID = 1;
     private int nextlevelID;
 
     enum unlockEnum { WarpBolt, Residue }
 
-    [SerializeField] private unlockEnum _scrollUnlock;
+    [SerializeField] private unlockEnum _scrollUnlock = unlockEnum.WarpBolt;
 
     private bool _used;
 
