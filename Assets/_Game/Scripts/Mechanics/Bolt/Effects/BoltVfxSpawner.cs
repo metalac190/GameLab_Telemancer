@@ -32,6 +32,12 @@ namespace Mechanics.Bolt
             }
         }
 
+        public void SetBoltCastDelta(float delta)
+        {
+            if (_boltPrefab == null) return;
+            //_boltPrefab.SetRate(delta);
+        }
+
         public float Dissipate()
         {
             if (_instantiatedObject == null) return 0;

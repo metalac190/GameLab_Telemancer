@@ -13,7 +13,7 @@ public class VolumeSlider : OptionSlider
 
     protected override void SetValue(int n)
     {
-        float volume = n - 80;
+        float volume = -80.0f + (80.0f * ((float)n / 100f));
         mixer.audioMixer.SetFloat(parameterName, volume);
         base.SetValue(n);
     }
