@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class StatsMenu : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _fpsValue;
-    [SerializeField] private TextMeshProUGUI _speedometerValue;
-    [SerializeField] private TextMeshProUGUI _timerValue;
-    [SerializeField] private TextMeshProUGUI _positionValue;
-    [SerializeField] private TextMeshProUGUI _boltCounterValue;
+    [SerializeField] private TextMeshProUGUI _fpsValue = null;
+    [SerializeField] private TextMeshProUGUI _speedometerValue = null;
+    [SerializeField] private TextMeshProUGUI _timerValue = null;
+    [SerializeField] private TextMeshProUGUI _positionValue = null;
+    [SerializeField] private TextMeshProUGUI _boltCounterValue = null;
     private CharacterController _player;
 
     private int _framesPerSecond;

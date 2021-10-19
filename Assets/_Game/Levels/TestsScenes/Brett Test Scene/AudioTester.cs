@@ -7,9 +7,9 @@ using UnityEngine.Events;
 
 public class AudioTester : MonoBehaviour
 {
-    [SerializeField] MusicEvent songA;
-    [SerializeField] MusicEvent songB;
-    [SerializeField] MusicEvent songC;
+    [SerializeField] MusicEvent songA = null;
+    [SerializeField] MusicEvent songB = null;
+    [SerializeField] MusicEvent songC = null;
 
     [SerializeField] int decreaseMusicLayerTransitionTime = 0;
     [SerializeField] int increaseMusicLayerTransitionTime = 0;

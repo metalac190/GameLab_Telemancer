@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WarpRod : WarpResidueInteractable
 {
-    [SerializeField] private GameObject _warpPad;
+    [SerializeField] private GameObject _warpPad = null;
     [SerializeField] private Vector3 _teleportOffset = Vector3.up;
 
     public override bool OnWarpBoltImpact(BoltData data)

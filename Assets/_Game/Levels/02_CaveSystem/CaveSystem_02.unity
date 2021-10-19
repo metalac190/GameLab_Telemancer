@@ -3069,7 +3069,7 @@ PrefabInstance:
     - target: {fileID: 3038663871758795276, guid: d615f732450d9114ea184f84d825caea,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3038663871758795276, guid: d615f732450d9114ea184f84d825caea,
         type: 3}
@@ -4170,7 +4170,7 @@ PrefabInstance:
     - target: {fileID: 894223742158604224, guid: 24497e9acabc4314db847c8a1f784678,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 894223742158604224, guid: 24497e9acabc4314db847c8a1f784678,
         type: 3}
@@ -7576,7 +7576,7 @@ PrefabInstance:
     - target: {fileID: 5607188651922326400, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5607188651922326400, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
@@ -7596,17 +7596,22 @@ PrefabInstance:
     - target: {fileID: 5713144122952426576, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 1
+      value: 7.76e-43
       objectReference: {fileID: 0}
     - target: {fileID: 5713144122952426576, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 2.69e-43
+      value: 1.4033e-41
       objectReference: {fileID: 0}
     - target: {fileID: 5713144122952426576, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 5.38e-43
+      value: 0.0000000017880097
+      objectReference: {fileID: 0}
+    - target: {fileID: 5713144122952426576, guid: 4f7352bdba6514041afc82609af23826,
+        type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 446
       objectReference: {fileID: 0}
     - target: {fileID: 8951159344924019525, guid: 4f7352bdba6514041afc82609af23826,
         type: 3}
@@ -7665,7 +7670,7 @@ PrefabInstance:
     - target: {fileID: 6126323905653601171, guid: e130c5725435e624a8b85027a582f081,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6126323905653601171, guid: e130c5725435e624a8b85027a582f081,
         type: 3}
@@ -8787,7 +8792,7 @@ PrefabInstance:
     - target: {fileID: 7801277640439604079, guid: 9b55ce94b4858244daef433a9d46afe7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7801277640439604079, guid: 9b55ce94b4858244daef433a9d46afe7,
         type: 3}
@@ -9206,6 +9211,107 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!114 &1823440613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 10
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: 8253d41e6e8b11a4cbe77a4f8f82934d, type: 3}
+  enableBackplate:
+    m_OverrideState: 0
+    m_Value: 0
+  backplateType:
+    m_OverrideState: 0
+    m_Value: 0
+  groundLevel:
+    m_OverrideState: 0
+    m_Value: 0
+  scale:
+    m_OverrideState: 0
+    m_Value: {x: 32, y: 32}
+  projectionDistance:
+    m_OverrideState: 0
+    m_Value: 16
+    min: 0.0000001
+  plateRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  blendAmount:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 100
+  shadowTint:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  pointLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  dirLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  rectLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!43 &1828747461
 Mesh:
   m_ObjectHideFlags: 0
@@ -11005,7 +11111,7 @@ PrefabInstance:
     - target: {fileID: 3314714922803782799, guid: 4b4434431b532d94c9ac6fd6d6915557,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3314714922803782799, guid: 4b4434431b532d94c9ac6fd6d6915557,
         type: 3}
