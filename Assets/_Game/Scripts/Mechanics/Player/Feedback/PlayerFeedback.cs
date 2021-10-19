@@ -74,7 +74,7 @@ namespace Mechanics.Player
         public void OnPlayerJump()
         {
             _isJumping = true;
-            _playerSfx.OnPlayerLand();
+            _playerSfx.OnPlayerJump();
             if (!_missingAnimator) {
                 _playerAnimator.OnJump();
             }
@@ -99,9 +99,9 @@ namespace Mechanics.Player
             }
         }
 
-        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded)
+        public void SetPlayerVelocity(Vector3 velocity, bool isGrounded, bool walking)
         {
-            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded);
+            _playerSfx.SetPlayerMovementSpeed(velocity, isGrounded, walking);
 
             if (_isPlayerGrounded != isGrounded) {
                 _isPlayerGrounded = isGrounded;
@@ -115,7 +115,26 @@ namespace Mechanics.Player
 
         #endregion
 
+        #region Player Animation Events
+
+        public void OnAnimationPoint()
+        {
+        }
+
+        public void OnAnimationSnap()
+        {
+            _playerSfx.OnAnimationSnap();
+        }
+
+        #endregion
+
         #region Abilities
+
+        public void SetWatcherLock(bool locked)
+        {
+            _playerToHud.InWatcherRange(locked);
+            _playerSfx.InWatcherRange(locked);
+        }
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)

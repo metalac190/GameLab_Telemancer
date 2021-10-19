@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 public class PressurePlate : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class PressurePlate : MonoBehaviour
     [SerializeField] private float _buttonOnPos = -0.001f;
     [SerializeField] private float _buttonOffPos = 0.0004f;
     [SerializeField] private float _buttonMoveSpeed = 2f;
+
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _pressurePlateDownSound = null;
+    [SerializeField] private SFXOneShot _pressurePlateUpSound = null;
 
     private void Awake()
     {
@@ -89,6 +94,11 @@ public class PressurePlate : MonoBehaviour
     
     IEnumerator MoveButton(float newZ, bool isActive)
     {
+        if (_isPressed)
+            _pressurePlateDownSound?.PlayOneShot(transform.position);
+        else
+            _pressurePlateUpSound?.PlayOneShot(transform.position);
+
         while(isActive == _isPressed && newZ != _movingButton.transform.localPosition.z)
         {
             float newPos = Mathf.Lerp(_movingButton.transform.localPosition.z, newZ, Time.fixedDeltaTime * _buttonMoveSpeed);

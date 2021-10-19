@@ -1,5 +1,4 @@
-﻿using Mechanics.WarpBolt;
-using Mechanics.WarpResidue;
+﻿using Mechanics.Bolt;
 using UnityEngine;
 
 /// Summary:

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 public class Door : LevelActivatable
 {
@@ -9,14 +10,26 @@ public class Door : LevelActivatable
     [SerializeField] private float _openY = 0;
     [SerializeField] private float _closedY = 0;
 
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _openDoorSound = null;
+    [SerializeField] private SFXOneShot _closeDoorSound = null;
+
     protected override void OnActivate()
     {
-        StartCoroutine(MoveDoor(_openY, true));
+        if (transform.localPosition.y != _openY)
+        {
+            StartCoroutine(MoveDoor(_openY, true));
+            _openDoorSound?.PlayOneShot(transform.position);
+        }
     }
 
     protected override void OnDeactivate()
     {
-        StartCoroutine(MoveDoor(_closedY, false));
+        if (transform.localPosition.y != _closedY)
+        {
+            StartCoroutine(MoveDoor(_closedY, false));
+            _closeDoorSound?.PlayOneShot(transform.position);
+        }
     }
 
     protected override void OnReset()

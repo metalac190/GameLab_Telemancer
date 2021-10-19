@@ -1,6 +1,7 @@
-﻿using Mechanics.WarpBolt;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+using AudioSystem;
+using Mechanics.Bolt;
 
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing
@@ -13,7 +14,17 @@ public class LargeRock : WarpResidueInteractable
     private Vector3 _spawnPos = new Vector3();
     private Quaternion _spawnRot = new Quaternion();
 
+    [Header("Position Thresholds")]
+    [SerializeField] private float MaxX = 100;
+    [SerializeField] private float MaxY = 100;
+    [SerializeField] private float MaxZ = 100;
+
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _impactSound = null;
+    [SerializeField] private float timeToWaitForSound = .5f;
+
     private Rigidbody _rb = null;
+
 
     private void Start()
     {
@@ -24,13 +35,26 @@ public class LargeRock : WarpResidueInteractable
 
     private void OnEnable()
     {
-        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+        UIEvents.current.OnPlayerRespawn += Reset;
     }
 
     private void OnDisable()
     {
         if(UIEvents.current != null)
-            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
+            UIEvents.current.OnPlayerRespawn -= Reset;
+    }
+
+    private void Update()
+    {
+        Vector3 distance = transform.position - _spawnPos;
+        if (Mathf.Abs(distance.x) > MaxX || Mathf.Abs(distance.y) > MaxY || Mathf.Abs(distance.z) > MaxZ)
+            Reset();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (Time.timeSinceLevelLoad > timeToWaitForSound && collision.gameObject.layer == LayerMask.NameToLayer("Default"))
+            _impactSound?.PlayOneShot(transform.position);
     }
 
     /// Called on either WarpBoltImpact or WarpResidueActivated, see WarpResidueInteractable
@@ -45,7 +69,7 @@ public class LargeRock : WarpResidueInteractable
 
     // The other 3 functions can be inherited from for extra capabilities
 
-    public void OnPlayerRespawn()
+    public void Reset()
     {
         _rb.velocity = new Vector3(0, 0, 0);
         transform.position = _spawnPos;
