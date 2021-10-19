@@ -24,12 +24,11 @@ namespace Mechanics.Bolt
             _boltVfxSpawner.SetBoltCastDelta(delta);
         }
 
-        public float OnBoltDissipate(Vector3 position, Vector3 forward)
+        public void OnBoltDissipate(Vector3 position, Vector3 forward, float dissipateTime)
         {
             if (_boltVfxSpawner != null) {
-                return _boltVfxSpawner.Dissipate();
+                _boltVfxSpawner.Dissipate(dissipateTime);
             }
-            return 0;
         }
 
         public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)

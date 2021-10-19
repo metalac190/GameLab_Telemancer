@@ -6,10 +6,10 @@ using Yarn.Unity;
 public class TranslateDialogue : MonoBehaviour
 {
     bool triggered = false;
-    [SerializeField] private GameObject untranslatedTxt, translatedTxt;
-    [SerializeField] private Material untranslatedMat, translatedMat;
+    [SerializeField] private GameObject untranslatedTxt = null, translatedTxt = null;
+    [SerializeField] private Material untranslatedMat = null, translatedMat = null;
     [ColorUsageAttribute(true, true)]
-    [SerializeField] private Color color;
+    [SerializeField] private Color color = Color.white;
     private Material utM, tM;
     [SerializeField] private float fadeTime = 1, waitTime = 1;
 
