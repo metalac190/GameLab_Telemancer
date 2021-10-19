@@ -23,6 +23,7 @@ namespace Mechanics.Bolt
 
         private bool _isResidue;
         private float _timeAlive;
+        private bool _stopMoving;
 
         private Coroutine _redirectDelayRoutine;
         private Coroutine _dissipateRoutine;
@@ -95,7 +96,7 @@ namespace Mechanics.Bolt
                     WarpInteract(interactable, contact.point, contact.normal);
                 }
             } else {
-                Dissipate(true, true);
+                Dissipate(true);
                 PlayCollisionParticles(contact.point, contact.normal, false);
             }
         }
@@ -165,7 +166,7 @@ namespace Mechanics.Bolt
         // Warp to the bolt's position
         public bool OnWarp()
         {
-            return Warp();
+            return IsAlive && Warp();
         }
 
         #endregion
@@ -248,7 +249,7 @@ namespace Mechanics.Bolt
             }
 
             if (dissipate) {
-                Dissipate(true, false);
+                Dissipate(true);
                 PlayCollisionParticles(position, normal, true);
             }
         }
@@ -260,14 +261,14 @@ namespace Mechanics.Bolt
             bool activateResidue = interactable.OnSetWarpResidue(Manager.BoltData);
             if (activateResidue) {
                 Manager.SetResidue(interactable);
-                Dissipate(true, false);
+                Dissipate(true);
                 PlayCollisionParticles(position, normal, true);
             }
         }
 
         private void MoveBolt()
         {
-            if (_missingRigidbody) return;
+            if (_stopMoving || _missingRigidbody) return;
 
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.settings.movementSpeed);
         }
@@ -302,32 +303,28 @@ namespace Mechanics.Bolt
             Disable();
         }
 
-        public void Dissipate(bool stopMoving, bool coyoteTime)
+        public void Dissipate(bool stopMoving)
         {
             if (!IsAlive) return;
-            float dissipateTime = PlayerState.settings.airDissipateTime;
+            float dissipateTime = PlayerState.settings.hitDissipateTime;
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
             }
             if (_dissipateRoutine != null) {
                 StopCoroutine(_dissipateRoutine);
             }
-            _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
+            _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving));
         }
 
-        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)
+        private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving)
         {
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
-            if (stopMoving) IsAlive = false;
             _timeAlive = 0;
-            if (coyoteTime) {
-                yield return new WaitForSecondsRealtime(PlayerState.settings.coyoteTime);
-            }
+            if (stopMoving) _stopMoving = true;
+            yield return new WaitForSecondsRealtime(dissipateTime);
             Manager.DissipateBolt();
-            float timer = Mathf.Max(0, coyoteTime ? dissipateTime - PlayerState.settings.coyoteTime : dissipateTime);
-            yield return new WaitForSecondsRealtime(timer);
             Disable();
         }
 
@@ -359,6 +356,7 @@ namespace Mechanics.Bolt
             }
             IsAlive = true;
             _timeAlive = 0;
+            _stopMoving = false;
         }
 
         #endregion

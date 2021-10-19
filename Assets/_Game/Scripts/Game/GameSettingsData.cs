@@ -35,7 +35,6 @@ public class GameSettingsData : ScriptableObject
     [Range(0, 2)] public float movementSpeed = 0.32f;
     public float lifeSpan = 1;
     public float airDissipateTime = 0.8f;
-    public float coyoteTime = 0.2f;
     [Header("Bolt Visuals")]
     public float maxLightDistance = 8f;
     public float hitDissipateTime = 0.8f;
