@@ -15,6 +15,8 @@ namespace Mechanics.Player
         [Header("References")]
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private PlayerFeedback _playerFeedback;
+        private bool _isHovering = false;
+        private IHoverInteractable _hoverObj;
 
         #region Unity Fucntions
 
@@ -69,8 +71,21 @@ namespace Mechanics.Player
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
+
+                    // If object is type Hover, save reference and call function
+                    if(interactionObject.GetComponent<IHoverInteractable>() != null && !_isHovering)
+                    {
+                        _isHovering = true;
+                        _hoverObj = interactionObject.GetComponent<IHoverInteractable>();
+                        _hoverObj.OnBeginHover();
+                    }
                     return;
                 }
+            }
+            else if(_isHovering)
+            {
+                _isHovering = false;
+                _hoverObj.OnEndHover();
             }
         }
 

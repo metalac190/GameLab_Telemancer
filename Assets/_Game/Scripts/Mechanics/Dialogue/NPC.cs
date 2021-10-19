@@ -1,21 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Yarn.Unity;
 
-public class NPC : MonoBehaviour {
+public class NPC : MonoBehaviour, IHoverInteractable
+{
 
-        public string characterName = "";
+    public string characterName = "";
+    public string talkToNode = "";
+    private DialogueRunner runner;
 
-        public string talkToNode = "";
+    [Header("Optional")]
+    public YarnProgram scriptToLoad;
+    public GameObject interactablePopup;
 
-        [Header("Optional")]
-        public YarnProgram scriptToLoad;
+    void Start()
+    {
+        if (runner == null)
+            runner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
 
-        void Start () {
-            if (scriptToLoad != null) {
-                DialogueRunner dialogueRunner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
-                dialogueRunner.Add(scriptToLoad);                
-            }
-        }
+        if (scriptToLoad != null)
+            runner.Add(scriptToLoad);
     }
+
+    public void OnInteract()
+    {
+        // If story beat, run dialogue at specified node
+        if (characterName == "Ted")
+            runner.StartDialogue(talkToNode);
+        // Else kick off dialogue at random Ted Talk
+        else
+            runner.StartDialogue(RandomTedTalk());
+
+        // TODO: Find way to hide popup during conversation and reenable after
+        // OnEndHover();
+    }
+    public void OnBeginHover()
+    {
+        // Debug.Log("Begin Hover");
+        interactablePopup.SetActive(true);
+    }
+
+    public void OnEndHover()
+    {
+        // Debug.Log("End Hover");
+        interactablePopup.SetActive(false);
+    }
+
+    public string RandomTedTalk()
+    {
+        string nodeString = "TedTalk";
+        nodeString += Random.Range(1, 20);
+        return nodeString;
+    }
+}
