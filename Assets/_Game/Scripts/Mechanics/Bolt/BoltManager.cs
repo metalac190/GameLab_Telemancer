@@ -38,8 +38,7 @@ namespace Mechanics.Bolt
         }
 
         private IWarpInteractable _residueInteractable;
-
-        public BoltController GetBolt => _currentBolt;
+        
         public bool CanWarp => _currentBolt != null;
         public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
@@ -104,6 +103,7 @@ namespace Mechanics.Bolt
 
         #endregion
 
+
         #region Bolt To Manager
 
         public void SetResidue(IWarpInteractable interactable)
@@ -142,6 +142,14 @@ namespace Mechanics.Bolt
         public void Fire(Vector3 position, Vector3 forward)
         {
             _currentBolt.Fire(position, forward);
+        }
+
+        public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
+        {
+            if (_currentBolt == null) {
+                GetNewBolt();
+            }
+            _currentBolt.Redirect(position, rotation, timer);
         }
 
         public bool OnWarp()

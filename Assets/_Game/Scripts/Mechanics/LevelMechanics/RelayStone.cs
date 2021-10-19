@@ -15,8 +15,7 @@ public class RelayStone : WarpResidueInteractable
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
-        data.WarpBolt.Redirect(_relayPair.transform.position + (_relayPair.transform.forward * 2), _relayPair.transform.rotation, 0);
-        Debug.Log("bolt redirected");
+        data.BoltManager.RedirectBolt(_relayPair.transform.position + (_relayPair.transform.forward * 2), _relayPair.transform.rotation, 0);
 
         // Don't dissipate the warp bolt!
         return false;
