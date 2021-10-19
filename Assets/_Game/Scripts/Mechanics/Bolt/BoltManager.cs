@@ -69,7 +69,12 @@ namespace Mechanics.Bolt
 
         public void AddController(BoltController controller)
         {
-            if (_boltControllers.Contains(controller)) return;
+            if (_boltControllers.Contains(controller)) {
+                if (_currentBolt == controller) {
+                    _currentBolt = null;
+                }
+                return;
+            }
             _boltControllers.Add(controller);
             controller.gameObject.SetActive(false);
         }
