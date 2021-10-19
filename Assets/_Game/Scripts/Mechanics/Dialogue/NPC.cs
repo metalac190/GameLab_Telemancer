@@ -33,12 +33,16 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     public void OnInteract()
     {
-        // If story beat, run dialogue at specified node
-        if (characterName == "Ted")
-            runner.StartDialogue(talkToNode);
-        // Else kick off dialogue at random Ted Talk
-        else
-            runner.StartDialogue(RandomTedTalk());
+        if (!runner.IsDialogueRunning)
+        {
+            interactablePopup.SetActive(false);
+            // If story beat, run dialogue at specified node
+            if (characterName == "Ted")
+                runner.StartDialogue(talkToNode);
+            // Else kick off dialogue at random Ted Talk
+            else
+                runner.StartDialogue(RandomTedTalk());
+        }
 
         // TODO: Find way to hide popup during conversation and reenable after
         // OnEndHover();
