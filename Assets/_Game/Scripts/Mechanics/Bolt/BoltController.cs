@@ -270,14 +270,14 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving || _missingRigidbody) return;
 
-            _rb.MovePosition(transform.position + _visuals.forward * PlayerState.settings.boltMoveSpeed);
+            _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
         }
 
         private void CheckLifetime()
         {
             if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
-            if (_timeAlive > PlayerState.settings.boltLifeSpan) {
+            if (_timeAlive > PlayerState.Settings.BoltLifeSpan) {
                 LifetimeDissipate();
             }
         }
@@ -285,7 +285,7 @@ namespace Mechanics.Bolt
         public void LifetimeDissipate()
         {
             if (!IsAlive) return;
-            float dissipateTime = PlayerState.settings.boltAirFizzleTime;
+            float dissipateTime = PlayerState.Settings.BoltAirFizzleTime;
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
             }
@@ -306,7 +306,7 @@ namespace Mechanics.Bolt
         public void Dissipate(bool stopMoving)
         {
             if (!IsAlive) return;
-            float dissipateTime = PlayerState.settings.boltHitFizzleTime;
+            float dissipateTime = PlayerState.Settings.BoltHitFizzleTime;
             if (!_missingFeedback) {
                 _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
             }

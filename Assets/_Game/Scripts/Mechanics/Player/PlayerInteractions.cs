@@ -36,7 +36,7 @@ namespace Mechanics.Player
         {
             if (!value.performed) return;
 
-            var hit = GetRaycast(PlayerState.settings.maxInteractDistance);
+            var hit = GetRaycast(PlayerState.Settings.MaxInteractDistance);
             if (hit.collider == null) return;
 
             hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
@@ -47,7 +47,7 @@ namespace Mechanics.Player
 
         public void LookAtInteractables()
         {
-            var hit = GetRaycast(PlayerState.settings.maxLookDistance);
+            var hit = GetRaycast(PlayerState.Settings.MaxLookDistance);
             if (hit.collider == null) {
                 SetInteractable(InteractableEnums.Null);
                 return;
@@ -63,7 +63,7 @@ namespace Mechanics.Player
                 return;
             }
 
-            if (hit.distance < PlayerState.settings.maxInteractDistance) {
+            if (hit.distance < PlayerState.Settings.MaxInteractDistance) {
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
@@ -104,7 +104,7 @@ namespace Mechanics.Player
 
             Ray ray = new Ray(start.position, start.forward);
 
-            Physics.Raycast(ray, out var hit, dist, PlayerState.settings.lookAtMask);
+            Physics.Raycast(ray, out var hit, dist, PlayerState.Settings.LookAtMask);
             return hit;
         }
 

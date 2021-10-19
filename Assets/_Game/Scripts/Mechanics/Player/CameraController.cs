@@ -39,7 +39,7 @@ public class CameraController : MonoBehaviour {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
-            xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.settings.maxLookUp, PlayerState.settings.maxLookDown);
+            xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.Settings.MaxLookUp, PlayerState.Settings.MaxLookDown);
             cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
     }

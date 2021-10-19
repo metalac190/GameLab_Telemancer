@@ -27,7 +27,7 @@ namespace Mechanics.Bolt
         {
             if (_groundReference == null) return;
 
-            Physics.Raycast(transform.position, Vector3.down, out var hit, PlayerState.settings.boltLightDownDist);
+            Physics.Raycast(transform.position, Vector3.down, out var hit, PlayerState.Settings.BoltLightDownDist);
 
             if (hit.collider == null) {
                 if (!_maintainLastOffset) {

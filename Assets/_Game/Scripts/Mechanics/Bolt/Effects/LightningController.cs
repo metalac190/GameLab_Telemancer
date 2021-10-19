@@ -60,8 +60,8 @@ namespace Mechanics.Bolt
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
 
-                vel += Time.deltaTime / PlayerState.settings.growDuration;
-                _delta += vel / PlayerState.settings.growDrag;
+                vel += Time.deltaTime / PlayerState.Settings.GrowDuration;
+                _delta += vel / PlayerState.Settings.GrowDrag;
                 yield return null;
             }
             for (int i = 0; i < _endpoints.Count; i++) {
@@ -80,13 +80,13 @@ namespace Mechanics.Bolt
         private IEnumerator Shrink()
         {
             float vel = 0;
-            _delta = Mathf.Clamp(_delta, 0, PlayerState.settings.shrinkDuration);
+            _delta = Mathf.Clamp(_delta, 0, PlayerState.Settings.ShrinkDuration);
             while (_delta > 0) {
                 for (int i = 0; i < _endpoints.Count; i++) {
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
-                vel += Time.deltaTime / PlayerState.settings.shrinkDuration;
-                _delta -= vel / PlayerState.settings.shrinkDrag;
+                vel += Time.deltaTime / PlayerState.Settings.ShrinkDuration;
+                _delta -= vel / PlayerState.Settings.ShrinkDrag;
                 yield return null;
             }
             foreach (var point in _endpoints) {

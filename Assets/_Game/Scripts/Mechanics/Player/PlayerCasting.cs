@@ -145,7 +145,7 @@ namespace Mechanics.Player
         {
             _playerFeedback.OnBoltAction(AbilityActionEnum.InputDetected);
 
-            if (PlayerState.settings.clearResidueOnFire) {
+            if (PlayerState.Settings.ClearResidueOnFire) {
                 _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
@@ -158,14 +158,14 @@ namespace Mechanics.Player
             _lockCasting = true;
 
             // Delay Casting
-            yield return new WaitForSecondsRealtime(PlayerState.settings.delayBolt);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayBolt);
             _boltManager.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
 
             // Time to cast
-            if (PlayerState.settings.timeToFire > 0) {
-                for (float t = 0; t <= PlayerState.settings.timeToFire; t += Time.deltaTime) {
+            if (PlayerState.Settings.TimeToFire > 0) {
+                for (float t = 0; t <= PlayerState.Settings.TimeToFire; t += Time.deltaTime) {
                     if (_flagCantAct) yield break;
-                    float delta = t / PlayerState.settings.timeToFire;
+                    float delta = t / PlayerState.Settings.TimeToFire;
                     CastStatus(delta);
                     HoldPosition();
                     yield return null;
@@ -202,8 +202,8 @@ namespace Mechanics.Player
         private IEnumerator CastTimer()
         {
             _lockCasting = true;
-            _playerFeedback.SetBoltCooldown(PlayerState.settings.timeToNextFire);
-            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextFire);
+            _playerFeedback.SetBoltCooldown(PlayerState.Settings.TimeToNextFire);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextFire);
             _lockCasting = false;
         }
 
@@ -226,7 +226,7 @@ namespace Mechanics.Player
         private IEnumerator Warp()
         {
             _lockWarp = true;
-            yield return new WaitForSecondsRealtime(PlayerState.settings.delayWarp);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayWarp);
             OnWarp();
         }
 
@@ -246,8 +246,8 @@ namespace Mechanics.Player
         private IEnumerator WarpTimer()
         {
             _lockWarp = true;
-            _playerFeedback.SetWarpCooldown(PlayerState.settings.timeToNextWarp);
-            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextWarp);
+            _playerFeedback.SetWarpCooldown(PlayerState.Settings.TimeToNextWarp);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextWarp);
             _lockWarp = false;
         }
 
@@ -270,7 +270,7 @@ namespace Mechanics.Player
         private IEnumerator Residue()
         {
             _lockResidue = true;
-            yield return new WaitForSecondsRealtime(PlayerState.settings.delayResidue);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayResidue);
             OnUseResidue();
         }
 
@@ -290,8 +290,8 @@ namespace Mechanics.Player
         private IEnumerator ResidueTimer()
         {
             _lockResidue = true;
-            _playerFeedback.SetResidueCooldown(PlayerState.settings.timeToNextResidue);
-            yield return new WaitForSecondsRealtime(PlayerState.settings.timeToNextResidue);
+            _playerFeedback.SetResidueCooldown(PlayerState.Settings.TimeToNextResidue);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextResidue);
             _lockResidue = false;
         }
 
@@ -341,12 +341,12 @@ namespace Mechanics.Player
             if (_missingCamera) return transform.position + transform.forward;
 
             Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-            Physics.Raycast(ray, out var hit, PlayerState.settings.maxLookDistance, PlayerState.settings.lookAtMask, QueryTriggerInteraction.Ignore);
+            Physics.Raycast(ray, out var hit, PlayerState.Settings.MaxLookDistance, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
 
             if (hit.point != Vector3.zero) {
                 return hit.point;
             }
-            return _cameraLookDirection.position + _cameraLookDirection.forward * PlayerState.settings.maxLookDistance;
+            return _cameraLookDirection.position + _cameraLookDirection.forward * PlayerState.Settings.MaxLookDistance;
         }
 
         // A simple function to get the position of the warp bolt

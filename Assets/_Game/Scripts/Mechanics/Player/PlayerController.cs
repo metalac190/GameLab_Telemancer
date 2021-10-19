@@ -59,12 +59,12 @@ public class PlayerController : MonoBehaviour {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
             if(grounded) {
-                moveVelocity = (inputToMovement * PlayerState.settings.moveSpeed) + (moveVelocity.y * transform.up);
+                moveVelocity = (inputToMovement * PlayerState.Settings.MoveSpeed) + (moveVelocity.y * transform.up);
             } else {
                 float upVelocity = moveVelocity.y;
                 moveVelocity.y = 0;
-                moveVelocity += PlayerState.settings.airAcceleration * Time.fixedDeltaTime * inputToMovement;
-                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.settings.moveSpeed);
+                moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
                 moveVelocity += upVelocity * transform.up;
             }
             #endregion
@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 
             #region Y Axis
             if(flag_jump) { // Jump
-                moveVelocity.y = PlayerState.settings.jumpForce;
+                moveVelocity.y = PlayerState.Settings.JumpForce;
                 playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Float());
 
             } else { // Gravity
-                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.settings.risingGravity : PlayerState.settings.fallingGravity) * Time.fixedDeltaTime;
+                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.Settings.RisingGravity : PlayerState.Settings.FallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
 
@@ -164,8 +164,8 @@ public class PlayerController : MonoBehaviour {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            if(PlayerState.settings.floatTime > 0)
-                yield return new WaitForSeconds(PlayerState.settings.floatTime);
+            if(PlayerState.Settings.FloatTime > 0)
+                yield return new WaitForSeconds(PlayerState.Settings.FloatTime);
             floating = false;
         } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
