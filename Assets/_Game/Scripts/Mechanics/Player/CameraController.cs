@@ -10,6 +10,8 @@ public class CameraController : MonoBehaviour {
 
     private PlayerController pc;
 
+    [SerializeField] private float sensitivity = 10;
+
     [SerializeField] private Transform cameraHolder = null;
     [SerializeField] private Camera mainCamera = null;
 
@@ -34,7 +36,7 @@ public class CameraController : MonoBehaviour {
 
     public void MoveCamera(InputAction.CallbackContext value) {
         if(!pc.flag_cantAct) {
-            Vector2 mouse = PlayerState.settings.sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
+            Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
             xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.settings.maxLookUp, PlayerState.settings.maxLookDown);
@@ -47,7 +49,7 @@ public class CameraController : MonoBehaviour {
         mainCamera.fieldOfView = (newFov != 0) ? newFov : 60;
 
         float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
-        PlayerState.settings.sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
+        sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
     }
 
 }
