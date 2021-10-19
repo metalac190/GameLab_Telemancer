@@ -9,7 +9,7 @@ public class TemporalRift : MonoBehaviour
         // TODO: kill
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Debug.Log("Kill player");
+            //Debug.Log("Kill player");
             other.GetComponent<Mechanics.Player.PlayerState>()?.OnKill();
         }
     }

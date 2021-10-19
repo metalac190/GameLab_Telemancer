@@ -29,6 +29,7 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        private bool _flagCantAct;
         public bool FlagCantAct
         {
             get => _flagCantAct;
@@ -163,6 +164,7 @@ namespace Mechanics.Player
             // Time to cast
             if (PlayerState.settings.timeToFire > 0) {
                 for (float t = 0; t <= PlayerState.settings.timeToFire; t += Time.deltaTime) {
+                    if (_flagCantAct) yield break;
                     float delta = t / PlayerState.settings.timeToFire;
                     CastStatus(delta);
                     HoldPosition();
@@ -420,7 +422,6 @@ namespace Mechanics.Player
 
         private bool _missingCamera;
         private bool _missingBoltFiringPosition;
-        private bool _flagCantAct;
 
         private void TransformNullCheck()
         {

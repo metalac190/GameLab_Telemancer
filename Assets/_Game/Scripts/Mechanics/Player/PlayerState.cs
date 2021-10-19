@@ -30,10 +30,11 @@ namespace Mechanics.Player
         private bool _warpAbility;
         private bool _residueAbility;
 
+        private bool _locked = false;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
-        private bool FlagCantAct() => _isAlive && !_isPaused;
+        private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
 
         private void OnValidate()
         {
@@ -78,6 +79,13 @@ namespace Mechanics.Player
             _residueAbility = _unlockedResidue;
             _playerFeedback.SetWatcherLock(false);
             UpdateUnlocks();
+        }
+
+        public void LockPlayer(bool locked)
+        {
+            _locked = locked;
+            _castingController.FlagCantAct = FlagCantAct();
+            _playerController.flag_cantAct = FlagCantAct();
         }
 
         public void GamePaused(bool paused)

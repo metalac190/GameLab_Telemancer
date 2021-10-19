@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022407835}
-  m_LocalRotation: {x: 0.10225433, y: 0.009621233, z: -0.00079568475, w: 0.99471146}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -213,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 164376680602125355}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.15499997, z: -0.08}
+  m_LocalPosition: {x: 0, y: 0.1, z: -0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1022407836}
@@ -546,9 +546,9 @@ MonoBehaviour:
     m_ActionName: Standard/Activate Residue[/Keyboard/r]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1675223931}
         m_MethodName: Interact
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -860,8 +860,8 @@ MonoBehaviour:
   _timeToNextFire: 0.5
   _timeToNextWarp: 1
   _timeToNextResidue: 1.5
-  _delayBolt: 0
-  _timeToFire: 0.85
+  _delayBolt: 0.35
+  _timeToFire: 0.5
   _delayWarp: 0.4
   _delayResidue: 0.3
   _clearResidueOnFire: 1
@@ -874,7 +874,7 @@ MonoBehaviour:
   _playerState: {fileID: 4073664730457268207}
   _playerFeedback: {fileID: 6895264153618991445}
   _boltFirePosition: {fileID: 583695263371555500}
-  _cameraLookDirection: {fileID: 9162161387854363975}
+  _cameraLookDirection: {fileID: 1022407836}
 --- !u!1 &7433185761941947082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,12 +1136,6 @@ Transform:
 --- !u!95 &6445537369078446938 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 86e12bd5c7997204b86a0da7ea4b72a7,
-    type: 3}
-  m_PrefabInstance: {fileID: 583695262555145931}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &9162161387854363975 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8592650946691365772, guid: 86e12bd5c7997204b86a0da7ea4b72a7,
     type: 3}
   m_PrefabInstance: {fileID: 583695262555145931}
   m_PrefabAsset: {fileID: 0}

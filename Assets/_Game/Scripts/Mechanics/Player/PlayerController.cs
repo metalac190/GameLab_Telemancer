@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour {
     public void Teleport(Transform other, Vector3 offset = default) {
         StartCoroutine(TeleportWithTransform(other, offset));
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+        //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
 
     private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour {
         transform.position = other + offset;
         controller.enabled = true;
 
-        Debug.Log("Teleport to raw position " + other);
+        //Debug.Log("Teleport to raw position " + other);
     }
 
     // -------------------
