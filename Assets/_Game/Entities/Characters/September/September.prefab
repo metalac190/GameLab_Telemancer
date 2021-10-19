@@ -366,9 +366,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2122996551494413924}
   - component: {fileID: 8676229627784340460}
+  - component: {fileID: 4073664730457268207}
   - component: {fileID: 6641156212706824223}
   - component: {fileID: 857283205029618149}
-  - component: {fileID: 4073664730457268207}
   - component: {fileID: 2122996553035913799}
   m_Layer: 10
   m_Name: September
@@ -414,44 +414,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &6641156212706824223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2122996551494413920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnTeleport:
-    m_PersistentCalls:
-      m_Calls: []
-  playerFeedback: {fileID: 6895264153618991445}
-  grounded: 0
-  walking: 0
-  flag_cantAct: 0
-  infiniteJumps: 0
-  playerDebug:
-    targetTransform: {fileID: 0}
-    targetPosition: {x: 0, y: 0, z: 0}
-    offset: {x: 0, y: 0, z: 0}
---- !u!114 &857283205029618149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2122996551494413920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72fc1c50dcb4e92498f4c8965c60294d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraHolder: {fileID: 4055171006002021106}
-  mainCamera: {fileID: 1022407838}
 --- !u!114 &4073664730457268207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,6 +462,45 @@ MonoBehaviour:
   _playerController: {fileID: 6641156212706824223}
   _castingController: {fileID: 7147435355514325571}
   _playerFeedback: {fileID: 6895264153618991445}
+--- !u!114 &6641156212706824223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122996551494413920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnTeleport:
+    m_PersistentCalls:
+      m_Calls: []
+  playerFeedback: {fileID: 6895264153618991445}
+  grounded: 0
+  walking: 0
+  flag_cantAct: 0
+  infiniteJumps: 0
+  playerDebug:
+    targetTransform: {fileID: 0}
+    targetPosition: {x: 0, y: 0, z: 0}
+    offset: {x: 0, y: 0, z: 0}
+--- !u!114 &857283205029618149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122996551494413920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72fc1c50dcb4e92498f4c8965c60294d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 10
+  cameraHolder: {fileID: 4055171006002021106}
+  mainCamera: {fileID: 1022407838}
 --- !u!114 &2122996553035913799
 MonoBehaviour:
   m_ObjectHideFlags: 0
