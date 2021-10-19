@@ -262,6 +262,7 @@ namespace Mechanics.Bolt
             if (activateResidue) {
                 Manager.SetResidue(interactable);
                 Dissipate(true);
+                IsAlive = false;
                 PlayCollisionParticles(position, normal, true);
             }
         }
