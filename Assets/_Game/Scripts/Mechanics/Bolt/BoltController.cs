@@ -155,9 +155,9 @@ namespace Mechanics.Bolt
         }
 
         // Size should go from 0 to 1 as the player is casting the bolt
-        public void SetCastStatus(float size)
+        public void SetCastStatus(float delta)
         {
-            _visuals.localScale = new Vector3(size, size, size);
+            _feedback.SetBoltCastDelta(delta);
         }
 
         // Set the bolts position and direction and fire the bolt

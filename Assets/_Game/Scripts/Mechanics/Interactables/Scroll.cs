@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 using AudioSystem;
+using Mechanics.Player;
 
 /// <summary>
 /// Script for the unlock scroll that appears at the end of each level
@@ -53,6 +54,10 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         
         // hide scroll
         _scroll.SetActive(false);
+
+        // TODO: Make this more efficient
+        PlayerState playerState = FindObjectOfType<PlayerState>();
+        playerState.GamePaused(true);
         
         // set used
         _used = true;

@@ -37,6 +37,7 @@ namespace Mechanics.Bolt
             }
         }
 
+        private bool _isCasting = false;
         private IWarpInteractable _residueInteractable;
         
         public bool CanWarp => _currentBolt != null;
@@ -114,6 +115,7 @@ namespace Mechanics.Bolt
 
         public void DissipateBolt()
         {
+            if (_isCasting) return;
             _currentBolt = null;
             OnBoltDissipate?.Invoke(ResidueReady);
         }
@@ -125,7 +127,7 @@ namespace Mechanics.Bolt
         public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
             GetNewBolt();
-
+            _isCasting = true;
             _currentBolt.PrepareToFire(position, forward, isResidue);
         }
 
@@ -142,6 +144,7 @@ namespace Mechanics.Bolt
         public void Fire(Vector3 position, Vector3 forward)
         {
             _currentBolt.Fire(position, forward);
+            _isCasting = false;
         }
 
         public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
