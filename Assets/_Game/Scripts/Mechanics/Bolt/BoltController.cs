@@ -118,14 +118,9 @@ namespace Mechanics.Bolt
             Manager = manager;
         }
 
-        public void Redirect(Transform reference, float timer)
-        {
-            Redirect(reference.position, reference.rotation, timer);
-        }
-
         public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
-            if (timer == 0 && !_isResidue) {
+            if (timer == 0 || !_isResidue) {
                 FinishRedirect(position, rotation);
             } else {
                 _redirectDelayRoutine = StartCoroutine(RedirectDelay(position, rotation, timer));
@@ -163,16 +158,7 @@ namespace Mechanics.Bolt
         {
             transform.position = position;
             _visuals.forward = forward;
-            if (!_missingCollider) {
-                _collider.enabled = true;
-            }
-            if (!_missingRigidbody) {
-                // Ensure that the rigidbody doesn't have any velocity
-                _rb.velocity = Vector3.zero;
-                _rb.angularVelocity = Vector3.zero;
-            }
-            IsAlive = true;
-            _timeAlive = 0;
+            Enable();
         }
 
         // Warp to the bolt's position
@@ -243,7 +229,6 @@ namespace Mechanics.Bolt
         {
             Disable();
             yield return new WaitForSecondsRealtime(timer);
-            Enable();
             FinishRedirect(position, rotation);
         }
 
@@ -251,7 +236,7 @@ namespace Mechanics.Bolt
         {
             transform.position = position;
             _visuals.forward = rotation * Vector3.forward;
-            _timeAlive = 0;
+            Enable();
         }
 
         private void WarpInteract(IWarpInteractable interactable, Vector3 position, Vector3 normal)
@@ -342,7 +327,13 @@ namespace Mechanics.Bolt
             if (!_missingCollider) {
                 _collider.enabled = true;
             }
+            if (!_missingRigidbody) {
+                // Ensure that the rigidbody doesn't have any velocity
+                _rb.velocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
             IsAlive = true;
+            _timeAlive = 0;
         }
 
         #endregion

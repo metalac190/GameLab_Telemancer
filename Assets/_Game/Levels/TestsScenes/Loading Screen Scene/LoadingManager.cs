@@ -27,8 +27,8 @@ public class LoadingManager : MonoBehaviour
         for (int i = 0; i < _peomTxt.Length; i++)
         {
             // set the poem active for the level we're loading
-            // (we need to offset the lvl value by one)
-            _peomTxt[i].SetActive(i == lvl - 1);
+            // (we need to offset the lvl value by two)
+            _peomTxt[i].SetActive(i == lvl - 2);
         }
         
         StartCoroutine(LoadLevel(lvl));

@@ -19,6 +19,7 @@ public class HUD : MonoBehaviour
 
     [Header("Xhair")]
     [SerializeField] private Image _xhair = null;
+    [SerializeField] private GameObject _chargeBarContainer;
     [SerializeField] private Image _chargeBarL, _chargeBarR;
     private const float SB_MaxPercent = 0.19f;
 
@@ -30,7 +31,10 @@ public class HUD : MonoBehaviour
     [Header("Respawn Menu")]
     [SerializeField] private GameObject _respawnMenu;
 
-    [Header("Scroll Acquired Animation")]
+    [Header("Spotted Indicator")] 
+    [SerializeField] private GameObject _spottedIndicatorPnl;
+    
+    [Header("Scroll Acquired Animation")] 
     [SerializeField] private GameObject _scrollAcquiredScreen;
     [SerializeField] private Text _spellNameTxt;
     [SerializeField] private Text _spellDescTxt;
@@ -62,18 +66,11 @@ public class HUD : MonoBehaviour
 
     private void Awake()
     {
-        // add listeners
-        UIEvents.current.OnShowDebugHud += () =>
-        {
-            _debugMode = true;
-            DisplayDebugHUD(true);
-        };
-        UIEvents.current.OnHideDebugHud += () =>
-        {
-            _debugMode = false;
-            DisplayDebugHUD(false);
-        };
+        // debug listeners
+        UIEvents.current.OnShowDebugHud += () => { _debugMode = true; DisplayDebugHUD(true); };
+        UIEvents.current.OnHideDebugHud += () => { _debugMode = false; DisplayDebugHUD(false); };
 
+        // ability listeners
         UIEvents.current.OnUnlockBoltAbility += UnlockBolt;
         UIEvents.current.OnBoltDisplay += BoltDisplay;
         UIEvents.current.OnBoltCooldown += BoltCooldown;
@@ -84,14 +81,20 @@ public class HUD : MonoBehaviour
         UIEvents.current.OnResidueDisplay += ResidueDisplay;
         UIEvents.current.OnResidueCooldown += ResidueCooldown;
 
+        // xhair listener
         UIEvents.current.OnChangeXhairColor += ChangeXhairColor;
 
+        // player listeners
         UIEvents.current.OnPlayerDied += () => DisplayRespawnMenu(true);
         UIEvents.current.OnPlayerRespawn += () => DisplayRespawnMenu(false);
 
+        // scroll listeners
         UIEvents.current.OnAcquireWarpScroll += () => DisplayScrollAcquiredScreen("WARP");
         UIEvents.current.OnAcquireResidueScroll += () => DisplayScrollAcquiredScreen("RESIDUE");
         UIEvents.current.OnCloseScrollAcquiredScreen += () => DisplayScrollAcquiredScreen("CLOSE");
+        
+        // watched listener
+        UIEvents.current.OnPlayerWatched += DisplayWatcherIndicator;
     }
 
     private void Start()
@@ -102,6 +105,7 @@ public class HUD : MonoBehaviour
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
         _scrollAcquiredScreen.SetActive(false);
+        _spottedIndicatorPnl.SetActive(false);
     }
 
     private void DisplayDebugHUD(bool isEnabled)
@@ -136,15 +140,13 @@ public class HUD : MonoBehaviour
 
     private void UnlockBolt(bool isUnlocked)
     {
-        // Add ability unlocked HUD animation here...
-
         // Debug HUD coloring
         _boltImage.color = isUnlocked ? _normalColor : _disabledColor;
     }
 
     private void UnlockWarp(bool isUnlocked)
     {
-        // Add ability unlocked HUD animation here...
+        _chargeBarContainer.SetActive(isUnlocked);
 
         // Debug HUD coloring
         _warpImage.color = isUnlocked ? _normalColor : _disabledColor;
@@ -152,8 +154,6 @@ public class HUD : MonoBehaviour
 
     private void UnlockResidue(bool isUnlocked)
     {
-        // Add ability unlocked HUD animation here...
-
         // Debug HUD coloring
         _residueImage.color = isUnlocked ? _normalColor : _disabledColor;
     }
@@ -253,8 +253,7 @@ public class HUD : MonoBehaviour
     // Ability HUD Cool-downs
     // -  These are controlled by PlayerToHud.cs
     // -  CooldownDelta goes from 0 to 1. 0 means the cooldown just started, 1 means the cooldown will end next frame
-    // -  TODO: Note: I assume that FillBoltStatusBar(0.5f) is an early implementation of a cooldown bar, does this work better for the purposes at hand?
-    // -              AbilityCooldown already accesses the animation data and cooldown duration timers through the CooldownDelta.
+    // -  AbilityCooldown already accesses the animation data and cooldown duration timers through the CooldownDelta.
 
     private void BoltCooldown(float cooldownDelta)
     {
@@ -264,6 +263,10 @@ public class HUD : MonoBehaviour
 
     private void WarpCooldown(float cooldownDelta)
     {
+        // Set both charge bars to the current cooldown value of warp
+        _chargeBarL.fillAmount = cooldownDelta * SB_MaxPercent;
+        _chargeBarR.fillAmount = cooldownDelta * SB_MaxPercent;
+        
         if (_debugMode)
             _warpImage.color = _cooldownColor.Evaluate(cooldownDelta);
     }
@@ -290,15 +293,16 @@ public class HUD : MonoBehaviour
                 break;
         }
     }
-
+    
+    /*
     private IEnumerator FillBoltStatusBar(float duration)
     {
         float time = 0;
         while (time < duration) {
             // Borrowing this from the internet really quick
             float t = time / duration;
-            t = t * t * (3f - 2f * t);
-
+            //t = t * t * (3f - 2f * t);
+            
             float percentFilled = Mathf.Lerp(0, SB_MaxPercent, t);
             _chargeBarL.fillAmount = percentFilled;
             _chargeBarR.fillAmount = percentFilled;
@@ -308,6 +312,7 @@ public class HUD : MonoBehaviour
         _chargeBarL.fillAmount = SB_MaxPercent;
         _chargeBarR.fillAmount = SB_MaxPercent;
     }
+    */
 
     private void DisplayScrollAcquiredScreen(string scroll)
     {
@@ -330,6 +335,11 @@ public class HUD : MonoBehaviour
                 _scrollAcquiredScreen.SetActive(false);
                 break;
         }
+    }
+
+    private void DisplayWatcherIndicator(bool watched)
+    {
+        _spottedIndicatorPnl.SetActive(watched);
     }
 
     private IEnumerator PlayChapterNotification(string chapter, string title)
