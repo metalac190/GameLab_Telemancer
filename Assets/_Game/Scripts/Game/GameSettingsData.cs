@@ -23,9 +23,9 @@ public class GameSettingsData : ScriptableObject
     [SerializeField] private LayerMask _lookAtMask = 1;
 
     [Header("Action Animation Delays")]
-    [SerializeField] [Range(0, 2)] private float _delayBolt = 0;
-    [SerializeField] [Range(0, 2)] private float _delayWarp = 0.35f;
-    [SerializeField] [Range(0, 2)] private float _delayResidue = 0.3f;
+    [SerializeField] [Range(0, 2)] private float _delayBolt = 0.35f;
+    [SerializeField] [Range(0, 2)] private float _delayWarp = 0.1f;
+    [SerializeField] [Range(0, 2)] private float _delayResidue = 0.1f;
 
     [Header("Action Animation Time")]
     [SerializeField] [Range(0, 2)] private float _timeToFire = 0.35f;
