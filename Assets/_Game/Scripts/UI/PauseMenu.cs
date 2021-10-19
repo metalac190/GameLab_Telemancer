@@ -58,5 +58,6 @@ public class PauseMenu : MonoBehaviour
         
         // Unlock / lock Cursor
         Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = paused;
     }
 }
