@@ -101,7 +101,9 @@ namespace Mechanics.Bolt
 
         public void OnPlayerRespawn()
         {
-            _currentBolt.Disable();
+            if (_currentBolt != null) {
+                _currentBolt.Disable();
+            }
             _currentBolt = null;
             _isCasting = false;
             OnBoltDissipate?.Invoke(ResidueReady);
