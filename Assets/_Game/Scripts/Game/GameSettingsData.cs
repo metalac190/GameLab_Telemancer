@@ -4,11 +4,12 @@
 public class GameSettingsData : ScriptableObject
 {
     [Header("Horizontal Movement")]
-    [SerializeField] [Range(0, 20)] private float _moveSpeed = 8.5f;
-    [SerializeField] [Range(0, 50)] private float _airAcceleration = 35f;
+    [SerializeField] [Range(0, 20)] private float _moveSpeed = 6f;
+    [SerializeField] [Range(0, 50)] private float _airAcceleration = 25f;
 
     [Header("Vertical Movement")]
     [SerializeField] [Range(0, 20)] private float _jumpForce = 6.2f;
+    [SerializeField] [Range(0, 1)] private float _coyoteJumpTime = 0.3f;
     [SerializeField] [Range(0, 50)] private float _risingGravity = 20f;
     [SerializeField] [Range(0, 50)] private float _fallingGravity = 20f;
     [SerializeField] [Range(0, 0.5f)] private float _floatTime = 0f;
