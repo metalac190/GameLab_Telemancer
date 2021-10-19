@@ -33,11 +33,11 @@ public class GameSettingsData : ScriptableObject
     public bool clearResidueOnFire = true;
     [Header("Bolt Movement")]
     [Range(0, 2)] public float boltMoveSpeed = 0.32f;
-    public float boltLifeSpan = 1;
-    public float boltAirFizzleTime = 0.8f;
+    public float boltLifeSpan = 0.7f;
+    public float boltAirFizzleTime = 0.6f;
     [Header("Bolt Visuals")]
     public float boltLightDownDist = 8f;
-    public float boltHitFizzleTime = 0.8f;
+    public float boltHitFizzleTime = 0.5f;
     public float growDuration = 3f;
     public float growDrag = 8f;
     public float shrinkDuration = 1.2f;
