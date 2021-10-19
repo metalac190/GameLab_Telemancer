@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Mechanics.Player
 {
@@ -12,14 +13,13 @@ namespace Mechanics.Player
         [SerializeField] private float _maxInteractDistance = 5;
         [SerializeField] private LayerMask _interactionMask = 1;
         [Header("References")]
-        [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private Transform _cameraTransform;
         [SerializeField] private PlayerFeedback _playerFeedback;
 
         #region Unity Fucntions
 
         private void OnEnable()
         {
-            AnimatorNullCheck();
             FeedbackNullCheck();
         }
 
@@ -34,10 +34,14 @@ namespace Mechanics.Player
 
         #region Public Functions
 
-        public void Interact()
+        public void Interact(InputAction.CallbackContext value)
         {
+            if (!value.performed) return;
+
             var hit = GetRaycast(_maxInteractDistance);
             if (hit.collider == null) return;
+
+            hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
 
             // Find interactable and interact
             // Play Animations on player
@@ -62,9 +66,11 @@ namespace Mechanics.Player
             }
 
             if (hit.distance < _maxInteractDistance) {
-                // Find interactable
-
-                //SetInteractable(InteractableEnums.PlayerInteractable);
+                var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
+                if (playerInteractable != null) {
+                    SetInteractable(InteractableEnums.PlayerInteractable);
+                    return;
+                }
             }
         }
 
@@ -83,7 +89,9 @@ namespace Mechanics.Player
 
         private RaycastHit GetRaycast(float dist)
         {
-            Ray ray = new Ray(transform.position, transform.forward);
+            Transform start = _cameraTransform != null ? _cameraTransform : transform;
+
+            Ray ray = new Ray(start.position, start.forward);
 
             Physics.Raycast(ray, out var hit, dist, _interactionMask);
             return hit;
@@ -94,20 +102,6 @@ namespace Mechanics.Player
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
-
-        //private bool _missingAnimator;
-
-        private void AnimatorNullCheck()
-        {
-            if (_playerAnimator == null) {
-                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
-                if (_playerAnimator == null) {
-                    //_missingAnimator = true;
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Interactions Script", gameObject);
-                }
-            }
-        }
-
 
         private bool _missingFeedback;
 

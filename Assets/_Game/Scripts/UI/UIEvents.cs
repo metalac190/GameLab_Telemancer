@@ -6,7 +6,23 @@ using UnityEngine;
 /// </summary>
 public class UIEvents : MonoBehaviour
 {
-    public static UIEvents current;
+    private static UIEvents _current;
+
+    // OnEnable and Awake can happen simultaneously, causing errors
+    // This is a hotfix to make calling current Find this object if it is null
+    // Was a major issue in Level 1
+    // TODO: Actual fix, this was a hotfix by Brandon
+    public static UIEvents current
+    {
+        get
+        {
+            if (_current == null) {
+                _current = FindObjectOfType<UIEvents>();
+            }
+            return _current;
+        }
+        set => _current = value;
+    }
 
     private void Awake()
     {
@@ -45,46 +61,53 @@ public class UIEvents : MonoBehaviour
         OnDisplayTooltip?.Invoke(message);
     }
 
-    public event Action<bool> OnCastBolt;
+    public event Action<bool> OnCastBolt; // Kept OnCastBolt to avoid errors in StatsMenu.cs
 
-    public void CastBolt(bool actionSuccessful)
+    public void SetCastBolt(bool wasSuccessful)
     {
-        OnCastBolt?.Invoke(actionSuccessful);
+        OnCastBolt?.Invoke(wasSuccessful);
     }
 
-    public event Action OnBoltReady;
+    public event Action<AbilityHudEnums> OnBoltDisplay;
 
-    public void BoltReady()
+    public void SetBoltDisplay(AbilityHudEnums displayType)
     {
-        OnBoltReady?.Invoke();
+        OnBoltDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnCastWarp;
+    public event Action<AbilityHudEnums> OnWarpDisplay;
 
-    public void CastWarp(bool actionSuccessful)
+    public void SetWarpDisplay(AbilityHudEnums displayType)
     {
-        OnCastWarp?.Invoke(actionSuccessful);
+        OnWarpDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnWarpReady;
+    public event Action<AbilityHudEnums> OnResidueDisplay;
 
-    public void WarpReady(bool isReady)
+    public void SetResidueDisplay(AbilityHudEnums displayType)
     {
-        OnWarpReady?.Invoke(isReady);
+        OnResidueDisplay?.Invoke(displayType);
     }
 
-    public event Action<bool> OnCastResidue;
+    public event Action<float> OnBoltCooldown;
 
-    public void CastResidue(bool actionSuccessful)
+    public void SetBoltCooldown(float cooldownDelta)
     {
-        OnCastResidue?.Invoke(actionSuccessful);
+        OnBoltCooldown?.Invoke(cooldownDelta);
     }
 
-    public event Action<bool> OnResidueReady;
+    public event Action<float> OnWarpCooldown;
 
-    public void ResidueReady(bool isReady)
+    public void SetWarpCooldown(float cooldownDelta)
     {
-        OnResidueReady?.Invoke(isReady);
+        OnWarpCooldown?.Invoke(cooldownDelta);
+    }
+
+    public event Action<float> OnResidueCooldown;
+
+    public void SetResidueCooldown(float cooldownDelta)
+    {
+        OnResidueCooldown?.Invoke(cooldownDelta);
     }
 
     public event Action<InteractableEnums> OnChangeXhairColor;
@@ -92,6 +115,13 @@ public class UIEvents : MonoBehaviour
     public void ChangeXhairColor(InteractableEnums type)
     {
         OnChangeXhairColor?.Invoke(type);
+    }
+
+    public event Action<bool> OnUnlockBoltAbility;
+
+    public void UnlockBoltAbility(bool isUnlocked)
+    {
+        OnUnlockBoltAbility?.Invoke(isUnlocked);
     }
 
     public event Action<bool> OnUnlockWarpAbility;
@@ -108,6 +138,41 @@ public class UIEvents : MonoBehaviour
         OnUnlockResidueAbility?.Invoke(isUnlocked);
     }
 
+    public event Action OnAcquireWarpScroll;
+
+    public void AcquireWarpScroll()
+    {
+        OnAcquireWarpScroll?.Invoke();
+    }
+
+    public event Action OnAcquireResidueScroll;
+
+    public void AcquireResidueScroll()
+    {
+        OnAcquireResidueScroll?.Invoke();
+    }
+
+    public event Action OnCloseScrollAcquiredScreen;
+
+    public void CloseScrollAcquiredScreen()
+    {
+        OnCloseScrollAcquiredScreen?.Invoke();
+    }
+
+    public event Action<bool> OnOpenScrollMenu;
+
+    public void OpenScrollMenu(bool open)
+    {
+        OnOpenScrollMenu?.Invoke(open);
+    }
+
+    public event Action<bool> OnPlayerWatched;
+
+    public void PlayerWatched(bool watched)
+    {
+        OnPlayerWatched?.Invoke(watched);
+    }
+    
     #endregion
 
     /* ----------------------------------------------------------------------------------------- */
@@ -146,6 +211,13 @@ public class UIEvents : MonoBehaviour
     public void PauseGame(bool isPaused)
     {
         OnPauseGame?.Invoke(isPaused);
+    }
+
+    public event Action OnRestartLevel;
+
+    public void RestartLevel()
+    {
+        OnRestartLevel?.Invoke();
     }
 
     public event Action OnPlayerDied;

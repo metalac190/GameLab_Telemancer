@@ -1,7 +1,7 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &2431460770558325777
-MeshCollider:
+--- !u!65 &6126252764084855508
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10,10 +10,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2072928189253646510, guid: 513c4340b4d136b4cadf75433f71e843, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.021, y: 0.021, z: 0.003345161}
+  m_Center: {x: 0, y: 0, z: 0.001629544}
 --- !u!1 &3008360639234261097
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,7 +24,7 @@ GameObject:
   - component: {fileID: 3008360639234261101}
   - component: {fileID: 3008360639234261011}
   - component: {fileID: 3008360639234261100}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Pressure Plate Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +57,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.4, y: 0.5, z: 1.4}
+  m_Size: {x: 1.8, y: 0.5, z: 1.8}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &3008360639234261100
 MonoBehaviour:
@@ -74,21 +73,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _activatables: []
   _movingButton: {fileID: 6500009337557974374}
-  _moveButtonDist: -0.0006
---- !u!64 &4517932170798686976
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6500009337557974374}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3706377605648473523, guid: 513c4340b4d136b4cadf75433f71e843, type: 3}
+  _buttonOnPos: -0.001
+  _buttonOffPos: 0.0004
+  _buttonMoveSpeed: 4
+  _pressurePlateDownSound: {fileID: 11400000, guid: f67d97ea491dc6547b4882707a863633,
+    type: 2}
+  _pressurePlateUpSound: {fileID: 11400000, guid: fd6edcde2b1529847b30cc0699fa9537,
+    type: 2}
 --- !u!1001 &406263082264473888
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -101,6 +92,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 7d388025d62cc63419c7feef117fca43, type: 2}
+    - target: {fileID: 3234937111870254763, guid: 1903d1320a6eeea429ff4ca3c7741c92,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6198493498014153629, guid: 1903d1320a6eeea429ff4ca3c7741c92,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -171,6 +167,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: PressurePlate_PF
       objectReference: {fileID: 0}
+    - target: {fileID: 6723496365076504871, guid: 1903d1320a6eeea429ff4ca3c7741c92,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6888249115644775494, guid: 1903d1320a6eeea429ff4ca3c7741c92,
+        type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7741880249235888930, guid: 1903d1320a6eeea429ff4ca3c7741c92,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -179,7 +185,12 @@ PrefabInstance:
     - target: {fileID: 8363322640012610283, guid: 1903d1320a6eeea429ff4ca3c7741c92,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.0004
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363322640012610283, guid: 1903d1320a6eeea429ff4ca3c7741c92,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1903d1320a6eeea429ff4ca3c7741c92, type: 3}

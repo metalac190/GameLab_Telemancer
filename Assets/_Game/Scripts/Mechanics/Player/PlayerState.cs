@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,18 +9,25 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
+        [Header("Abilities")]
+        [SerializeField] private bool _unlockedBolt = true;
         [SerializeField] private bool _unlockedWarp = false;
         [SerializeField] private bool _unlockedResidue = false;
-        // Temporary Checkpoint holder -- TODO: Make actual check points and a respawn script
-        [SerializeField] private Vector3 _lastCheckpoint = Vector3.zero;
+        [Header("Death and Respawn")]
+        [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
         [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
-        [SerializeField] private float _respawnTime = 3;
         [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
+        [Header("References")]
+        [SerializeField] private PlayerController _playerController;
+        [SerializeField] private PlayerCasting _castingController;
+        [SerializeField] private PlayerFeedback _playerFeedback;
 
-        public event Action<bool, bool> OnChangeUnlocks = delegate { };
+        public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };
 
-        private PlayerController _playerController;
-        private PlayerCasting _castingController;
+        private bool _boltAbility;
+        private bool _warpAbility;
+        private bool _residueAbility;
+
         private bool _isAlive = true;
         private bool _isPaused = true;
 
@@ -39,20 +45,36 @@ namespace Mechanics.Player
 
         private void Start()
         {
+            _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
             UIEvents.current.OnPauseGame += GamePaused;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
             UpdateUnlocks();
         }
 
-        public void SetWarpUnlock(bool unlocked)
+        public void SetWatcherLocks(bool boltLocked, bool warpLocked, bool residueLocked)
         {
-            _unlockedWarp = unlocked;
+            if (boltLocked) {
+                _boltAbility = false;
+            }
+            if (warpLocked) {
+                _warpAbility = false;
+            }
+            if (residueLocked) {
+                _residueAbility = false;
+            }
+            _playerFeedback.SetWatcherLock(true);
             UpdateUnlocks();
         }
 
-        public void SetResidueUnlock(bool unlocked)
+        public void ResetWatcherLocks()
         {
-            _unlockedResidue = unlocked;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
+            _playerFeedback.SetWatcherLock(false);
             UpdateUnlocks();
         }
 
@@ -80,7 +102,15 @@ namespace Mechanics.Player
             _isAlive = true;
             _onPlayerRespawn.Invoke();
 
-            _playerController.TeleportToPosition(_lastCheckpoint);
+            if (CheckpointManager.current == null) {
+                _playerController.TeleportToPosition(_defaultCheckpoint);
+                return;
+            }
+
+            _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
+            // TODO: This might need to be moved to the player controller script?
+            // Also set the player rotation on respawn
+            _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
 
             _playerController.flag_cantAct = FlagCantAct();
             _castingController.FlagCantAct = FlagCantAct();
@@ -88,23 +118,36 @@ namespace Mechanics.Player
 
         private void UpdateUnlocks()
         {
-            OnChangeUnlocks.Invoke(_unlockedWarp, _unlockedResidue);
+            OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
         }
 
         private void NullCheck()
         {
-            _playerController = GetComponent<PlayerController>();
             if (_playerController == null) {
-                _playerController = FindObjectOfType<PlayerController>();
+                _playerController = GetComponent<PlayerController>();
                 if (_playerController == null) {
-                    _playerController = gameObject.AddComponent<PlayerController>();
+                    _playerController = FindObjectOfType<PlayerController>();
+                    if (_playerController == null) {
+                        _playerController = gameObject.AddComponent<PlayerController>();
+                    }
                 }
             }
-            _castingController = GetComponentInChildren<PlayerCasting>();
             if (_castingController == null) {
-                _castingController = GetComponent<PlayerCasting>();
+                _castingController = GetComponentInChildren<PlayerCasting>();
                 if (_castingController == null) {
-                    Debug.LogError("No Player Casting component found on player");
+                    _castingController = GetComponent<PlayerCasting>();
+                    if (_castingController == null) {
+                        Debug.LogError("No Player Casting component found on player");
+                    }
+                }
+            }
+            if (_playerFeedback == null) {
+                _playerFeedback = GetComponentInChildren<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _playerFeedback = GetComponent<PlayerFeedback>();
+                    if (_playerFeedback == null) {
+                        Debug.LogError("No Player Feedback component found on player");
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -15,8 +16,6 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Horizontal Movement")]
     [SerializeField] [Range(0, 20)] private float moveSpeed;
-    [Tooltip("WARNING: Not yet implemented, currently does nothing")]
-    [SerializeField] [Range(0, 50)] private float groundAcceleration;
     [SerializeField] [Range(0, 50)] private float airAcceleration;
 
     private Vector3 moveVelocity;
@@ -35,8 +34,8 @@ public class PlayerController : MonoBehaviour {
 
     [Header("General Control")]
     public UnityEvent OnTeleport;
-    public UnityEvent OnPlayerDeath;
-    public bool grounded;
+    public PlayerFeedback playerFeedback;
+    public bool grounded, walking;
     public bool flag_cantAct;
 
     // ---
@@ -59,7 +58,6 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnPlayerDeath.AddListener(() => { flag_cantAct = true; });
         OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
     }
 
@@ -84,6 +82,7 @@ public class PlayerController : MonoBehaviour {
             #region Y Axis
             if(flag_jump) { // Jump
                 moveVelocity.y = jumpForce;
+                playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
 
@@ -101,7 +100,11 @@ public class PlayerController : MonoBehaviour {
 
             // -----
 
+            // Is Walking
+            walking = grounded && moveVelocity.magnitude > 0.5f;
+
             // Apply
+            playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
             controller.Move(moveVelocity * Time.fixedDeltaTime);
         }
     }
@@ -131,16 +134,27 @@ public class PlayerController : MonoBehaviour {
     #region Teleport & Movement
 
     public void Teleport(Transform other, Vector3 offset = default) {
-        // TODO: Swap teleport player and other transform
-        Vector3 oldPlayerPos = transform.position;
+        StartCoroutine(TeleportWithTransform(other, offset));
 
+        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+    }
+
+    private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
         controller.enabled = false;
         OnTeleport.Invoke();
-        transform.position = other.position + offset;
-        other.position = oldPlayerPos;
-        controller.enabled = true;
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        if(collider) {
+            Vector3 oldPlayerPos = controller.bounds.min;
+            transform.position = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
+            other.position = oldPlayerPos;
+        } else {
+            Vector3 oldPlayerPos = transform.position;
+            transform.position = other.position + offset;
+            other.position = oldPlayerPos;
+        }
+        yield return null;
+        controller.enabled = true;
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
@@ -151,6 +165,8 @@ public class PlayerController : MonoBehaviour {
 
         Debug.Log("Teleport to raw position " + other);
     }
+
+    // -------------------
 
     private IEnumerator Float() {
         if(!floating) {

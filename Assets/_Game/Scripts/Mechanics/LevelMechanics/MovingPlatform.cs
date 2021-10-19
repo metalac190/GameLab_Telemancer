@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 //[RequireComponent(typeof(Rigidbody))]
 public class MovingPlatform : LevelActivatable
 {
+    private enum _movementTypes { LINEAR, LOOP_LINEAR, LOOP_CIRCULAR};
     [Header("MovingPlatform")]
+    [SerializeField] private _movementTypes _movementType = _movementTypes.LOOP_LINEAR;
     [SerializeField] private List<Vector3> _path = new List<Vector3>(); // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
     private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
@@ -13,7 +16,10 @@ public class MovingPlatform : LevelActivatable
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _delayTime = 2f; // how long the platform should pause at it's destination before moving again
     private float _delayStartTime;
-    private float _tolerance; 
+    private float _tolerance;
+
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _movingPlatformSound = null;
 
     private void Start()
     {
@@ -37,7 +43,7 @@ public class MovingPlatform : LevelActivatable
 
     protected override void OnActivate()
     {
-        // vfx & sfx?
+        _movingPlatformSound?.PlayOneShot(transform.position);
     }
 
     protected override void OnDeactivate()
@@ -45,6 +51,15 @@ public class MovingPlatform : LevelActivatable
         StartCoroutine(MoveToStart());
     }
 
+    protected override void OnReset()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+    #region Movement
     private void MovePlatform()
     {
         // get direction and distance to move
@@ -62,8 +77,24 @@ public class MovingPlatform : LevelActivatable
         }
     }
 
-    // after platform reaches it's target, get the next target, and wait if at either end of path
     private void UpdateTarget()
+    {
+        switch(_movementType)
+        {
+            case _movementTypes.LOOP_LINEAR:
+                UpdateTargetLoopLinear();
+                break;
+            case _movementTypes.LOOP_CIRCULAR:
+                UpdateTargetLoopCircular();
+                break;
+            case _movementTypes.LINEAR:
+                UpdateTargetLinear();
+                break;
+        }
+    }
+
+    // after platform reaches it's target, get the next target, and wait if at either end of path
+    private void UpdateTargetLoopLinear()
     {
         if (Time.time - _delayStartTime >= _delayTime) // wait for _delayTime to move targets
         {
@@ -81,6 +112,49 @@ public class MovingPlatform : LevelActivatable
             _currentTarget += _pathListDirection;
         }
     }
+
+    private void UpdateTargetLoopCircular()
+    {
+        _currentTarget += _pathListDirection;
+        if (_currentTarget >= _path.Count)
+            _currentTarget = 0;
+    }
+
+    private void UpdateTargetLinear()
+    {
+        if (_currentTarget >= _path.Count - 1)
+            return;
+        else
+            _currentTarget += _pathListDirection;
+    }
+
+    IEnumerator MoveToStart()
+    {
+        if (_currentTarget != 0)
+        {
+            _currentTarget--;
+            _pathListDirection = -1;
+        }
+        while (transform.position != _path[0])
+        {
+            if (transform.position != _path[_currentTarget])
+            {
+                MovePlatform();
+            }
+            else
+            {
+                UpdateTargetLoopLinear();
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        _currentTarget = 0;
+        _pathListDirection = 1;
+    }
+
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+
+    //other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
 
     private void OnTriggerEnter(Collider other)
     {
@@ -109,39 +183,23 @@ public class MovingPlatform : LevelActivatable
         }
     }
 
-    IEnumerator MoveToStart()
-    {
-        if (_currentTarget != 0)
-        {
-            _currentTarget--;
-            _pathListDirection = -1;
-        }
-        while (transform.position != _path[0])
-        {
-            if (transform.position != _path[_currentTarget])
-            {
-                MovePlatform();
-            }
-            else
-            {
-                UpdateTarget();
-            }
-            yield return new WaitForFixedUpdate();
-        }
-        _currentTarget = 0;
-        _pathListDirection = 1;
-    }
+    
 
     private void OnDrawGizmos()
     {
         if(_path.Count > 0)
         {
             Gizmos.DrawWireSphere(_path[0], 0.25f);
-            Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+            if(_movementType != _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+
             for (int i = 0; i < _path.Count - 1; i++)
             {
                 Gizmos.DrawLine(_path[i], _path[i + 1]);
             }
+
+            if (_movementType == _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawLine(_path[0], _path[_path.Count - 1]);
         }
     }
 }

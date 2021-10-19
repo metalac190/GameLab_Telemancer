@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class Watcher : MonoBehaviour
 {
+    [Header("Watcher")]
     [SerializeField] private float _viewRadius = 5f;
     [SerializeField] [Range(1, 179)] private float _viewAngle = 75f;
+    [SerializeField] private bool _DeactivateBolt = true;
+    [SerializeField] private bool _DeactivateWarp = false;
+    [SerializeField] private bool _DeactivateResidue = false;
 
+    [Header("Object References DO NOT CHANGE")]
     [SerializeField] private GameObject _visionSource = null;
     [SerializeField] private Light _visionLight = null;
     [SerializeField] SphereCollider _trigger = null;
@@ -96,17 +101,17 @@ public class Watcher : MonoBehaviour
 
     private void OnPlayerEnteredView()
     {
-        Debug.Log("Player in view");
-        _playerState.SetWarpUnlock(false);
+        //Debug.Log("Player in view");
+        _playerState.SetWatcherLocks(_DeactivateBolt, _DeactivateWarp, _DeactivateResidue);
     }
 
     private void OnPlayerExitedView()
     {
-        Debug.Log("Player Not in view");
-        _playerState.SetWarpUnlock(true);
+        //Debug.Log("Player Not in view");
+        _playerState.ResetWatcherLocks();
     }
 
-    private Vector3 DirFromAngles(float angleInDegrees, bool angleIsGlobal)
+    private Vector3 DirFromAnglesXZ(float angleInDegrees, bool angleIsGlobal)
     {
         if(!angleIsGlobal)
         {
@@ -117,6 +122,16 @@ public class Watcher : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.red;
+        //Gizmos.DrawWireSphere(_visionSource.transform.position, _viewRadius);
+        Vector3 viewAnglesA = DirFromAnglesXZ(_viewAngle / 2, false);
+        Vector3 viewAnglesB = DirFromAnglesXZ(-_viewAngle / 2, false);
+        Gizmos.DrawLine(_visionSource.transform.position, _visionSource.transform.position + viewAnglesA * _viewRadius);
+        Gizmos.DrawLine(_visionSource.transform.position, _visionSource.transform.position + viewAnglesB * _viewRadius);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
         _trigger.center = _visionSource.transform.localPosition;
         _trigger.radius = _viewRadius;
 
@@ -125,9 +140,5 @@ public class Watcher : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(_visionSource.transform.position, _viewRadius);
-        Vector3 viewAnglesA = DirFromAngles(_viewAngle / 2, false);
-        Vector3 viewAnglesB = DirFromAngles(-_viewAngle / 2, false);
-        Gizmos.DrawLine(_visionSource.transform.position, _visionSource.transform.position + viewAnglesA * _viewRadius);
-        Gizmos.DrawLine(_visionSource.transform.position, _visionSource.transform.position + viewAnglesB * _viewRadius);
     }
 }
