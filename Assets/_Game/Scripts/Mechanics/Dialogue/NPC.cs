@@ -11,6 +11,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private DialogueRunner runner;
     private int offset, randNum, talk;
     private string[] talks;
+    private int talkLimit;
 
     [Header("Optional")]
     public YarnProgram scriptToLoad;
@@ -18,6 +19,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     void Start()
     {
+        talkLimit = 0;
+
         if (runner == null)
             runner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
 
@@ -55,14 +58,20 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string RandomTedTalk()
     {
         string nodeString = "TedTalk";
-        nodeString += GetNextTalk();
+        if (talkLimit < 5)
+        {
+            nodeString += GetNextTalk();
+            talkLimit++;
+        }
+        else
+            nodeString = "Exhausted";
         return nodeString;
     }
 
     public int GetNextTalk()
     {
         int index = PlayerPrefs.GetInt("TedTalkIndex");
-        if(index + 1 == talks.Length)
+        if (index + 1 == talks.Length)
             PlayerPrefs.SetInt("TedTalkIndex", 0);
         else
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
