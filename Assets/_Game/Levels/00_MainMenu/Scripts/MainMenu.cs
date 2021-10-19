@@ -48,14 +48,14 @@ public class MainMenu : MonoBehaviour
         // Reset all save data to default
         
         // Load first scene 
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
         
         // alternate method using loading screen
-        /*
+        
         PlayerPrefs.SetInt("CurrentLevel", 2);
         PlayerPrefs.Save();
         SceneManager.LoadScene(1);
-        */
+        
     }
 
     public void ContinueGame()

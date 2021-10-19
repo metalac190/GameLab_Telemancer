@@ -15,8 +15,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private GameObject _scroll;
     [SerializeField] private float _pauseLength;
     [SerializeField] private SFXOneShot scrollOpenSFX;
-    [SerializeField] private int nextlevelID;
-    
+    [SerializeField] private int loadingScreenID = 1;
+    private int nextlevelID;
+
     enum unlockEnum { WarpBolt, Residue }
 
     [SerializeField] private unlockEnum _scrollUnlock;
@@ -30,6 +31,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         
         _chainsGroup.SetActive(true);
         _scroll.SetActive(true);
+        nextlevelID = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1;
     }
 
     public void OnReset()
@@ -88,6 +90,8 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         // Stops music of current level before switch
         MusicManager.Instance.StopMusic();
         // TODO: Add level switch code here 
-        TransitionManager.tm.ChangeLevel(nextlevelID); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
+        PlayerPrefs.SetInt("CurrentLevel", nextlevelID);
+        PlayerPrefs.Save();
+        TransitionManager.tm.ChangeLevel(1); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
     }
 }

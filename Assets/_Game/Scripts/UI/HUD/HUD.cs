@@ -30,6 +30,9 @@ public class HUD : MonoBehaviour
 
     [Header("Respawn Menu")] 
     [SerializeField] private GameObject _respawnMenu;
+
+    [Header("Spotted Indicator")] 
+    [SerializeField] private GameObject _spottedIndicatorPnl;
     
     [Header("Scroll Acquired Animation")] 
     [SerializeField] private GameObject _scrollAcquiredScreen;
@@ -89,6 +92,9 @@ public class HUD : MonoBehaviour
         UIEvents.current.OnAcquireWarpScroll += () => DisplayScrollAcquiredScreen("WARP");
         UIEvents.current.OnAcquireResidueScroll += () => DisplayScrollAcquiredScreen("RESIDUE");
         UIEvents.current.OnCloseScrollAcquiredScreen += () => DisplayScrollAcquiredScreen("CLOSE");
+        
+        // watched listener
+        UIEvents.current.OnPlayerWatched += DisplayWatcherIndicator;
     }
 
     private void Start()
@@ -99,6 +105,7 @@ public class HUD : MonoBehaviour
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
         _scrollAcquiredScreen.SetActive(false);
+        _spottedIndicatorPnl.SetActive(false);
     }
 
     private void DisplayDebugHUD(bool isEnabled)
@@ -332,6 +339,11 @@ public class HUD : MonoBehaviour
                 _scrollAcquiredScreen.SetActive(false);
                 break;
         }
+    }
+
+    private void DisplayWatcherIndicator(bool watched)
+    {
+        _spottedIndicatorPnl.SetActive(watched);
     }
 
     private IEnumerator PlayChapterNotification(string chapter, string title)
