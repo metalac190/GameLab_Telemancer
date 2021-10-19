@@ -67,6 +67,12 @@ public class StatsMenu : MonoBehaviour
 
     }
 
+    // TODO: Fixme, currently called by Reset Level button. Should reset on reload level but not on respawn
+    public void ResetTimer()
+    {
+        _currentTime = 0;
+    }
+
     private void UpdateBoltCounter(bool boltSucceeded)
     {
         if (boltSucceeded)

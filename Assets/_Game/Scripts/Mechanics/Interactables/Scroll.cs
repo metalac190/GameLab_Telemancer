@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
 using AudioSystem;
+using Mechanics.Player;
 
 /// <summary>
 /// Script for the unlock scroll that appears at the end of each level
@@ -53,6 +54,10 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         
         // hide scroll
         _scroll.SetActive(false);
+
+        // TODO: Make this more efficient
+        PlayerState playerState = FindObjectOfType<PlayerState>();
+        playerState.LockPlayer(true);
         
         // set used
         _used = true;
@@ -89,7 +94,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         UIEvents.current.PauseGame(false);
         // Stops music of current level before switch
         MusicManager.Instance.StopMusic();
-        // TODO: Add level switch code here 
+        // TODO: Add level switch code here
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         PlayerPrefs.SetInt("CurrentLevel", nextlevelID);
         PlayerPrefs.Save();
         TransitionManager.tm.ChangeLevel(1); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO
