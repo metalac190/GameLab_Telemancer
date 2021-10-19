@@ -35,13 +35,13 @@ public class NPC : MonoBehaviour, IHoverInteractable
     }
     public void OnBeginHover()
     {
-        Debug.Log("Begin Hover");
+        // Debug.Log("Begin Hover");
         interactablePopup.SetActive(true);
     }
 
     public void OnEndHover()
     {
-        Debug.Log("End Hover");
+        // Debug.Log("End Hover");
         interactablePopup.SetActive(false);
     }
 
