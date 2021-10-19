@@ -123,9 +123,10 @@ public class HUD : MonoBehaviour
         // Set timescale
         Time.timeScale = isEnabled ? 0f : 1f;
         // Unlock / lock Cursor
-        Cursor.lockState = isEnabled ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = isEnabled? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isEnabled;
 
-        // OnReset the hud
+        // Reset the hud
         _boltImage.color = _normalColor;
         _warpImage.color = _normalColor;
         _residueImage.color = _normalColor;

@@ -69,7 +69,12 @@ namespace Mechanics.Bolt
 
         public void AddController(BoltController controller)
         {
-            if (_boltControllers.Contains(controller)) return;
+            if (_boltControllers.Contains(controller)) {
+                if (_currentBolt == controller) {
+                    _currentBolt = null;
+                }
+                return;
+            }
             _boltControllers.Add(controller);
             controller.gameObject.SetActive(false);
         }
@@ -101,7 +106,9 @@ namespace Mechanics.Bolt
 
         public void OnPlayerRespawn()
         {
-            _currentBolt.Disable();
+            if (_currentBolt != null) {
+                _currentBolt.Disable();
+            }
             _currentBolt = null;
             _isCasting = false;
             OnBoltDissipate?.Invoke(ResidueReady);

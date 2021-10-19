@@ -94,7 +94,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         UIEvents.current.PauseGame(false);
         // Stops music of current level before switch
         MusicManager.Instance.StopMusic();
-        // TODO: Add level switch code here 
+        // TODO: Add level switch code here
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         PlayerPrefs.SetInt("CurrentLevel", nextlevelID);
         PlayerPrefs.Save();
         TransitionManager.tm.ChangeLevel(1); //NEEDS TO GO TO LOADING SCREEN BUT IT WORKS IF HAVE TO

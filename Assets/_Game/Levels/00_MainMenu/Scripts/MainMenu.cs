@@ -49,6 +49,8 @@ public class MainMenu : MonoBehaviour
         // alternate method using loading screen
         
         PlayerPrefs.SetInt("CurrentLevel", 2);
+        PlayerPrefs.SetInt("Checkpoint", 1);
+        PlayerPrefs.SetInt("Level", 2);
         PlayerPrefs.Save();
         SceneManager.LoadScene(1);
         
