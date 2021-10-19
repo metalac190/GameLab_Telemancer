@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Yarn.Unity;
+using System.Linq;
+using System.Collections.Generic;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
@@ -7,6 +9,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string characterName = "";
     public string talkToNode = "";
     private DialogueRunner runner;
+    private int offset, randNum, talk;
+    private string[] talks;
 
     [Header("Optional")]
     public YarnProgram scriptToLoad;
@@ -19,6 +23,9 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
         if (scriptToLoad != null)
             runner.Add(scriptToLoad);
+
+        if (PlayerPrefs.GetString("TedTalks") != "")
+            talks = PlayerPrefs.GetString("TedTalks").Split(',');
     }
 
     public void OnInteract()
@@ -48,7 +55,23 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string RandomTedTalk()
     {
         string nodeString = "TedTalk";
-        nodeString += Random.Range(1, 20);
+        nodeString += GetNextTalk();
         return nodeString;
+    }
+
+    public int GetNextTalk()
+    {
+        int index = PlayerPrefs.GetInt("TedTalkIndex");
+        if(index + 1 == talks.Length)
+            PlayerPrefs.SetInt("TedTalkIndex", 0);
+        else
+            PlayerPrefs.SetInt("TedTalkIndex", index + 1);
+        return int.Parse(talks[index]);
+    }
+
+    public void SaveTalkNumber(int talkID)
+    {
+        string newTalks = PlayerPrefs.GetString("TedTalks") + ',' + talkID;
+        PlayerPrefs.SetString("TedTalks", newTalks);
     }
 }
