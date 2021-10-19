@@ -19,8 +19,8 @@ public class HUD : MonoBehaviour
 
     [Header("Xhair")]
     [SerializeField] private Image _xhair = null;
-    [SerializeField] private GameObject _chargeBarContainer;
-    [SerializeField] private Image _chargeBarL, _chargeBarR;
+    [SerializeField] private GameObject _chargeBarContainer = null;
+    [SerializeField] private Image _chargeBarL = null, _chargeBarR = null;
     private const float SB_MaxPercent = 0.19f;
 
     [Header("Xhair Colors")]
@@ -29,19 +29,19 @@ public class HUD : MonoBehaviour
     private Color _xhairColorNormal = Color.white;
 
     [Header("Respawn Menu")]
-    [SerializeField] private GameObject _respawnMenu;
+    [SerializeField] private GameObject _respawnMenu = null;
 
     [Header("Spotted Indicator")] 
-    [SerializeField] private GameObject _spottedIndicatorPnl;
+    [SerializeField] private GameObject _spottedIndicatorPnl = null;
     
     [Header("Scroll Acquired Animation")] 
-    [SerializeField] private GameObject _scrollAcquiredScreen;
-    [SerializeField] private Text _spellNameTxt;
-    [SerializeField] private Text _spellDescTxt;
+    [SerializeField] private GameObject _scrollAcquiredScreen = null;
+    [SerializeField] private Text _spellNameTxt = null;
+    [SerializeField] private Text _spellDescTxt = null;
 
     [Header("Area Notification")]
-    [SerializeField] private Text _chapterNumber;
-    [SerializeField] private Text _chapterName;
+    [SerializeField] private Text _chapterNumber = null;
+    [SerializeField] private Text _chapterName = null;
     [SerializeField] private Color _chNumColor = Color.white;
     [SerializeField] private Color _chNameColor = Color.white;
 
@@ -52,8 +52,8 @@ public class HUD : MonoBehaviour
     [SerializeField] private float _FadeOut = 1.2f;
 
     [Header("Debug HUD")]
-    [SerializeField] private GameObject _debugSpellsPnl;
-    [SerializeField] private GameObject _debugStatsPnl;
+    [SerializeField] private GameObject _debugSpellsPnl = null;
+    [SerializeField] private GameObject _debugStatsPnl = null;
 
     [Header("Debug HUD Ability Colors")]
     [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);

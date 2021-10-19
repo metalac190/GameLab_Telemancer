@@ -10,7 +10,7 @@ public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueRunner runner;
     [SerializeField] private PlayerState player;
-    [SerializeField] private TextMeshProUGUI dialogueText, speaker;
+    [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
     void Start()
     {
         // Null checks

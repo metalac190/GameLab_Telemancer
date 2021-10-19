@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private Button _continueButton;
+    [SerializeField] private Button _continueButton = null;
     private bool hasSave;
 
     public void Awake()

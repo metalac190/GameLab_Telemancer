@@ -16,8 +16,8 @@ public class Watcher : MonoBehaviour
     [SerializeField] private GameObject _visionSource = null;
     [SerializeField] private Light _visionLight = null;
     [SerializeField] SphereCollider _trigger = null;
-    [SerializeField] LayerMask targetMask;
-    [SerializeField] LayerMask obstacleMask;
+    [SerializeField] LayerMask targetMask = 0;
+    [SerializeField] LayerMask obstacleMask = 1;
 
     private bool _isPlayerInRange = false;
     private bool _isPlayerInView = false;

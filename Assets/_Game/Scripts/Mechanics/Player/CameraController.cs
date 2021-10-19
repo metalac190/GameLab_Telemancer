@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour {
 
     private PlayerController pc;
 
-    [SerializeField] private Transform cameraHolder;
-    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
 

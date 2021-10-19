@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] private Light _light;
-    [SerializeField] private GameObject _fire, _checkpointModel;
-    [SerializeField] private GameObject _respawnPoint;
-    [SerializeField] private Material _fireGreen, _fireBlue, _firePurple, _ckptWarm, _ckptCool;
+    [SerializeField] private Light _light = null;
+    [SerializeField] private GameObject _fire = null, _checkpointModel = null;
+    [SerializeField] private GameObject _respawnPoint = null;
+    [SerializeField] private Material _fireGreen = null, _fireBlue = null, _firePurple = null, _ckptWarm = null, _ckptCool = null;
     private readonly Color _green = new Color(165 / 255f, 255 / 255f, 111 / 255f);
     private readonly Color _blue = new Color(92/255f, 191/255f, 255/255f);
     private readonly Color _purple = new Color(182/255f, 82/255f, 255/255f);
