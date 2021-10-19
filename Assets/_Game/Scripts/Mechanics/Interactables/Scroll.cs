@@ -57,7 +57,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
 
         // TODO: Make this more efficient
         PlayerState playerState = FindObjectOfType<PlayerState>();
-        playerState.GamePaused(true);
+        playerState.LockPlayer(true);
         
         // set used
         _used = true;

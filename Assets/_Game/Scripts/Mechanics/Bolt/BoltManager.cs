@@ -58,6 +58,13 @@ namespace Mechanics.Bolt
             for (int i = _boltControllers.Count; i < _initialPoolSize; ++i) {
                 CreateNewBolt();
             }
+            UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+        }
+
+        private void OnDisable()
+        {
+            if (UIEvents.current != null)
+                UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
         }
 
         public void AddController(BoltController controller)
@@ -91,6 +98,14 @@ namespace Mechanics.Bolt
         }
 
         #endregion
+
+        public void OnPlayerRespawn()
+        {
+            _currentBolt.Disable();
+            _currentBolt = null;
+            _isCasting = false;
+            OnBoltDissipate?.Invoke(ResidueReady);
+        }
 
         #region Residue
 
@@ -133,16 +148,19 @@ namespace Mechanics.Bolt
 
         public void SetPosition(Vector3 position, Vector3 forward)
         {
+            if (!_isCasting) return;
             _currentBolt.SetPosition(position, forward);
         }
 
         public void SetCastStatus(float size)
         {
+            if (!_isCasting) return;
             _currentBolt.SetCastStatus(size);
         }
 
         public void Fire(Vector3 position, Vector3 forward)
         {
+            if (!_isCasting) return;
             _currentBolt.Fire(position, forward);
             _isCasting = false;
         }

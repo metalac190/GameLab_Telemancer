@@ -320,7 +320,7 @@ namespace Mechanics.Bolt
             }
         }
 
-        private void Disable()
+        public void Disable()
         {
             if (!_missingCollider) {
                 _collider.enabled = false;
