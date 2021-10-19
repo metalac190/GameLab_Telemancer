@@ -23,7 +23,9 @@ MonoBehaviour:
   maxLookUp: 60
   maxLookDistance: 20
   maxInteractDistance: 5
-  maxBoltLookDistance: 5
+  lookAtMask:
+    serializedVersion: 2
+    m_Bits: 1
   delayBolt: 0
   delayWarp: 0.35
   delayResidue: 0.3
@@ -35,3 +37,9 @@ MonoBehaviour:
   movementSpeed: 1
   lifeSpan: 4
   coyoteTime: 0.15
+  maxLightDistance: 8
+  dissipateTime: 0.8
+  growDuration: 3
+  growDrag: 8
+  shrinkDuration: 1.2
+  shrinkDrag: 4

@@ -30,16 +30,14 @@ public class BoltVfxController : MonoBehaviour
     }
     */
 
-    public float Dissipate()
+    public void Dissipate(float dissipateTime)
     {
         if (_lightning != null) {
             _lightning.DissipateShrink();
         }
         if (_effectToPlay != null) {
             _effectToPlay.SetBool("isFizzling", true);
-            return PlayerState.settings.dissipateTime;
         }
-        return 0;
     }
 
     public void OnReset()

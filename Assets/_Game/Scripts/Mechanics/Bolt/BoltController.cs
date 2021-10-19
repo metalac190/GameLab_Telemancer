@@ -25,6 +25,7 @@ namespace Mechanics.Bolt
         private float _timeAlive;
 
         private Coroutine _redirectDelayRoutine;
+        private Coroutine _dissipateRoutine;
 
         private BoltManager _manager;
 
@@ -276,18 +277,42 @@ namespace Mechanics.Bolt
             if (!IsAlive) return;
             _timeAlive += Time.deltaTime;
             if (_timeAlive > PlayerState.settings.lifeSpan) {
-                Dissipate(false, true);
+                LifetimeDissipate();
             }
+        }
+
+        public void LifetimeDissipate()
+        {
+            if (!IsAlive) return;
+            float dissipateTime = PlayerState.settings.airDissipateTime;
+            if (!_missingFeedback) {
+                _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
+            }
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
+            _dissipateRoutine = StartCoroutine(LifetimeDissipateTimer(dissipateTime));
+        }
+
+        public IEnumerator LifetimeDissipateTimer(float dissipateTime)
+        {
+            _timeAlive = -2;
+            yield return new WaitForSecondsRealtime(dissipateTime);
+            Manager.DissipateBolt();
+            Disable();
         }
 
         public void Dissipate(bool stopMoving, bool coyoteTime)
         {
             if (!IsAlive) return;
-            float dissipateTime = 0;
+            float dissipateTime = PlayerState.settings.airDissipateTime;
             if (!_missingFeedback) {
-                dissipateTime = _feedback.OnBoltDissipate(transform.position, transform.forward);
+                _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime);
             }
-            StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
+            _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving, coyoteTime));
         }
 
         private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving, bool coyoteTime)

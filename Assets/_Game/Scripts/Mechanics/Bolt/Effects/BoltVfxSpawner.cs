@@ -38,13 +38,13 @@ namespace Mechanics.Bolt
             //_boltPrefab.SetRate(delta);
         }
 
-        public float Dissipate()
+        public void Dissipate(float dissipateTime)
         {
-            if (_instantiatedObject == null) return 0;
+            if (_instantiatedObject == null) return;
             if (_lightToDim != null) {
                 StartCoroutine(DimLight());
             }
-            return _instantiatedObject.Dissipate();
+            _instantiatedObject.Dissipate(dissipateTime);
         }
 
         private IEnumerator DimLight()
