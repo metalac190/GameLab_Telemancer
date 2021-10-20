@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,11 +10,10 @@ public class CameraController : MonoBehaviour {
 
     private PlayerController pc;
 
-    [SerializeField] private Transform cameraHolder;
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private float maxLookDown = 25f;
-    [SerializeField] private float maxLookUp = 60f;
-    public float sensitivity = 1;
+    [SerializeField] private float sensitivity = 10;
+
+    [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
 
@@ -29,6 +29,7 @@ public class CameraController : MonoBehaviour {
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // -------------------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ public class CameraController : MonoBehaviour {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
-            xRotation = Mathf.Clamp(xRotation - mouse.y, -maxLookUp, maxLookDown);
+            xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.Settings.MaxLookUp, PlayerState.Settings.MaxLookDown);
             cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
     }

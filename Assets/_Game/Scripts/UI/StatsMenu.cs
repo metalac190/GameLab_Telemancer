@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class StatsMenu : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _fpsValue;
-    [SerializeField] private TextMeshProUGUI _speedometerValue;
-    [SerializeField] private TextMeshProUGUI _timerValue;
-    [SerializeField] private TextMeshProUGUI _positionValue;
-    [SerializeField] private TextMeshProUGUI _boltCounterValue;
+    [SerializeField] private TextMeshProUGUI _fpsValue = null;
+    [SerializeField] private TextMeshProUGUI _speedometerValue = null;
+    [SerializeField] private TextMeshProUGUI _timerValue = null;
+    [SerializeField] private TextMeshProUGUI _positionValue = null;
+    [SerializeField] private TextMeshProUGUI _boltCounterValue = null;
     private CharacterController _player;
 
     private int _framesPerSecond;
@@ -65,6 +65,12 @@ public class StatsMenu : MonoBehaviour
                                    + "  Y:" + _playerPosition.y.ToString("F3") 
                                    + "  Z:" + _playerPosition.z.ToString("F3");
 
+    }
+
+    // TODO: Fixme, currently called by Reset Level button. Should reset on reload level but not on respawn
+    public void ResetTimer()
+    {
+        _currentTime = 0;
     }
 
     private void UpdateBoltCounter(bool boltSucceeded)

@@ -8,19 +8,17 @@ namespace Mechanics.Player
     /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] private float _maxLookDistance = 20;
-        [SerializeField] private float _maxInteractDistance = 5;
-        [SerializeField] private LayerMask _interactionMask = 1;
         [Header("References")]
-        [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private Transform _cameraTransform = null;
         [SerializeField] private PlayerFeedback _playerFeedback;
+        private bool _isHovering = false;
+        private IHoverInteractable _hoverObj;
 
         #region Unity Fucntions
 
         private void OnEnable()
         {
-            FeedbackNullCheck();
+            NullChecks();
         }
 
         private void Update()
@@ -38,7 +36,7 @@ namespace Mechanics.Player
         {
             if (!value.performed) return;
 
-            var hit = GetRaycast(_maxInteractDistance);
+            var hit = GetRaycast(PlayerState.Settings.MaxInteractDistance);
             if (hit.collider == null) return;
 
             hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
@@ -49,7 +47,7 @@ namespace Mechanics.Player
 
         public void LookAtInteractables()
         {
-            var hit = GetRaycast(_maxLookDistance);
+            var hit = GetRaycast(PlayerState.Settings.MaxLookDistance);
             if (hit.collider == null) {
                 SetInteractable(InteractableEnums.Null);
                 return;
@@ -65,12 +63,25 @@ namespace Mechanics.Player
                 return;
             }
 
-            if (hit.distance < _maxInteractDistance) {
+            if (hit.distance < PlayerState.Settings.MaxInteractDistance) {
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
+
+                    // If object is type Hover, save reference and call function
+                    if(interactionObject.GetComponent<IHoverInteractable>() != null && !_isHovering)
+                    {
+                        _isHovering = true;
+                        _hoverObj = interactionObject.GetComponent<IHoverInteractable>();
+                        _hoverObj.OnBeginHover();
+                    }
                     return;
                 }
+            }
+            else if(_isHovering)
+            {
+                _isHovering = false;
+                _hoverObj.OnEndHover();
             }
         }
 
@@ -93,7 +104,7 @@ namespace Mechanics.Player
 
             Ray ray = new Ray(start.position, start.forward);
 
-            Physics.Raycast(ray, out var hit, dist, _interactionMask);
+            Physics.Raycast(ray, out var hit, dist, PlayerState.Settings.LookAtMask);
             return hit;
         }
 
@@ -102,6 +113,11 @@ namespace Mechanics.Player
         // -------------------------------------------------------------------------------------------
 
         #region NullCheck
+
+        private void NullChecks()
+        {
+            FeedbackNullCheck();
+        }
 
         private bool _missingFeedback;
 

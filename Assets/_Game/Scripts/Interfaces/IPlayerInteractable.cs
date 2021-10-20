@@ -6,3 +6,9 @@ public interface IPlayerInteractable
 {
     void OnInteract();
 }
+
+public interface IHoverInteractable : IPlayerInteractable
+{
+    void OnBeginHover();
+    void OnEndHover();
+}
