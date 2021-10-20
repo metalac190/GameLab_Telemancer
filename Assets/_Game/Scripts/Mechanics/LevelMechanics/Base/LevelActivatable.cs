@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public abstract class LevelActivatable : MonoBehaviour
 {
     [Header("LevelActivatable")]
     [SerializeField] private bool _isActiveOnStartup = false;
-    [SerializeField] private bool _isCurentlyActive;
+    private bool _isCurentlyActive;
     public bool IsCurrentlyActive { get => _isCurentlyActive; }
 
     private enum logicalOperators {AND, OR };
@@ -26,6 +27,21 @@ public abstract class LevelActivatable : MonoBehaviour
     private void Awake()
     {
         _isCurentlyActive = _isActiveOnStartup;
+        if (_isActiveOnStartup)
+            OnActivate();
+        else
+            OnDeactivate();
+    }
+
+    private void OnEnable()
+    {
+        UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        if (UIEvents.current != null)
+            UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
     }
 
     // any pressure plate or switch should run this on start so the activatable is aware the switch exists
@@ -73,4 +89,12 @@ public abstract class LevelActivatable : MonoBehaviour
 
     protected abstract void OnActivate();
     protected abstract void OnDeactivate();
+    protected abstract void OnReset();
+
+
+    private void OnPlayerRespawn()
+    {
+        _isCurentlyActive = _isActiveOnStartup;
+        OnReset();
+    }
 }

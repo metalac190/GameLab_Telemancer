@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,8 +10,10 @@ public class CameraController : MonoBehaviour {
 
     private PlayerController pc;
 
-    [SerializeField] private Transform cam;
-    public float sensitivity = 1;
+    [SerializeField] private float sensitivity = 10;
+
+    [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
 
@@ -20,22 +23,33 @@ public class CameraController : MonoBehaviour {
 
     private void Awake() {
         pc = GetComponent<PlayerController>();
+        UpdateSettings();
+        UIEvents.current.OnSaveCurrentSettings += UpdateSettings;
     }
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // -------------------------------------------------------------------------------------------
 
     public void MoveCamera(InputAction.CallbackContext value) {
         if(!pc.flag_cantAct) {
-            Vector2 mouse = value.ReadValue<Vector2>() * sensitivity * Time.deltaTime;
+            Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
-            xRotation = Mathf.Clamp(xRotation - mouse.y, -90f, 90f);
-            cam.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.Settings.MaxLookUp, PlayerState.Settings.MaxLookDown);
+            cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
+    }
+
+    public void UpdateSettings() {
+        float newFov = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString());
+        mainCamera.fieldOfView = (newFov != 0) ? newFov : 60;
+
+        float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
+        sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
     }
 
 }

@@ -45,12 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7665573d24ffa3a418ef375152b96b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxLookDistance: 20
-  _maxInteractDistance: 3
-  _interactionMask:
-    serializedVersion: 2
-    m_Bits: 1
-  _playerAnimator: {fileID: 870152040626436047}
+  _cameraTransform: {fileID: 5994795831583482220}
   _playerFeedback: {fileID: 1294586047155214018}
 --- !u!1 &2981477514693991773
 GameObject:
@@ -96,6 +91,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf1738db16cbbd40816ea22b18556bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 0}
+  _petToadTrigger: pet_toad
+  _startledTrigger: startled
+  _idleTwitchTrigger: idle_twitch
+  _jumpTrigger: jump
+  _fallTrigger: fall
+  _airTimeFloat: air_time
+  _landTrigger: land
+  _castBoltTrigger: point_cast
+  _warpTrigger: snap_teleport
+  _interactableTrigger: interact_hitInteractable
+  _residueIdleTrigger: residue_idle
+  _boltDissipateTrigger: dissipate
 --- !u!1 &3209979791028676465
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,15 +147,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcaf2607b423247adaa734851862fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeToNextFire: 0.5
-  _timeToNextWarp: 1
-  _timeToNextResidue: 1.5
-  _clearResidueOnFire: 1
-  _boltLookDistance: 20
-  _timeToFire: 0
-  _warpBolt: {fileID: 0}
+  _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
+    type: 3}
   _playerState: {fileID: 8561128953603784824}
-  _playerAnimator: {fileID: 870152040626436047}
   _playerFeedback: {fileID: 1294586047155214018}
   _boltFirePosition: {fileID: 1939250879272954141}
   _cameraLookDirection: {fileID: 6728132942592493119}
@@ -160,7 +162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939250879272954141}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: l_hand_bolt_SOCKET
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,9 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0717b1f337b4a4a8df226874c883f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerVfx: {fileID: 5994795833423906257}
-  _playerToHud: {fileID: 5994795833423906258}
-  _playerSfx: {fileID: 5994795833423906259}
+  _playerAnimator: {fileID: 0}
 --- !u!114 &5994795833423906259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,10 +242,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b49db269674a384799a9ef08c5d761f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activateWarpSound: {fileID: 0}
-  _boltCastSound: {fileID: 0}
-  _activateResidueSound: {fileID: 0}
-  _objectImpactResidueSound: {fileID: 0}
+  _activateWarpSound: {fileID: 11400000, guid: aa1b5978c8e0b8344b6f109737d50275, type: 2}
+  _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
+  _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
+    type: 2}
+  _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
+  _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
+  _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
+  _playerSnapSound: {fileID: 0}
+  _playerWalkingSound: {fileID: 11400000, guid: 7b61c8d6861c44a47ab9523cc9355a2e,
+    type: 2}
 --- !u!114 &5994795833423906258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f38d4bd47d4ec14d982da2adfddc5a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _attemptDisplayTime: 0.1
 --- !u!114 &5994795833423906257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,6 +279,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _whereToFlash: {fileID: 1939250879272954141}
   _castFlash: {fileID: 7628774212352662159, guid: 6ec5837416908f5428e411ed767a8ce6,
+    type: 3}
+  _dustEnvironment: {fileID: 8667639280547810958, guid: 5277b291455657047a588abef64e0c14,
     type: 3}
 --- !u!1 &5994795831583482192
 GameObject:
@@ -477,7 +486,7 @@ GameObject:
   - component: {fileID: 5994795833423906256}
   m_Layer: 10
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -532,15 +541,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05f9df1ff49e4d45aa891da2a03dea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  jumpForce: 3.5
-  risingGravity: 5
-  fallingGravity: 10
-  floatTime: 0.1
-  OnPlayerDeath:
+  OnTeleport:
     m_PersistentCalls:
       m_Calls: []
+  playerFeedback: {fileID: 1294586047155214018}
   grounded: 0
+  walking: 0
   flag_cantAct: 0
   infiniteJumps: 0
   playerDebug:
@@ -559,8 +565,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72fc1c50dcb4e92498f4c8965c60294d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 6728132942592493119}
-  sensitivity: 10
+  cameraHolder: {fileID: 6728132942592493119}
+  mainCamera: {fileID: 5994795831583482223}
 --- !u!114 &8561128953603784824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,9 +579,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086b19cf45094e8478ddfe436faea9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerSettings: {fileID: 11400000, guid: 71283b11d99ccab4fafe921a00dd106d, type: 2}
+  _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1
-  _lastCheckpoint: {x: 0, y: 0, z: 0}
+  _defaultCheckpoint: {x: 0, y: 0, z: 0}
   _onPlayerDeath:
     m_PersistentCalls:
       m_Calls:
@@ -590,18 +598,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3209979791028676465}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _respawnTime: 3
   _onPlayerRespawn:
     m_PersistentCalls:
       m_Calls:
@@ -616,17 +612,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3209979791028676465}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+  _playerController: {fileID: 1327872986168430472}
+  _castingController: {fileID: 3276201087200335316}
+  _playerFeedback: {fileID: 1294586047155214018}
 --- !u!114 &5994795833423906256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -751,7 +739,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4194836015599846775}
         m_MethodName: Interact
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -776,7 +764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5994795832995915946}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}

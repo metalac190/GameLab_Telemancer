@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -7,28 +8,29 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
+    
+    [Header("Components")]
     private CharacterController controller;
-    private PlayerGroundDetection groundDetector;
-    private CapsuleCollider groundDetectorCollision;
 
-    [Header("Horizontal Movement")]
-    [Range(0,50)] public float moveSpeed;
+    // --- Horizontal Movement
 
     private Vector3 moveVelocity;
     private Vector3 xzInput;
 
-    [Header("Vertical Movement")]
-    [SerializeField] [Range(0,20)] private float jumpForce;
-    [SerializeField] [Range(0,50)] private float risingGravity, fallingGravity;
-    [SerializeField] [Range(0,1)] private float floatTime;
+    // --- Vertical Movement
+
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
+    // ---
+
     [Header("General Control")]
-    public UnityEvent OnPlayerDeath;
-    public bool grounded;
+    public UnityEvent OnTeleport;
+    public PlayerFeedback playerFeedback;
+    public bool grounded, walking;
     public bool flag_cantAct;
+
+    // ---
 
     [Header("Debug/Testing")]
     [SerializeField] private bool infiniteJumps;
@@ -48,22 +50,31 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        groundDetector = GetComponentInChildren<PlayerGroundDetection>();
-        groundDetectorCollision = groundDetector.GetComponent<CapsuleCollider>();
-        OnPlayerDeath.AddListener(() => {
-            flag_cantAct = true;
-        });
+        OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
     }
 
     private void FixedUpdate() {
         // Movement
         if(!flag_cantAct) {
-            // XZ Axis
-            moveVelocity = (((xzInput.x * transform.right) + (xzInput.z * transform.forward)) * moveSpeed) + (moveVelocity.y * transform.up);
+            #region XZ Plane
+            Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
+            if(grounded) {
+                moveVelocity = (inputToMovement * PlayerState.Settings.MoveSpeed) + (moveVelocity.y * transform.up);
+            } else {
+                float upVelocity = moveVelocity.y;
+                moveVelocity.y = 0;
+                moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
+                moveVelocity += upVelocity * transform.up;
+            }
+            #endregion
+
+            // -----
 
             #region Y Axis
             if(flag_jump) { // Jump
-                moveVelocity.y = jumpForce;
+                moveVelocity.y = PlayerState.Settings.JumpForce;
+                playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
 
@@ -75,11 +86,17 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Float());
 
             } else { // Gravity
-                moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
+                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.Settings.RisingGravity : PlayerState.Settings.FallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
 
+            // -----
+
+            // Is Walking
+            walking = grounded && moveVelocity.magnitude > 0.5f;
+
             // Apply
+            playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
             controller.Move(moveVelocity * Time.fixedDeltaTime);
         }
     }
@@ -109,31 +126,46 @@ public class PlayerController : MonoBehaviour {
     #region Teleport & Movement
 
     public void Teleport(Transform other, Vector3 offset = default) {
-        // TODO: Swap teleport player and other transform
-        Vector3 oldPlayerPos = transform.position;
+        StartCoroutine(TeleportWithTransform(other, offset));
 
+        //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+    }
+
+    private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
         controller.enabled = false;
-        transform.position = other.position + offset;
-        other.position = oldPlayerPos;
-        controller.enabled = true;
+        OnTeleport.Invoke();
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + other.position + offset, other.gameObject);
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        if(collider) {
+            Vector3 oldPlayerPos = controller.bounds.min;
+            transform.position = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
+            other.position = oldPlayerPos;
+        } else {
+            Vector3 oldPlayerPos = transform.position;
+            transform.position = other.position + offset;
+            other.position = oldPlayerPos;
+        }
+        yield return null;
+        controller.enabled = true;
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
         controller.enabled = false;
+        OnTeleport.Invoke();
         transform.position = other + offset;
         controller.enabled = true;
 
-        Debug.Log("Teleport to raw position " + other);
+        //Debug.Log("Teleport to raw position " + other);
     }
+
+    // -------------------
 
     private IEnumerator Float() {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            if(floatTime > 0)
-                yield return new WaitForSeconds(floatTime);
+            if(PlayerState.Settings.FloatTime > 0)
+                yield return new WaitForSeconds(PlayerState.Settings.FloatTime);
             floating = false;
         } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");
