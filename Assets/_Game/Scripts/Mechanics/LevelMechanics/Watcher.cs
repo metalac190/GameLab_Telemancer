@@ -16,8 +16,8 @@ public class Watcher : MonoBehaviour
     [SerializeField] private GameObject _visionSource = null;
     [SerializeField] private Light _visionLight = null;
     [SerializeField] SphereCollider _trigger = null;
-    [SerializeField] LayerMask targetMask;
-    [SerializeField] LayerMask obstacleMask;
+    [SerializeField] LayerMask targetMask = 0;
+    [SerializeField] LayerMask obstacleMask = 1;
 
     private bool _isPlayerInRange = false;
     private bool _isPlayerInView = false;
@@ -102,23 +102,13 @@ public class Watcher : MonoBehaviour
     private void OnPlayerEnteredView()
     {
         //Debug.Log("Player in view");
-        if(_DeactivateBolt)
-            _playerState.SetBoltUnlock(false);
-        if (_DeactivateWarp)
-            _playerState.SetWarpUnlock(false);
-        if (_DeactivateResidue)
-            _playerState.SetResidueUnlock(false);
+        _playerState.SetWatcherLocks(_DeactivateBolt, _DeactivateWarp, _DeactivateResidue);
     }
 
     private void OnPlayerExitedView()
     {
         //Debug.Log("Player Not in view");
-        if (_DeactivateBolt)
-            _playerState.SetBoltUnlock(true);
-        if (_DeactivateWarp)
-            _playerState.SetWarpUnlock(true);
-        if (_DeactivateResidue)
-            _playerState.SetResidueUnlock(true);
+        _playerState.ResetWatcherLocks();
     }
 
     private Vector3 DirFromAnglesXZ(float angleInDegrees, bool angleIsGlobal)

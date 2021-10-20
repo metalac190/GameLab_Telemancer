@@ -116,11 +116,11 @@ public class EnemyWalker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Debug.Log("Kill player");
-            other.GetComponent<Mechanics.Player.PlayerState>()?.OnKill();
-        }   
+            //Debug.Log("Kill player");
+            other.gameObject.GetComponent<Mechanics.Player.PlayerState>()?.OnKill();
+        }
     }
 
     private void OnDrawGizmos()

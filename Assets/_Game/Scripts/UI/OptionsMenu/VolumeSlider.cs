@@ -3,8 +3,8 @@ using UnityEngine.Audio;
 
 public class VolumeSlider : OptionSlider
 {
-    [SerializeField] AudioMixerGroup mixer;
-    [SerializeField] string parameterName;
+    [SerializeField] AudioMixerGroup mixer = null;
+    [SerializeField] string parameterName = "";
 
      protected override void SetText(string s)
      {
@@ -13,7 +13,7 @@ public class VolumeSlider : OptionSlider
 
     protected override void SetValue(int n)
     {
-        float volume = n - 80;
+        float volume = -80.0f + (80.0f * ((float)n / 100f));
         mixer.audioMixer.SetFloat(parameterName, volume);
         base.SetValue(n);
     }
