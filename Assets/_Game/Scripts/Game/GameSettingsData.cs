@@ -56,6 +56,7 @@ public class GameSettingsData : ScriptableObject
     public float MoveSpeed => _moveSpeed;
     public float AirAcceleration => _airAcceleration;
     public float JumpForce => _jumpForce;
+    public float CoyoteJumpTime => _coyoteJumpTime;
     public float RisingGravity => _risingGravity;
     public float FallingGravity => _fallingGravity;
     public float FloatTime => _floatTime;
