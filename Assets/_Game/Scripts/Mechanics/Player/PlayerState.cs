@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,23 +9,32 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
-        [SerializeField] private bool _unlockedBolt = false;
+        [SerializeField] private GameSettingsData _playerSettings;
+        public static GameSettingsData Settings { get; private set; }
+        [Header("Abilities")]
+        [SerializeField] private bool _unlockedBolt = true;
         [SerializeField] private bool _unlockedWarp = false;
         [SerializeField] private bool _unlockedResidue = false;
-        // Temporary Checkpoint holder -- TODO: Make actual check points and a respawn script
+        [Header("Death and Respawn")]
         [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
         [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
-        [SerializeField] private float _respawnTime = 3;
         [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
+        [Header("References")]
+        [SerializeField] private PlayerController _playerController;
+        [SerializeField] private PlayerCasting _castingController;
+        [SerializeField] private PlayerFeedback _playerFeedback;
 
         public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };
 
-        private PlayerController _playerController;
-        private PlayerCasting _castingController;
+        private bool _boltAbility;
+        private bool _warpAbility;
+        private bool _residueAbility;
+
+        private bool _locked = false;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
-        private bool FlagCantAct() => _isAlive && !_isPaused;
+        private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
 
         private void OnValidate()
         {
@@ -43,25 +51,41 @@ namespace Mechanics.Player
             _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
             UIEvents.current.OnPauseGame += GamePaused;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
             UpdateUnlocks();
         }
 
-        public void SetBoltUnlock(bool unlocked)
+        public void SetWatcherLocks(bool boltLocked, bool warpLocked, bool residueLocked)
         {
-            _unlockedBolt = unlocked;
+            if (boltLocked) {
+                _boltAbility = false;
+            }
+            if (warpLocked) {
+                _warpAbility = false;
+            }
+            if (residueLocked) {
+                _residueAbility = false;
+            }
+            _playerFeedback.SetWatcherLock(true);
             UpdateUnlocks();
         }
 
-        public void SetWarpUnlock(bool unlocked)
+        public void ResetWatcherLocks()
         {
-            _unlockedWarp = unlocked;
+            _boltAbility = _unlockedBolt;
+            _warpAbility = _unlockedWarp;
+            _residueAbility = _unlockedResidue;
+            _playerFeedback.SetWatcherLock(false);
             UpdateUnlocks();
         }
 
-        public void SetResidueUnlock(bool unlocked)
+        public void LockPlayer(bool locked)
         {
-            _unlockedResidue = unlocked;
-            UpdateUnlocks();
+            _locked = locked;
+            _castingController.FlagCantAct = FlagCantAct();
+            _playerController.flag_cantAct = FlagCantAct();
         }
 
         public void GamePaused(bool paused)
@@ -104,23 +128,45 @@ namespace Mechanics.Player
 
         private void UpdateUnlocks()
         {
-            OnChangeUnlocks.Invoke(_unlockedBolt, _unlockedWarp, _unlockedResidue);
+            OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
         }
 
         private void NullCheck()
         {
-            _playerController = GetComponent<PlayerController>();
-            if (_playerController == null) {
-                _playerController = FindObjectOfType<PlayerController>();
-                if (_playerController == null) {
-                    _playerController = gameObject.AddComponent<PlayerController>();
+            if (Settings != null) _playerSettings = Settings;
+            if (_playerSettings == null) {
+                _playerSettings = FindObjectOfType<GameSettingsData>();
+                if (_playerSettings == null) {
+                    _playerSettings = new GameSettingsData();
                 }
             }
-            _castingController = GetComponentInChildren<PlayerCasting>();
+            Settings = _playerSettings;
+            _playerController = GetComponent<PlayerController>();
+            if (_playerController == null) {
+                _playerController = GetComponent<PlayerController>();
+                if (_playerController == null) {
+                    _playerController = FindObjectOfType<PlayerController>();
+                    if (_playerController == null) {
+                        _playerController = gameObject.AddComponent<PlayerController>();
+                    }
+                }
+            }
             if (_castingController == null) {
-                _castingController = GetComponent<PlayerCasting>();
+                _castingController = GetComponentInChildren<PlayerCasting>();
                 if (_castingController == null) {
-                    Debug.LogError("No Player Casting component found on player");
+                    _castingController = GetComponent<PlayerCasting>();
+                    if (_castingController == null) {
+                        Debug.LogError("No Player Casting component found on player");
+                    }
+                }
+            }
+            if (_playerFeedback == null) {
+                _playerFeedback = GetComponentInChildren<PlayerFeedback>();
+                if (_playerFeedback == null) {
+                    _playerFeedback = GetComponent<PlayerFeedback>();
+                    if (_playerFeedback == null) {
+                        Debug.LogError("No Player Feedback component found on player");
+                    }
                 }
             }
         }

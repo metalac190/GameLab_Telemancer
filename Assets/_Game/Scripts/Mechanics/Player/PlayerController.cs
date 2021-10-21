@@ -8,25 +8,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
+    
     [Header("Components")]
     private CharacterController controller;
 
-    // ---
-
-    [Header("Horizontal Movement")]
-    [SerializeField] [Range(0, 20)] private float moveSpeed;
-    [SerializeField] [Range(0, 50)] private float airAcceleration;
+    // --- Horizontal Movement
 
     private Vector3 moveVelocity;
     private Vector3 xzInput;
 
-    // ---
+    // --- Vertical Movement
 
-    [Header("Vertical Movement")]
-    [SerializeField] [Range(0, 20)] private float jumpForce;
-    [SerializeField] [Range(0, 50)] private float risingGravity, fallingGravity;
-    [SerializeField] [Range(0, 0.5f)] private float floatTime;
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
@@ -67,12 +59,12 @@ public class PlayerController : MonoBehaviour {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
             if(grounded) {
-                moveVelocity = (inputToMovement * moveSpeed) + (moveVelocity.y * transform.up);
+                moveVelocity = (inputToMovement * PlayerState.Settings.MoveSpeed) + (moveVelocity.y * transform.up);
             } else {
                 float upVelocity = moveVelocity.y;
                 moveVelocity.y = 0;
-                moveVelocity += airAcceleration * Time.fixedDeltaTime * inputToMovement;
-                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, moveSpeed);
+                moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
                 moveVelocity += upVelocity * transform.up;
             }
             #endregion
@@ -81,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 
             #region Y Axis
             if(flag_jump) { // Jump
-                moveVelocity.y = jumpForce;
+                moveVelocity.y = PlayerState.Settings.JumpForce;
                 playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
@@ -94,7 +86,7 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Float());
 
             } else { // Gravity
-                moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
+                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.Settings.RisingGravity : PlayerState.Settings.FallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
 
@@ -104,7 +96,7 @@ public class PlayerController : MonoBehaviour {
             walking = grounded && moveVelocity.magnitude > 0.5f;
 
             // Apply
-            playerFeedback.SetPlayerVelocity(moveVelocity, grounded);
+            playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
             controller.Move(moveVelocity * Time.fixedDeltaTime);
         }
     }
@@ -136,7 +128,7 @@ public class PlayerController : MonoBehaviour {
     public void Teleport(Transform other, Vector3 offset = default) {
         StartCoroutine(TeleportWithTransform(other, offset));
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+        //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
 
     private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
@@ -163,7 +155,7 @@ public class PlayerController : MonoBehaviour {
         transform.position = other + offset;
         controller.enabled = true;
 
-        Debug.Log("Teleport to raw position " + other);
+        //Debug.Log("Teleport to raw position " + other);
     }
 
     // -------------------
@@ -172,8 +164,8 @@ public class PlayerController : MonoBehaviour {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            if(floatTime > 0)
-                yield return new WaitForSeconds(floatTime);
+            if(PlayerState.Settings.FloatTime > 0)
+                yield return new WaitForSeconds(PlayerState.Settings.FloatTime);
             floating = false;
         } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");

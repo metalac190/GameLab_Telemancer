@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914316274}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -8.27}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.5699997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7830911415055248351}
@@ -96,7 +96,7 @@ VisualEffect:
       - m_Value: {x: 336.8647, y: 151.71916, z: 242.36664}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -17.866674, y: 0.323, z: 6.0839443}
+      - m_Value: {x: 0.191, y: -0.14, z: -5.5699997}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -310,7 +310,7 @@ VisualEffect:
       - m_Value: {x: 349.57968, y: 214.57393, z: 113.21175}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -18.03193, y: 0.69841087, z: 6.0839443}
+      - m_Value: {x: 0.025743507, y: 0.23541085, z: -5.57}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -530,7 +530,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2988043514980007990}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -8.27}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4742872441381630694}
@@ -602,7 +602,7 @@ VisualEffect:
       - m_Value: {x: 35.013645, y: 171.40373, z: 353.7467}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -18.274418, y: 0.36758915, z: 6.0839443}
+      - m_Value: {x: -0.21674356, y: -0.09541085, z: -5.57}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -774,7 +774,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4404471019699935701}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -8.27}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8985960511452646219}
@@ -804,7 +804,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4571283906105832550}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -11.035}
+  m_LocalPosition: {x: 0, y: 0, z: -7.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5382612826945998843}
@@ -868,6 +868,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7701506834379150216}
   - component: {fileID: 2514329137218377425}
+  - component: {fileID: 6789601401774915477}
   m_Layer: 0
   m_Name: Warp Bolt VFX
   m_TagString: Untagged
@@ -906,12 +907,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72bd683ffc26f7f40b0843475b6fd8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _objToDisable:
+  - {fileID: 7951634628605388840}
+  - {fileID: 5608699501871143578}
+  - {fileID: 2145834031721915863}
+  - {fileID: 7093000474494359961}
   _endpoints:
   - {fileID: 914316275}
   - {fileID: 5157810820651200961}
   - {fileID: 1087662126641221491}
   - {fileID: 9181464396526497412}
-  _duration: 5
+  _growDuration: 3
+  _growDrag: 2.2
+  _shrinkDuration: 1
+  _shrinkDrag: 4
+--- !u!114 &6789601401774915477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6577585602418833061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bd02bf1ffdf32443b01c98fade95717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeToDissipate: 0.8
+  _effectToPlay: {fileID: 2904421725289851946}
+  _lightning: {fileID: 2514329137218377425}
 --- !u!1 &7093000474494359961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1035,7 +1059,7 @@ VisualEffect:
       - m_Value: {x: -0, y: 180, z: 180}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -18.057674, y: 0.463, z: 3.318945}
+      - m_Value: {x: 0, y: 0, z: -7.1}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -1285,7 +1309,7 @@ VisualEffect:
       - m_Value: 0.6
         m_Name: Turbulence Intensity
         m_Overridden: 1
-      - m_Value: 80
+      - m_Value: 0
         m_Name: Smoke Spawn Rate
         m_Overridden: 1
     m_Vector2f:
@@ -1338,7 +1362,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 0
+        m_Name: isFizzling
+        m_Overridden: 1
 --- !u!73398921 &3197386998221778485
 VFXRenderer:
   m_ObjectHideFlags: 0

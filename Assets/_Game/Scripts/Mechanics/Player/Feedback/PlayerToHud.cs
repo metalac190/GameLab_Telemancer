@@ -17,6 +17,11 @@ public class PlayerToHud : MonoBehaviour
         _previousTarget = type;
     }
 
+    public void InWatcherRange(bool inRange) 
+    {
+        UIEvents.current.PlayerWatched(inRange);
+    }
+
     public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
     {
         UIEvents.current.UnlockBoltAbility(boltAbility);
@@ -64,11 +69,6 @@ public class PlayerToHud : MonoBehaviour
 
     public void OnBoltAction(AbilityActionEnum boltAction)
     {
-        if (boltAction == AbilityActionEnum.Acted) {
-            UIEvents.current.SetCastBolt(true);
-            return;
-        }
-
         if (_boltDebugDelay != null) {
             StopCoroutine(_boltDebugDelay);
             SetBoltDisplay(_boltDisplay);
@@ -83,8 +83,10 @@ public class PlayerToHud : MonoBehaviour
                 SetBoltDisplay(AbilityHudEnums.Failed);
                 _boltDebugDelay = StartCoroutine(BoltInputDebugDelay());
                 break;
-            case AbilityActionEnum.AttemptedSuccessful:
+            case AbilityActionEnum.Acted:
                 SetBoltDisplay(AbilityHudEnums.Used);
+                // Should be removed probably. 
+                UIEvents.current.SetCastBolt(true);
                 _boltDebugDelay = StartCoroutine(BoltInputDebugDelay());
                 break;
         }
@@ -137,8 +139,6 @@ public class PlayerToHud : MonoBehaviour
 
     public void OnWarpAction(AbilityActionEnum warpAction)
     {
-        if (warpAction == AbilityActionEnum.Acted) return;
-
         if (_warpDebugDelay != null) {
             StopCoroutine(_warpDebugDelay);
             SetWarpDisplay(_warpDisplay);
@@ -153,7 +153,7 @@ public class PlayerToHud : MonoBehaviour
                 SetWarpDisplay(AbilityHudEnums.Failed);
                 _warpDebugDelay = StartCoroutine(WarpInputDebugDelay());
                 break;
-            case AbilityActionEnum.AttemptedSuccessful:
+            case AbilityActionEnum.Acted:
                 SetWarpDisplay(AbilityHudEnums.Used);
                 _warpDebugDelay = StartCoroutine(WarpInputDebugDelay());
                 break;
@@ -207,8 +207,6 @@ public class PlayerToHud : MonoBehaviour
 
     public void OnResidueAction(AbilityActionEnum residueAction)
     {
-        if (residueAction == AbilityActionEnum.Acted) return;
-
         if (_residueDebugDelay != null) {
             StopCoroutine(_residueDebugDelay);
             SetResidueDisplay(_residueDisplay);
@@ -223,7 +221,7 @@ public class PlayerToHud : MonoBehaviour
                 SetResidueDisplay(AbilityHudEnums.Failed);
                 _residueDebugDelay = StartCoroutine(ResidueInputDebugDelay());
                 break;
-            case AbilityActionEnum.AttemptedSuccessful:
+            case AbilityActionEnum.Acted:
                 SetResidueDisplay(AbilityHudEnums.Used);
                 _residueDebugDelay = StartCoroutine(ResidueInputDebugDelay());
                 break;

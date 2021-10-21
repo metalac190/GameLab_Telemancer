@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OptionsMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _optionsMenu; 
+    [SerializeField] private GameObject _optionsMenu = null; 
     // TODO: find best object for attaching the options menu script
     // Henry - 9/18:
     // It seems obvious that you'd want to put the OptionsMenu script on the Options Menu Object,
@@ -16,8 +16,8 @@ public class OptionsMenu : MonoBehaviour
     {
         // NOTE: All PlayerPref keys and default values for player options need to be added here
         _prefs.Add("MasterVolume", 100f);
-        _prefs.Add("SfxVolume", 100f);
-        _prefs.Add("MusicVolume", 100f);
+        _prefs.Add("SfxVolume", 90f);
+        _prefs.Add("MusicVolume", 90f);
         _prefs.Add("Fov", 90f);
         _prefs.Add("Sensitivity", 20f);
         _prefs.Add("FpsCounter", 0f);
@@ -28,6 +28,7 @@ public class OptionsMenu : MonoBehaviour
     {
         // Add listener
         UIEvents.current.OnOpenOptionsMenu += OnMenuOpen;
+        UIEvents.current.OnPauseGame += delegate(bool b) { if (!b) _optionsMenu.SetActive(false); };
         
         // Ensure menu is hidden
         _optionsMenu.SetActive(false);
@@ -35,6 +36,13 @@ public class OptionsMenu : MonoBehaviour
 
     private void OnMenuOpen()
     {
+        // Set prefs to default if they don't exist
+        foreach (var pref in _prefs)
+        {
+            if (!PlayerPrefs.HasKey(pref.Key))
+                PlayerPrefs.SetFloat(pref.Key, pref.Value);
+        }
+        
         UIEvents.current.ReloadSettings();
         _optionsMenu.SetActive(true);
     }
@@ -54,7 +62,7 @@ public class OptionsMenu : MonoBehaviour
         OnMenuClose();
     }
 
-    public void RestoreDefualtSettings()
+    public void RestoreDefaultSettings()
     {
         // Set all player prefs to default values
         foreach (var pref in _prefs)

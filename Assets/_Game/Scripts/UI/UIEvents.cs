@@ -158,6 +158,20 @@ public class UIEvents : MonoBehaviour
     {
         OnCloseScrollAcquiredScreen?.Invoke();
     }
+
+    public event Action<bool> OnOpenScrollMenu;
+
+    public void OpenScrollMenu(bool open)
+    {
+        OnOpenScrollMenu?.Invoke(open);
+    }
+
+    public event Action<bool> OnPlayerWatched;
+
+    public void PlayerWatched(bool watched)
+    {
+        OnPlayerWatched?.Invoke(watched);
+    }
     
     #endregion
 
