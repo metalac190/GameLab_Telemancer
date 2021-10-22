@@ -27,8 +27,13 @@ public class PlayerController : MonoBehaviour {
     [Header("General Control")]
     public UnityEvent OnTeleport;
     public PlayerFeedback playerFeedback;
-    public bool grounded, walking;
+    public bool grounded;
+    [SerializeField] private bool coyoteTimeActive;
+    public bool walking;
     public bool flag_cantAct;
+
+    private bool recentlyTeleported = false;
+    private bool wasGrounded = false;
 
     // ---
 
@@ -50,7 +55,10 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
+        OnTeleport.AddListener(() => { 
+            moveVelocity = Vector3.zero;
+            StartCoroutine(RecentlyTeleportTimer());
+        });
     }
 
     private void FixedUpdate() {
@@ -72,6 +80,12 @@ public class PlayerController : MonoBehaviour {
             // -----
 
             #region Y Axis
+            // Coyote Time
+            if(!coyoteTimeActive && wasGrounded && !grounded && !recentlyTeleported)
+                StartCoroutine(CoyoteTime());
+            wasGrounded = grounded;
+
+            // Jumping/Gravity
             if(flag_jump) { // Jump
                 moveVelocity.y = PlayerState.Settings.JumpForce;
                 playerFeedback.OnPlayerJump();
@@ -114,7 +128,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Jump(InputAction.CallbackContext value) {
         if(value.performed) {
-            if(grounded || infiniteJumps)
+            if(grounded || coyoteTimeActive || infiniteJumps)
                 flag_jump = true;
         }
     }
@@ -123,7 +137,7 @@ public class PlayerController : MonoBehaviour {
 
     // -------------------------------------------------------------------------------------------
 
-    #region Teleport & Movement
+    #region Teleport
 
     public void Teleport(Transform other, Vector3 offset = default) {
         StartCoroutine(TeleportWithTransform(other, offset));
@@ -158,7 +172,38 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("Teleport to raw position " + other);
     }
 
-    // -------------------
+    /// <summary>
+    /// Timer to mark when if player had recently teleported
+    /// </summary>
+    private IEnumerator RecentlyTeleportTimer() {
+        recentlyTeleported = true;
+        for(float i = 0; i <= 0.1f; i += Time.deltaTime) {
+            // Check for break early
+            if(!recentlyTeleported)
+                break;
+            yield return null;
+        }
+        recentlyTeleported = false;
+    }
+
+    #endregion Teleport
+
+    // -------------------------------------------------------------------------------------------
+
+    #region Movement
+
+    private IEnumerator CoyoteTime() {
+        coyoteTimeActive = true;
+        for(float i = 0; i <= PlayerState.Settings.CoyoteJumpTime; i += Time.deltaTime) {
+            // Check for break early
+            if(!coyoteTimeActive || grounded || controller.velocity.y > 0)
+                break;
+
+            yield return null;
+        }
+        coyoteTimeActive = false;
+
+    }
 
     private IEnumerator Float() {
         if(!floating) {
