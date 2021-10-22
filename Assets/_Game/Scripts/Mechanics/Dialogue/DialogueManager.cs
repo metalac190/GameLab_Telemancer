@@ -10,8 +10,10 @@ public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueRunner runner;
     [SerializeField] private PlayerState player;
-    [SerializeField] private float interactionRadius = 5;
-    [SerializeField] private TextMeshProUGUI dialogueText, speaker;
+    [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
+    private int numTalks = 20;
+    private int temp;
+
     void Start()
     {
         // Null checks
@@ -19,33 +21,10 @@ public class DialogueManager : MonoBehaviour
             runner = FindObjectOfType<DialogueRunner>();
         if (player == null)
             player = FindObjectOfType<PlayerState>();
-    }
 
-    public void CheckForNearbyNPC(InputAction.CallbackContext value)
-    {
-        if (value.performed)
-        {
-            Debug.Log("performed");
-            var allParticipants = new List<NPC>(FindObjectsOfType<NPC>());
-            var target = allParticipants.Find(delegate (NPC p)
-            {
-                return string.IsNullOrEmpty(p.talkToNode) == false &&
-                (p.transform.position - player.gameObject.transform.position)
-                .magnitude <= interactionRadius;
-            });
-            if (target != null)
-            {
-                // Kick off the dialogue at this node.
-                runner.StartDialogue(RandomTedTalk());
-            }
-        }
-    }
-
-    string RandomTedTalk()
-    {
-        string nodeString = "TedTalk";
-        nodeString += Random.Range(1, 20);
-        return nodeString;
+        // Randomize Ted talks once
+        if (PlayerPrefs.GetString("TedTalks") != "")
+            RandomizeTedTalks();
     }
 
     public void DialogueStart()
@@ -72,5 +51,36 @@ public class DialogueManager : MonoBehaviour
 
         dialogueText.text = text;
         speaker.text = name;
+    }
+
+    public void RandomizeTedTalks()
+    {
+        string talkList = "";
+
+        // Initialize and fill array
+        int[] talks = new int[numTalks];
+        for (int i = 1; i <= numTalks; i++)
+        {
+            talks[i - 1] = i;
+        }
+
+        // Shuffle array
+        for (int i = 0; i < numTalks; i++)
+        {
+            int randNum = Random.Range(0, numTalks);
+            temp = talks[randNum];
+            talks[randNum] = talks[i];
+            talks[i] = temp;
+        }
+
+        // Create randomized string and save to PlayerPrefs
+        for (int i = 0; i < talks.Length; i++)
+        {
+            talkList += talks[i];
+            if (i < talks.Length - 1)
+                talkList += ",";
+        }
+        PlayerPrefs.SetString("TedTalks", talkList);
+        PlayerPrefs.SetInt("TedTalkIndex", 0);
     }
 }

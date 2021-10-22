@@ -9,6 +9,8 @@ namespace Mechanics.Player
     /// This should link to PlayerPrefs State (Henry)
     public class PlayerState : MonoBehaviour
     {
+        [SerializeField] private GameSettingsData _playerSettings;
+        public static GameSettingsData Settings { get; private set; }
         [Header("Abilities")]
         [SerializeField] private bool _unlockedBolt = true;
         [SerializeField] private bool _unlockedWarp = false;
@@ -28,10 +30,11 @@ namespace Mechanics.Player
         private bool _warpAbility;
         private bool _residueAbility;
 
+        private bool _locked = false;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
-        private bool FlagCantAct() => _isAlive && !_isPaused;
+        private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
 
         private void OnValidate()
         {
@@ -76,6 +79,13 @@ namespace Mechanics.Player
             _residueAbility = _unlockedResidue;
             _playerFeedback.SetWatcherLock(false);
             UpdateUnlocks();
+        }
+
+        public void LockPlayer(bool locked)
+        {
+            _locked = locked;
+            _castingController.FlagCantAct = FlagCantAct();
+            _playerController.flag_cantAct = FlagCantAct();
         }
 
         public void GamePaused(bool paused)
@@ -123,6 +133,15 @@ namespace Mechanics.Player
 
         private void NullCheck()
         {
+            if (Settings != null) _playerSettings = Settings;
+            if (_playerSettings == null) {
+                _playerSettings = FindObjectOfType<GameSettingsData>();
+                if (_playerSettings == null) {
+                    _playerSettings = new GameSettingsData();
+                }
+            }
+            Settings = _playerSettings;
+            _playerController = GetComponent<PlayerController>();
             if (_playerController == null) {
                 _playerController = GetComponent<PlayerController>();
                 if (_playerController == null) {

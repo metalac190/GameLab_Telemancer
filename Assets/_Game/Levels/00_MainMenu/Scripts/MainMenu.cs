@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private Button _continueButton;
+    [SerializeField] private Button _continueButton = null;
     private bool hasSave;
-    
+
     public void Awake()
     {
         // If no existing save, then hide the continue button
         // ContinueButton.SetActive(false);
-        
+
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
 
@@ -27,16 +27,12 @@ public class MainMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.f5Key.wasPressedThisFrame)
-        {
+        if (Keyboard.current.f5Key.wasPressedThisFrame) {
             PlayerPrefs.DeleteKey("Level");
             PlayerPrefs.DeleteKey("Checkpoint");
             PlayerPrefs.Save();
             SceneManager.LoadScene(0);
-        }
-        
-        else if (Keyboard.current.f6Key.wasPressedThisFrame)
-        {
+        } else if (Keyboard.current.f6Key.wasPressedThisFrame) {
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
             SceneManager.LoadScene(0);
@@ -45,14 +41,16 @@ public class MainMenu : MonoBehaviour
 
     public void NewGame()
     {
-        // Reset all save data to default
-        
+        // OnReset all save data to default
+
         // Load first scene 
         //SceneManager.LoadScene(1);
         
         // alternate method using loading screen
         
         PlayerPrefs.SetInt("CurrentLevel", 2);
+        PlayerPrefs.SetInt("Checkpoint", 1);
+        PlayerPrefs.SetInt("Level", 2);
         PlayerPrefs.Save();
         SceneManager.LoadScene(1);
         

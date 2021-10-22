@@ -22,7 +22,7 @@ namespace AudioSystem
         [Space(15)]
         [SerializeField] LayerType layerType = LayerType.Additive;
         [Space(15)]
-        [SerializeField] AudioMixerGroup mixer;
+        [SerializeField] AudioMixerGroup mixer = null;
 
         public AudioClip[] MusicLayers => musicLayers;
         public LayerType LayerType => layerType;

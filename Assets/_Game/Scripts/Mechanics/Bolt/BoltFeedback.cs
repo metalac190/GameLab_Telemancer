@@ -18,12 +18,17 @@ namespace Mechanics.Bolt
         [Header("VFX on Impact")]
         [SerializeField] private VfxController _boltImpactVfx = null;
 
-        public float OnBoltDissipate(Vector3 position, Vector3 forward)
+        public void SetBoltCastDelta(float delta)
+        {
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.SetBoltCastDelta(delta);
+        }
+
+        public void OnBoltDissipate(Vector3 position, Vector3 forward, float dissipateTime)
         {
             if (_boltVfxSpawner != null) {
-                return _boltVfxSpawner.Dissipate();
+                _boltVfxSpawner.Dissipate(dissipateTime);
             }
-            return 0;
         }
 
         public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)

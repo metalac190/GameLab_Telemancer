@@ -8,14 +8,6 @@ public class LevelMusicTrigger : MonoBehaviour
 {
     public UnityEvent OnTriggerMusic;
     public UnityEvent OnStopMusic;
-    [SerializeField] Button deathButton;
-    [SerializeField] Button restartButton;
-
-    private void Start()
-    {
-        deathButton.onClick.AddListener(PlayerDeath);
-        restartButton.onClick.AddListener(LevelRestart);
-    }
 
     void OnTriggerEnter(Collider col)
     {
@@ -24,15 +16,5 @@ public class LevelMusicTrigger : MonoBehaviour
             OnTriggerMusic?.Invoke();
             GetComponent<Collider>().enabled = false;
         }
-    }
-
-    void PlayerDeath()
-    {
-        OnStopMusic?.Invoke();
-    }
-
-    void LevelRestart()
-    {
-        OnStopMusic?.Invoke();
     }
 }
