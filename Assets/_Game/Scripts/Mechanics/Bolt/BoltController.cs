@@ -277,8 +277,9 @@ namespace Mechanics.Bolt
 
         private void CheckLifetime()
         {
-            if (!_checkAlive) return;
             _timeAlive += Time.deltaTime;
+            _feedback.SetBoltLifetime(_timeAlive, PlayerState.Settings.BoltLifeSpan);
+            if (!_checkAlive) return;
             if (_timeAlive < PlayerState.Settings.BoltLifeSpan) return;
 
             float dissipateTime = PlayerState.Settings.BoltAirFizzleTime;

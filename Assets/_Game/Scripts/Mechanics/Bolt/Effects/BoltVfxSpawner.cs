@@ -37,6 +37,12 @@ namespace Mechanics.Bolt.Effects
             //_boltPrefab.SetRate(delta);
         }
 
+        public void SetBoltLifetime(float timeAlive, float lifeSpan)
+        {
+            if (_instantiatedObject == null) return;
+            _instantiatedObject.SetLifetime(timeAlive, lifeSpan);
+        }
+
         public void Dissipate(float dissipateTime)
         {
             if (_instantiatedObject == null) return;

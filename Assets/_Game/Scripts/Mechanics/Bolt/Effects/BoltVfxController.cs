@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -8,7 +9,14 @@ namespace Mechanics.Bolt.Effects
     {
         [SerializeField] private VisualEffect _effectToPlay = null;
         [SerializeField] private LightningController _lightning;
+        [SerializeField] private bool _timeAliveIncludesFizzle = false;
         [SerializeField] [Range(0, 1)] private float _fizzlingDeltaRange = 1;
+
+        private static string _timeAliveDelta = "timeAliveDelta";
+        private static string _isFizzling = "isFizzling";
+        private static string _fizzlingDelta = "fizzlingDelta";
+
+        private float _airFizzleTime;
 
         private void Awake()
         {
@@ -17,14 +25,14 @@ namespace Mechanics.Bolt.Effects
             }
         }
 
-        private void SetFizzling(bool fizzling)
+        public void SetLifetime(float timeAlive, float lifeSpan)
         {
-            _effectToPlay.SetBool("isFizzling", fizzling);
-        }
-
-        private void SetFizzlingDelta(float delta)
-        {
-            _effectToPlay.SetFloat("fizzlingDelta", delta);
+            if (_timeAliveIncludesFizzle) {
+                lifeSpan += PlayerState.Settings.BoltAirFizzleTime;
+            }
+            float delta = timeAlive / lifeSpan;
+            delta = Mathf.Clamp01(delta);
+            _effectToPlay.SetFloat(_timeAliveDelta, delta);
         }
 
         public void Dissipate(float dissipateTime)
@@ -33,7 +41,7 @@ namespace Mechanics.Bolt.Effects
                 _lightning.DissipateShrink();
             }
             if (_effectToPlay != null) {
-                SetFizzling(true);
+                _effectToPlay.SetBool(_isFizzling, true);
                 StartCoroutine(DissipateDeltaRoutine(dissipateTime * _fizzlingDeltaRange));
             }
         }
@@ -42,17 +50,17 @@ namespace Mechanics.Bolt.Effects
         {
             for (float t = dissipateTime; t > 0; t -= Time.deltaTime) {
                 float delta = t / dissipateTime;
-                SetFizzlingDelta(delta);
+                _effectToPlay.SetFloat(_fizzlingDelta, delta);
                 yield return null;
             }
-            SetFizzlingDelta(0);
+            _effectToPlay.SetFloat(_fizzlingDelta, 0);
         }
 
         public void OnReset()
         {
             if (_effectToPlay != null) {
-                SetFizzling(false);
-                SetFizzlingDelta(1);
+                _effectToPlay.SetBool(_isFizzling, false);
+                _effectToPlay.SetFloat(_fizzlingDelta, 1);
             }
             if (_lightning != null) {
                 _lightning.OnReset();
