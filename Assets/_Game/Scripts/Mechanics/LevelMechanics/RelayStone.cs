@@ -36,6 +36,7 @@ public class RelayStone : WarpResidueInteractable
         Gizmos.DrawRay(transform.position, direction);
     }
 
+    /*
     public IEnumerator IgnoreCollisionWithBolt(BoltData data)
     {
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.WarpBolt.Collider, true);
@@ -44,4 +45,5 @@ public class RelayStone : WarpResidueInteractable
         //Physics.IgnoreCollision(transform, data.WarpBolt.transform, false);
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.WarpBolt.Collider, false);
     }
+    */
 }
