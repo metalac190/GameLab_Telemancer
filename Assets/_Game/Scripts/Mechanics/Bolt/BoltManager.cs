@@ -39,7 +39,8 @@ namespace Mechanics.Bolt
 
         private bool _isCasting = false;
         private IWarpInteractable _residueInteractable;
-        
+
+        public BoltController CurrentBolt => _currentBolt;
         public bool CanWarp => _currentBolt != null;
         public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
