@@ -281,17 +281,17 @@ namespace Mechanics.Bolt
             _timeAlive += Time.deltaTime;
             if (_timeAlive < PlayerState.Settings.BoltLifeSpan) return;
 
-            PrepareToDissipate();
             float dissipateTime = PlayerState.Settings.BoltAirFizzleTime;
+            PrepareToDissipate(dissipateTime);
             float disableTime = PlayerState.Settings.BoltAirExtraParticlesTime;
             _dissipateRoutine = StartCoroutine(LifetimeDissipateTimer(dissipateTime, disableTime));
         }
 
-        private void PrepareToDissipate()
+        private void PrepareToDissipate(float dissipateTime)
         {
             if (!_missingFeedback) {
                 float dimLightTime = PlayerState.Settings.BoltLightDimTime;
-                _feedback.OnBoltDissipate(transform.position, transform.forward, dimLightTime);
+                _feedback.OnBoltDissipate(transform.position, transform.forward, dissipateTime, dimLightTime);
             }
             if (_dissipateRoutine != null) {
                 StopCoroutine(_dissipateRoutine);
@@ -311,18 +311,14 @@ namespace Mechanics.Bolt
         public void Dissipate(bool stopMoving)
         {
             if (!IsAlive) return;
-            PrepareToDissipate();
             float dissipateTime = PlayerState.Settings.BoltHitFizzleTime;
+            PrepareToDissipate(dissipateTime);
             _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving));
         }
 
         private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving)
         {
-            if (!_missingCollider) {
-                _collider.enabled = false;
-            }
-            _timeAlive = 0;
-            if (stopMoving) _stopMoving = true;
+            Disable(false, stopMoving);
             yield return new WaitForSecondsRealtime(dissipateTime);
             Manager.DissipateBolt();
             Disable();
@@ -335,11 +331,13 @@ namespace Mechanics.Bolt
             }
         }
 
-        public void Disable(bool returnToController = true)
+        public void Disable(bool returnToController = true, bool stopMoving = true)
         {
             if (!_missingCollider) {
                 _collider.enabled = false;
             }
+            _stopMoving = stopMoving;
+            _checkAlive = false;
             IsAlive = false;
             if (returnToController) {
                 Manager.AddController(this);

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Mechanics.Bolt
+namespace Mechanics.Bolt.Effects
 {
     /// Summary:
     /// A helper script to instantiate an object on awake.
@@ -37,10 +37,10 @@ namespace Mechanics.Bolt
             //_boltPrefab.SetRate(delta);
         }
 
-        public void Dissipate()
+        public void Dissipate(float dissipateTime)
         {
             if (_instantiatedObject == null) return;
-            _instantiatedObject.Dissipate();
+            _instantiatedObject.Dissipate(dissipateTime);
         }
 
         public void DimLight(float dimLightTime)
