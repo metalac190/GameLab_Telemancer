@@ -30,7 +30,7 @@ public class BoltVfxController : MonoBehaviour
     }
     */
 
-    public void Dissipate(float dissipateTime)
+    public void Dissipate()
     {
         if (_lightning != null) {
             _lightning.DissipateShrink();
