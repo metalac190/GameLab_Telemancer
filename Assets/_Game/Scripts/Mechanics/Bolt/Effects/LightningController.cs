@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Mechanics.Player;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -9,14 +11,13 @@ namespace Mechanics.Bolt
     /// Lerps the lightning position from the bolt to its full trail length
     public class LightningController : MonoBehaviour
     {
-        [SerializeField] List<Transform> _endpoints = new List<Transform>();
+        [SerializeField] private List<GameObject> _objToDisable = new List<GameObject>();
+        [SerializeField] private List<Transform> _endpoints = new List<Transform>();
 
-        [SerializeField] private float _duration = 4;
+        private float _delta;
+        private Coroutine _routine;
 
         private List<Vector3> _finalEndpoints;
-
-        private float _timer0;
-        private float _timer1;
 
         private void Awake()
         {
@@ -29,23 +30,70 @@ namespace Mechanics.Bolt
             }
         }
 
-        private void OnEnable()
+        public void OnReset()
         {
-            _timer0 = 0;
-            _timer1 = 0;
+            _delta = 0;
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            if (_timer1 > _duration) return;
+            SpawnGrow();
+        }
 
-            _timer0 += Time.deltaTime;
-            _timer1 += _timer0 / 10;
-            float delta = _timer1 / _duration;
+        private void SpawnGrow()
+        {
+            if (_routine != null) {
+                StopCoroutine(_routine);
+            }
+            foreach (var obj in _objToDisable) {
+                obj.SetActive(true);
+            }
+            _routine = StartCoroutine(Grow());
+        }
 
+        private IEnumerator Grow()
+        {
+            float vel = 0;
+            _delta = Mathf.Clamp01(_delta);
+            while (_delta < 1) {
+                for (int i = 0; i < _endpoints.Count; i++) {
+                    _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
+                }
+
+                vel += Time.deltaTime / PlayerState.Settings.GrowDuration;
+                _delta += vel / PlayerState.Settings.GrowDrag;
+                yield return null;
+            }
             for (int i = 0; i < _endpoints.Count; i++) {
-                _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], delta);
-                //Debug.Log(_endpoints[i].localPosition + " " + delta + " " + _finalEndpoints[i]);
+                _endpoints[i].localPosition = _finalEndpoints[i];
+            }
+        }
+
+        public void DissipateShrink()
+        {
+            if (_routine != null) {
+                StopCoroutine(_routine);
+            }
+            _routine = StartCoroutine(Shrink());
+        }
+
+        private IEnumerator Shrink()
+        {
+            float vel = 0;
+            _delta = Mathf.Clamp(_delta, 0, PlayerState.Settings.ShrinkDuration);
+            while (_delta > 0) {
+                for (int i = 0; i < _endpoints.Count; i++) {
+                    _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
+                }
+                vel += Time.deltaTime / PlayerState.Settings.ShrinkDuration;
+                _delta -= vel / PlayerState.Settings.ShrinkDrag;
+                yield return null;
+            }
+            foreach (var point in _endpoints) {
+                point.localPosition = Vector3.zero;
+            }
+            foreach (var obj in _objToDisable) {
+                obj.SetActive(false);
             }
         }
     }

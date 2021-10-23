@@ -22,7 +22,7 @@ namespace Mechanics.Bolt
                 InstantiateVisualEffect();
             }
             if (_instantiatedObject != null) {
-                _instantiatedObject.Reset();
+                _instantiatedObject.OnReset();
                 if (_lightToDim != null) {
                     if (_lightIntensity < 0) {
                         _lightIntensity = _lightToDim.intensity;
@@ -32,13 +32,19 @@ namespace Mechanics.Bolt
             }
         }
 
-        public float Dissipate()
+        public void SetBoltCastDelta(float delta)
         {
-            if (_instantiatedObject == null) return 0;
+            if (_boltPrefab == null) return;
+            //_boltPrefab.SetRate(delta);
+        }
+
+        public void Dissipate(float dissipateTime)
+        {
+            if (_instantiatedObject == null) return;
             if (_lightToDim != null) {
                 StartCoroutine(DimLight());
             }
-            return _instantiatedObject.Dissipate();
+            _instantiatedObject.Dissipate(dissipateTime);
         }
 
         private IEnumerator DimLight()

@@ -8,25 +8,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
+    
     [Header("Components")]
     private CharacterController controller;
 
-    // ---
-
-    [Header("Horizontal Movement")]
-    [SerializeField] [Range(0, 20)] private float moveSpeed;
-    [SerializeField] [Range(0, 50)] private float airAcceleration;
+    // --- Horizontal Movement
 
     private Vector3 moveVelocity;
     private Vector3 xzInput;
 
-    // ---
+    // --- Vertical Movement
 
-    [Header("Vertical Movement")]
-    [SerializeField] [Range(0, 20)] private float jumpForce;
-    [SerializeField] [Range(0, 50)] private float risingGravity, fallingGravity;
-    [SerializeField] [Range(0, 0.5f)] private float floatTime;
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
@@ -35,8 +27,13 @@ public class PlayerController : MonoBehaviour {
     [Header("General Control")]
     public UnityEvent OnTeleport;
     public PlayerFeedback playerFeedback;
-    public bool grounded, walking;
+    public bool grounded;
+    [SerializeField] private bool coyoteTimeActive;
+    public bool walking;
     public bool flag_cantAct;
+
+    private bool recentlyTeleported = false;
+    private bool wasGrounded = false;
 
     // ---
 
@@ -58,7 +55,10 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
-        OnTeleport.AddListener(() => { moveVelocity = Vector3.zero; });
+        OnTeleport.AddListener(() => { 
+            moveVelocity = Vector3.zero;
+            StartCoroutine(RecentlyTeleportTimer());
+        });
     }
 
     private void FixedUpdate() {
@@ -67,12 +67,12 @@ public class PlayerController : MonoBehaviour {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
             if(grounded) {
-                moveVelocity = (inputToMovement * moveSpeed) + (moveVelocity.y * transform.up);
+                moveVelocity = (inputToMovement * PlayerState.Settings.MoveSpeed) + (moveVelocity.y * transform.up);
             } else {
                 float upVelocity = moveVelocity.y;
                 moveVelocity.y = 0;
-                moveVelocity += airAcceleration * Time.fixedDeltaTime * inputToMovement;
-                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, moveSpeed);
+                moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * inputToMovement;
+                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
                 moveVelocity += upVelocity * transform.up;
             }
             #endregion
@@ -80,8 +80,14 @@ public class PlayerController : MonoBehaviour {
             // -----
 
             #region Y Axis
+            // Coyote Time
+            if(!coyoteTimeActive && wasGrounded && !grounded && !recentlyTeleported)
+                StartCoroutine(CoyoteTime());
+            wasGrounded = grounded;
+
+            // Jumping/Gravity
             if(flag_jump) { // Jump
-                moveVelocity.y = jumpForce;
+                moveVelocity.y = PlayerState.Settings.JumpForce;
                 playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
@@ -94,7 +100,7 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine(Float());
 
             } else { // Gravity
-                moveVelocity.y -= (moveVelocity.y > 0 ? risingGravity : fallingGravity) * Time.fixedDeltaTime;
+                moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.Settings.RisingGravity : PlayerState.Settings.FallingGravity) * Time.fixedDeltaTime;
             }
             #endregion
 
@@ -122,7 +128,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Jump(InputAction.CallbackContext value) {
         if(value.performed) {
-            if(grounded || infiniteJumps)
+            if(grounded || coyoteTimeActive || infiniteJumps)
                 flag_jump = true;
         }
     }
@@ -131,12 +137,12 @@ public class PlayerController : MonoBehaviour {
 
     // -------------------------------------------------------------------------------------------
 
-    #region Teleport & Movement
+    #region Teleport
 
     public void Teleport(Transform other, Vector3 offset = default) {
         StartCoroutine(TeleportWithTransform(other, offset));
 
-        Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
+        //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
 
     private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
@@ -163,17 +169,48 @@ public class PlayerController : MonoBehaviour {
         transform.position = other + offset;
         controller.enabled = true;
 
-        Debug.Log("Teleport to raw position " + other);
+        //Debug.Log("Teleport to raw position " + other);
     }
 
-    // -------------------
+    /// <summary>
+    /// Timer to mark when if player had recently teleported
+    /// </summary>
+    private IEnumerator RecentlyTeleportTimer() {
+        recentlyTeleported = true;
+        for(float i = 0; i <= 0.1f; i += Time.deltaTime) {
+            // Check for break early
+            if(!recentlyTeleported)
+                break;
+            yield return null;
+        }
+        recentlyTeleported = false;
+    }
+
+    #endregion Teleport
+
+    // -------------------------------------------------------------------------------------------
+
+    #region Movement
+
+    private IEnumerator CoyoteTime() {
+        coyoteTimeActive = true;
+        for(float i = 0; i <= PlayerState.Settings.CoyoteJumpTime; i += Time.deltaTime) {
+            // Check for break early
+            if(!coyoteTimeActive || grounded || controller.velocity.y > 0)
+                break;
+
+            yield return null;
+        }
+        coyoteTimeActive = false;
+
+    }
 
     private IEnumerator Float() {
         if(!floating) {
             flag_canFloat = false;
             floating = true;
-            if(floatTime > 0)
-                yield return new WaitForSeconds(floatTime);
+            if(PlayerState.Settings.FloatTime > 0)
+                yield return new WaitForSeconds(PlayerState.Settings.FloatTime);
             floating = false;
         } else 
             Debug.LogError("Player attempting to float while already floating - something must have went wrong???");

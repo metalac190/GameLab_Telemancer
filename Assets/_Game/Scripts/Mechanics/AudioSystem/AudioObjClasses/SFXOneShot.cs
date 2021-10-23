@@ -21,6 +21,19 @@ namespace AudioSystem
             SFXManager.Instance.PlayOneShot(this, position);
         }
 
+        public void PlayOneShot2D()
+        {
+            SetVariationValues();
+
+            if (Clip == null)
+            {
+                Debug.LogWarning("SFXOneShot.PlayOneShot: No Clips Specified");
+                return;
+            }
+
+            SFXManager.Instance.PlayOneShot(this, Vector3.zero);
+        }
+
         public void Preview(AudioSource source)
         {
             SetVariationValues();

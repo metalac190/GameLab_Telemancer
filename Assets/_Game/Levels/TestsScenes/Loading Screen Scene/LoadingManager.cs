@@ -11,10 +11,10 @@ public class LoadingManager : MonoBehaviour
 {
     
     [SerializeField] private float _textFadeIn = 1, _holdDuration = 2;
-    [SerializeField] private GameObject _progressBarContainer;
-    [SerializeField] private Image _progressBar;
-    [SerializeField] private TextMeshProUGUI _helperText;
-    [SerializeField] private GameObject[] _peomTxt;
+    [SerializeField] private GameObject _progressBarContainer = null;
+    [SerializeField] private Image _progressBar = null;
+    [SerializeField] private TextMeshProUGUI _helperText = null;
+    [SerializeField] private GameObject[] _peomTxt = {};
     
     private void Start()
     {
@@ -27,8 +27,8 @@ public class LoadingManager : MonoBehaviour
         for (int i = 0; i < _peomTxt.Length; i++)
         {
             // set the poem active for the level we're loading
-            // (we need to offset the lvl value by one)
-            _peomTxt[i].SetActive(i == lvl - 1);
+            // (we need to offset the lvl value by two)
+            _peomTxt[i].SetActive(i == lvl - 2);
         }
         
         StartCoroutine(LoadLevel(lvl));

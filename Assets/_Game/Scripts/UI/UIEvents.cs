@@ -165,6 +165,13 @@ public class UIEvents : MonoBehaviour
     {
         OnOpenScrollMenu?.Invoke(open);
     }
+
+    public event Action<bool> OnPlayerWatched;
+
+    public void PlayerWatched(bool watched)
+    {
+        OnPlayerWatched?.Invoke(watched);
+    }
     
     #endregion
 

@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class MenuMusicTrigger : MonoBehaviour
 {
     [SerializeField] MusicEvent mainMenuMusic = null;
-    [SerializeField] Button continueButton;
-    [SerializeField] Button newGameButton;
+    [SerializeField] Button continueButton = null;
+    [SerializeField] Button newGameButton = null;
 
     void Start()
     {

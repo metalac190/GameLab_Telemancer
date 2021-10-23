@@ -6,8 +6,8 @@ using TMPro;
 public class FadeText : MonoBehaviour
 {
     bool triggered = false;
-    public ParticleSystem ambientParticles, dissolveParticles;
-    [SerializeField] TextMeshPro untranslatedTxt, translatedTxt;
+    public ParticleSystem ambientParticles = null, dissolveParticles = null;
+    [SerializeField] TextMeshPro untranslatedTxt = null, translatedTxt = null;
     [SerializeField] private float fadeTime = 1, waitTime = 1;
     private Color trans = new Color(1, 1, 1, 0), solid = new Color(1, 1, 1, 1);
 
