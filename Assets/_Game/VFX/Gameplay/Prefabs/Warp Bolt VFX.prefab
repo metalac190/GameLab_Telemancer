@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914316274}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.1399996}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.6549995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7830911415055248351}
@@ -83,6 +83,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -96,7 +99,7 @@ VisualEffect:
       - m_Value: {x: 336.8647, y: 151.71916, z: 242.36664}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.191, y: -0.14, z: -3.1399996}
+      - m_Value: {x: 0.191, y: -0.14, z: -2.6549995}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -297,6 +300,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -310,7 +316,7 @@ VisualEffect:
       - m_Value: {x: 349.57968, y: 214.57393, z: 113.21175}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.025743507, y: 0.23541085, z: -3.14}
+      - m_Value: {x: 0.025743507, y: 0.23541085, z: -2.655}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -561,7 +567,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2988043514980007990}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.14}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4742872441381630694}
@@ -620,6 +626,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -633,7 +642,7 @@ VisualEffect:
       - m_Value: {x: 35.013645, y: 171.40373, z: 353.7467}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -0.21674356, y: -0.09541085, z: -3.14}
+      - m_Value: {x: -0.21674356, y: -0.09541085, z: -2.655}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -805,7 +814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4404471019699935701}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -3.14}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8985960511452646219}
@@ -835,7 +844,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4571283906105832550}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -4.67}
+  m_LocalPosition: {x: 0, y: 0, z: -3.732}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5382612826945998843}
@@ -949,7 +958,6 @@ MonoBehaviour:
   - {fileID: 5157810820651200961}
   - {fileID: 1087662126641221491}
   - {fileID: 9181464396526497412}
-  - {fileID: 2914548901067366284}
   _objToScale:
   - {fileID: 2971927283926056636}
 --- !u!114 &6789601401774915477
@@ -1095,7 +1103,7 @@ VisualEffect:
       - m_Value: {x: -0, y: 180, z: 180}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0, y: 0, z: -4.67}
+      - m_Value: {x: 0, y: 0, z: -3.732}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -1189,7 +1197,7 @@ VisualEffect:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.83696365
+            time: 0.55778885
             value: 1
             inSlope: 0
             outSlope: 0
@@ -1468,8 +1476,6 @@ VFXRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1555,23 +1561,28 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.8632724
+      value: 1.7387153
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.8370242
+      value: 2.35758
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 4.8
+      value: 2.35758
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d9fe0dea82ffeff40bc4e154755ee73a, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_Name
