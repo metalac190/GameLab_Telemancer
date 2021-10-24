@@ -67,5 +67,11 @@ namespace Mechanics.Bolt
                 _warpInteractSound.PlayOneShot(transform.position);
             }
         }
+
+        public void OnReset()
+        {
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.OnReset();
+        }
     }
 }
