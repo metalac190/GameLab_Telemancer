@@ -13,6 +13,7 @@ namespace Mechanics.Bolt.Effects
     {
         [SerializeField] private List<GameObject> _objToDisable = new List<GameObject>();
         [SerializeField] private List<Transform> _endpoints = new List<Transform>();
+        [SerializeField] private List<Transform> _objToScale = new List<Transform>();
 
         private float _delta;
         private Coroutine _routine;
@@ -22,6 +23,7 @@ namespace Mechanics.Bolt.Effects
         private void Awake()
         {
             _endpoints = _endpoints.Where(item => item != null).ToList();
+            _objToScale = _objToScale.Where(item => item != null).ToList();
 
             _finalEndpoints = new List<Vector3>(_endpoints.Count);
 
@@ -59,6 +61,9 @@ namespace Mechanics.Bolt.Effects
                 for (int i = 0; i < _endpoints.Count; i++) {
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
+                foreach (var obj in _objToScale) {
+                    obj.localScale = Vector3.one * _delta;
+                }
 
                 vel += Time.deltaTime / PlayerState.Settings.GrowDuration;
                 _delta += vel / PlayerState.Settings.GrowDrag;
@@ -66,6 +71,9 @@ namespace Mechanics.Bolt.Effects
             }
             for (int i = 0; i < _endpoints.Count; i++) {
                 _endpoints[i].localPosition = _finalEndpoints[i];
+            }
+            foreach (var obj in _objToScale) {
+                obj.localScale = Vector3.one;
             }
         }
 
@@ -85,12 +93,18 @@ namespace Mechanics.Bolt.Effects
                 for (int i = 0; i < _endpoints.Count; i++) {
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
+                foreach (var obj in _objToScale) {
+                    obj.localScale = Vector3.one * _delta;
+                }
                 vel += Time.deltaTime / PlayerState.Settings.ShrinkDuration;
                 _delta -= vel / PlayerState.Settings.ShrinkDrag;
                 yield return null;
             }
             foreach (var point in _endpoints) {
                 point.localPosition = Vector3.zero;
+            }
+            foreach (var obj in _objToScale) {
+                obj.localScale = Vector3.zero;
             }
             foreach (var obj in _objToDisable) {
                 obj.SetActive(false);
