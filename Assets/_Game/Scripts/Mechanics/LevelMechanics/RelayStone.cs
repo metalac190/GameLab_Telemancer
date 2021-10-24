@@ -15,8 +15,10 @@ public class RelayStone : WarpResidueInteractable
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
-        data.BoltManager.RedirectBolt(_relayPair.transform.position + (_relayPair.transform.forward * 2), _relayPair.transform.rotation, 0);
-
+        
+        data.BoltManager.RedirectBolt(_relayPair.transform.position, _relayPair.transform.rotation, 0);
+        StartCoroutine(_relayPair.IgnoreCollisionWithBolt(data));
+        StartCoroutine(IgnoreCollisionWithBolt(data));
         // Don't dissipate the warp bolt!
         return false;
     }
@@ -32,5 +34,13 @@ public class RelayStone : WarpResidueInteractable
         Gizmos.color = Color.red;
         Vector3 direction = transform.TransformDirection(Vector3.forward * _trajectoryRayGizmo);
         Gizmos.DrawRay(transform.position, direction);
+    }
+
+    
+    public IEnumerator IgnoreCollisionWithBolt(BoltData data)
+    {
+        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.BoltManager.CurrentBolt.Collider, true);
+        yield return new WaitForSecondsRealtime(0.25f);
+        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.BoltManager.CurrentBolt.Collider, false);
     }
 }
