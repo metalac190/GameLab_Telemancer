@@ -8,6 +8,7 @@ namespace Mechanics.Bolt.Effects
     public class BoltVfxController : MonoBehaviour
     {
         [SerializeField] private VisualEffect _effectToPlay = null;
+        [SerializeField] private MeshRenderer _capsuleRenderer = null;
         [SerializeField] private LightningController _lightning;
         [SerializeField] private bool _timeAliveIncludesFizzle = false;
         [SerializeField] [Range(0, 1)] private float _fizzlingDeltaRange = 1;
@@ -15,8 +16,6 @@ namespace Mechanics.Bolt.Effects
         private static string _timeAliveDelta = "timeAliveDelta";
         private static string _isFizzling = "isFizzling";
         private static string _fizzlingDelta = "fizzlingDelta";
-
-        private float _airFizzleTime;
 
         private void Awake()
         {
@@ -32,7 +31,12 @@ namespace Mechanics.Bolt.Effects
             }
             float delta = timeAlive / lifeSpan;
             delta = Mathf.Clamp01(delta);
-            _effectToPlay.SetFloat(_timeAliveDelta, delta);
+            if (_effectToPlay != null) {
+                _effectToPlay.SetFloat(_timeAliveDelta, delta);
+            }
+            if (_capsuleRenderer != null) {
+                _capsuleRenderer.material.SetFloat(_timeAliveDelta, delta);
+            }
         }
 
         public void Dissipate(float dissipateTime)
@@ -61,6 +65,9 @@ namespace Mechanics.Bolt.Effects
             if (_effectToPlay != null) {
                 _effectToPlay.SetBool(_isFizzling, false);
                 _effectToPlay.SetFloat(_fizzlingDelta, 1);
+            }
+            if (_capsuleRenderer != null) {
+                _capsuleRenderer.material.SetFloat(_timeAliveDelta, 1);
             }
             if (_lightning != null) {
                 _lightning.OnReset();

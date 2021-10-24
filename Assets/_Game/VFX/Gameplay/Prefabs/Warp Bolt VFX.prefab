@@ -458,6 +458,37 @@ MonoBehaviour:
   m_Property:
     m_Name: TargetTransform
   Target: {fileID: 5157810820651200961}
+--- !u!1 &2020370064679645867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2971927283926056636}
+  m_Layer: 0
+  m_Name: Bolt Capsule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2971927283926056636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020370064679645867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2914548901067366284}
+  m_Father: {fileID: 7701506834379150216}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2145834031721915863
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +923,7 @@ Transform:
   - {fileID: 8985960511452646219}
   - {fileID: 4742872441381630694}
   - {fileID: 5382612826945998843}
-  - {fileID: 2914548901067366284}
+  - {fileID: 2971927283926056636}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -920,7 +951,7 @@ MonoBehaviour:
   - {fileID: 9181464396526497412}
   - {fileID: 2914548901067366284}
   _objToScale:
-  - {fileID: 2914548901067366284}
+  - {fileID: 2971927283926056636}
 --- !u!114 &6789601401774915477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -934,6 +965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _effectToPlay: {fileID: 2904421725289851946}
+  _capsuleRenderer: {fileID: 4051447547464508643}
   _lightning: {fileID: 2514329137218377425}
   _timeAliveIncludesFizzle: 1
   _fizzlingDeltaRange: 0
@@ -1463,7 +1495,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 7701506834379150216}
+    m_TransformParent: {fileID: 2971927283926056636}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
@@ -1483,7 +1515,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
@@ -1493,7 +1525,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
@@ -1503,7 +1535,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
@@ -1523,7 +1555,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.8632727
+      value: 2.8632724
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
         type: 3}
@@ -1555,6 +1587,12 @@ PrefabInstance:
 --- !u!4 &2914548901067366284 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3456573968396154983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4051447547464508643 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
     type: 3}
   m_PrefabInstance: {fileID: 3456573968396154983}
   m_PrefabAsset: {fileID: 0}
