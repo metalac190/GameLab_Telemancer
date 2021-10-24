@@ -138,7 +138,9 @@ namespace Mechanics.Bolt
         public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
             _visuals.gameObject.SetActive(true);
-            _feedback.OnReset();
+            if (!_missingFeedback) {
+                _feedback.OnReset();
+            }
             SetPosition(position, forward);
             if (_redirectDelayRoutine != null) {
                 StopCoroutine(_redirectDelayRoutine);
@@ -326,6 +328,8 @@ namespace Mechanics.Bolt
             if (!IsAlive) return;
             float dissipateTime = PlayerState.Settings.BoltHitFizzleTime;
             PrepareToDissipate(dissipateTime);
+            _checkAlive = false;
+            _feedback.OverrideBoltLifetime(_timeAlive, PlayerState.Settings.BoltLifeSpan, PlayerState.Settings.BoltAirFizzleTime, PlayerState.Settings.BoltHitFizzleTime);
             _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving));
         }
 
@@ -361,6 +365,9 @@ namespace Mechanics.Bolt
 
         private void Enable()
         {
+            if (!_missingFeedback) {
+                _feedback.OnReset();
+            }
             if (!_missingCollider) {
                 _collider.enabled = true;
             }

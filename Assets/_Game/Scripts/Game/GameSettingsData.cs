@@ -76,7 +76,7 @@ public class GameSettingsData : ScriptableObject
     public float TimeToNextResidue => _timeToNextResidue;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
-    public float BoltLifeSpan => _boltLifeSpan;
+    public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
     public float BoltAirFizzleTime => _boltAirFizzleTime;
     public float BoltAirExtraParticlesTime => _boltAirExtraParticlesTime;
     public float BoltHitFizzleTime => _boltHitFizzleTime;
