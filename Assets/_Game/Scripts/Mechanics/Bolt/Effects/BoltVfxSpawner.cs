@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Mechanics.Bolt
+namespace Mechanics.Bolt.Effects
 {
     /// Summary:
     /// A helper script to instantiate an object on awake.
@@ -11,7 +11,6 @@ namespace Mechanics.Bolt
         [SerializeField] private BoltVfxController _boltPrefab = null;
         [SerializeField] private Transform _transformOverride = null;
         [SerializeField] private Light _lightToDim = null;
-        [SerializeField] private float _lightDimTimer = 0.5f;
 
         private BoltVfxController _instantiatedObject;
         private float _lightIntensity = -1;
@@ -38,19 +37,29 @@ namespace Mechanics.Bolt
             //_boltPrefab.SetRate(delta);
         }
 
+        public void SetBoltLifetime(float timeAlive, float lifeSpan)
+        {
+            if (_instantiatedObject == null) return;
+            _instantiatedObject.SetLifetime(timeAlive, lifeSpan);
+        }
+
         public void Dissipate(float dissipateTime)
         {
             if (_instantiatedObject == null) return;
-            if (_lightToDim != null) {
-                StartCoroutine(DimLight());
-            }
             _instantiatedObject.Dissipate(dissipateTime);
         }
 
-        private IEnumerator DimLight()
+        public void DimLight(float dimLightTime)
         {
-            for (float t = 0; t < _lightDimTimer; t += Time.deltaTime) {
-                float delta = 1 - t / _lightDimTimer;
+            if (_lightToDim != null) {
+                StartCoroutine(DimLightRoutine(dimLightTime));
+            }
+        }
+
+        private IEnumerator DimLightRoutine(float timer)
+        {
+            for (float t = 0; t < timer; t += Time.deltaTime) {
+                float delta = 1 - t / timer;
                 _lightToDim.intensity = delta * _lightIntensity;
                 yield return null;
             }

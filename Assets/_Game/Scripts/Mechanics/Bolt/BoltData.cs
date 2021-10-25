@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Mechanics.Bolt
+﻿namespace Mechanics.Bolt
 {
     /// Summary:
     /// The Bolt Data struct that is used by the Bolt Controller
