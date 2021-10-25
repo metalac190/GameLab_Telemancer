@@ -14,6 +14,7 @@ public class LargeRock : WarpResidueInteractable
     private Vector3 _spawnPos = new Vector3();
     private Quaternion _spawnRot = new Quaternion();
 
+    // if rock is Max distance away from its start in any direction, reset it
     [Header("Position Thresholds")]
     [SerializeField] private float MaxX = 100;
     [SerializeField] private float MaxY = 100;
