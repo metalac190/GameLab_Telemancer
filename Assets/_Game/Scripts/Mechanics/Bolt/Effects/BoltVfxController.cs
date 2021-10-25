@@ -17,6 +17,8 @@ namespace Mechanics.Bolt.Effects
         private static string _isFizzling = "isFizzling";
         private static string _fizzlingDelta = "fizzlingDelta";
 
+        private Coroutine _dissipateRoutine;
+
         private void Awake()
         {
             if (_lightning == null) {
@@ -34,6 +36,9 @@ namespace Mechanics.Bolt.Effects
             if (_effectToPlay != null) {
                 _effectToPlay.SetFloat(_timeAliveDelta, delta);
             }
+            if (_lightning != null) {
+                _lightning.SetLifetime(delta);
+            }
             if (_capsuleRenderer != null) {
                 _capsuleRenderer.material.SetFloat(_timeAliveDelta, delta);
             }
@@ -41,23 +46,30 @@ namespace Mechanics.Bolt.Effects
 
         public void Dissipate(float dissipateTime)
         {
-            if (_lightning != null) {
-                _lightning.DissipateShrink();
-            }
             if (_effectToPlay != null) {
                 _effectToPlay.SetBool(_isFizzling, true);
-                StartCoroutine(DissipateDeltaRoutine(dissipateTime * _fizzlingDeltaRange));
+                if (_dissipateRoutine != null) {
+                    StopCoroutine(_dissipateRoutine);
+                }
+                _dissipateRoutine = StartCoroutine(DissipateDeltaRoutine(dissipateTime, _fizzlingDeltaRange));
             }
         }
 
-        private IEnumerator DissipateDeltaRoutine(float dissipateTime)
+        private IEnumerator DissipateDeltaRoutine(float dissipateTime, float range)
         {
-            for (float t = dissipateTime; t > 0; t -= Time.deltaTime) {
-                float delta = t / dissipateTime;
+            float timer = dissipateTime * range;
+            for (float t = timer; t > 0; t -= Time.deltaTime) {
+                float delta = t / timer;
                 _effectToPlay.SetFloat(_fizzlingDelta, delta);
                 yield return null;
             }
             _effectToPlay.SetFloat(_fizzlingDelta, 0);
+            for (float t = 0; t < dissipateTime - timer; t += Time.deltaTime) {
+                yield return null;
+            }
+            if (_lightning != null) {
+                _lightning.SetEffectActive(false);
+            }
         }
 
         public void OnReset()
@@ -70,7 +82,10 @@ namespace Mechanics.Bolt.Effects
                 _capsuleRenderer.material.SetFloat(_timeAliveDelta, 1);
             }
             if (_lightning != null) {
-                _lightning.OnReset();
+                _lightning.SetEffectActive(true);
+            }
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
             }
         }
     }

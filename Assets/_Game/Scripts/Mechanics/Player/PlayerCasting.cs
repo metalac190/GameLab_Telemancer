@@ -29,14 +29,20 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        private Coroutine _castRoutine;
         private bool _flagCantAct;
+
         public bool FlagCantAct
         {
             get => _flagCantAct;
             set
             {
                 if (value) {
-                    _boltManager.Dissipate();
+                    _boltManager.OnGamePaused();
+                    _playerFeedback.OnGamePaused();
+                    if (_castRoutine != null) {
+                        StopCoroutine(_castRoutine);
+                    }
                 } else {
                     _lockCasting = false;
                     _lockWarp = false;
@@ -149,7 +155,7 @@ namespace Mechanics.Player
                 _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
-            StartCoroutine(Cast());
+            _castRoutine = StartCoroutine(Cast());
         }
 
         // The main Coroutine for casting the warp bolt
