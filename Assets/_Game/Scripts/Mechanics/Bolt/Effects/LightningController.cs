@@ -4,7 +4,7 @@ using System.Linq;
 using Mechanics.Player;
 using UnityEngine;
 
-namespace Mechanics.Bolt
+namespace Mechanics.Bolt.Effects
 {
     /// Summary:
     /// The controller / animator for the lightning.
