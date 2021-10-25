@@ -18,7 +18,7 @@ public class RelayStone : WarpResidueInteractable
         
         data.BoltManager.RedirectBolt(_relayPair.transform.position, _relayPair.transform.rotation, 0);
         StartCoroutine(_relayPair.IgnoreCollisionWithBolt(data));
-        StartCoroutine(IgnoreCollisionWithBolt(data));
+        //StartCoroutine(IgnoreCollisionWithBolt(data));
         // Don't dissipate the warp bolt!
         return false;
     }
@@ -39,8 +39,9 @@ public class RelayStone : WarpResidueInteractable
     
     public IEnumerator IgnoreCollisionWithBolt(BoltData data)
     {
-        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.BoltManager.CurrentBolt.Collider, true);
+        BoltController currentBolt = data.BoltManager.CurrentBolt;
+        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), currentBolt.Collider, true);
         yield return new WaitForSecondsRealtime(0.25f);
-        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), data.BoltManager.CurrentBolt.Collider, false);
+        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), currentBolt.Collider, false);
     }
 }
