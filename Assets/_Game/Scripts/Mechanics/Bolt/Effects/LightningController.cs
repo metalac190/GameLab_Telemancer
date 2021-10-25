@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
+using Mechanics.Player;
 using UnityEngine;
 
-namespace Mechanics.Bolt
+namespace Mechanics.Bolt.Effects
 {
     /// Summary:
     /// The controller / animator for the lightning.
@@ -13,11 +13,6 @@ namespace Mechanics.Bolt
     {
         [SerializeField] private List<GameObject> _objToDisable = new List<GameObject>();
         [SerializeField] private List<Transform> _endpoints = new List<Transform>();
-
-        [SerializeField] private float _growDuration = 4;
-        [SerializeField] private float _growDrag = 10;
-        [SerializeField] private float _shrinkDuration = 3;
-        [SerializeField] private float _shrinkDrag = 8;
 
         private float _delta;
         private Coroutine _routine;
@@ -35,7 +30,7 @@ namespace Mechanics.Bolt
             }
         }
 
-        public void Reset()
+        public void OnReset()
         {
             _delta = 0;
         }
@@ -65,8 +60,8 @@ namespace Mechanics.Bolt
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
 
-                vel += Time.deltaTime / _growDuration;
-                _delta += vel / _growDrag;
+                vel += Time.deltaTime / PlayerState.Settings.GrowDuration;
+                _delta += vel / PlayerState.Settings.GrowDrag;
                 yield return null;
             }
             for (int i = 0; i < _endpoints.Count; i++) {
@@ -85,13 +80,13 @@ namespace Mechanics.Bolt
         private IEnumerator Shrink()
         {
             float vel = 0;
-            _delta = Mathf.Clamp(_delta, 0, _shrinkDuration);
+            _delta = Mathf.Clamp(_delta, 0, PlayerState.Settings.ShrinkDuration);
             while (_delta > 0) {
                 for (int i = 0; i < _endpoints.Count; i++) {
                     _endpoints[i].localPosition = Vector3.Lerp(Vector3.zero, _finalEndpoints[i], _delta);
                 }
-                vel += Time.deltaTime / _shrinkDuration;
-                _delta -= vel / _shrinkDrag;
+                vel += Time.deltaTime / PlayerState.Settings.ShrinkDuration;
+                _delta -= vel / PlayerState.Settings.ShrinkDrag;
                 yield return null;
             }
             foreach (var point in _endpoints) {

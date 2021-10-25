@@ -1,4 +1,5 @@
 ﻿using AudioSystem;
+using Mechanics.Bolt.Effects;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -24,12 +25,17 @@ namespace Mechanics.Bolt
             _boltVfxSpawner.SetBoltCastDelta(delta);
         }
 
-        public float OnBoltDissipate(Vector3 position, Vector3 forward)
+        public void SetBoltLifetime(float timeAlive, float lifeSpan)
         {
-            if (_boltVfxSpawner != null) {
-                return _boltVfxSpawner.Dissipate();
-            }
-            return 0;
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.SetBoltLifetime(timeAlive, lifeSpan);
+        }
+
+        public void OnBoltDissipate(Vector3 position, Vector3 forward, float dissipateTime, float dimLightTime)
+        {
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.Dissipate(dissipateTime);
+            _boltVfxSpawner.DimLight(dimLightTime);
         }
 
         public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)

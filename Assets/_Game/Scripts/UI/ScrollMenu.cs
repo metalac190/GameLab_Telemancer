@@ -10,11 +10,11 @@ public class ScrollMenu : MonoBehaviour
    private string _warpName, _warpDesc;
    private string _residueName, _residueDesc;
 
-   [SerializeField] private GameObject _menuContainer;
-   [SerializeField] private GameObject _warpLockedIcon;
-   [SerializeField] private TextMeshProUGUI _warpNameTxt, _warpDescTxt;
-   [SerializeField] private GameObject _residueLockedIcon;
-   [SerializeField] private TextMeshProUGUI _residueNameTxt, _residueDescTxt;
+   [SerializeField] private GameObject _menuContainer = null;
+   [SerializeField] private GameObject _warpLockedIcon = null;
+   [SerializeField] private TextMeshProUGUI _warpNameTxt = null, _warpDescTxt = null;
+   [SerializeField] private GameObject _residueLockedIcon = null;
+   [SerializeField] private TextMeshProUGUI _residueNameTxt = null, _residueDescTxt = null;
    
    private void Awake()
    {
