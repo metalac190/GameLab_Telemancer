@@ -5,8 +5,8 @@ using Mechanics.Player;
 
 public class NextLevel : MonoBehaviour
 {
-    [SerializeField] private PlayerFeedback player;
-    [SerializeField] private int levelID;
+    [SerializeField] private PlayerFeedback player = null;
+    [SerializeField] private int levelID = 1;
     [SerializeField] private bool boltUnlocked = true, warpUnlocked = false, residueUnlocked = false;
 
     private void OnTriggerEnter(Collider other)
