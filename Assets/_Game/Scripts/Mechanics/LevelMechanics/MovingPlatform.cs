@@ -13,14 +13,20 @@ public class MovingPlatform : LevelActivatable
     private int _currentTarget = 1;
     private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
 
+    private bool _isPlayerOnBoard = false;
+    private CharacterController _player = null;
+
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _delayTime = 2f; // how long the platform should pause at it's destination before moving again
     private float _delayStartTime;
     private float _tolerance;
+    private Coroutine _moveToStartRoutine = null;
 
     [Header("Audio")]
     [SerializeField] private SFXOneShot _movingPlatformSound = null;
 
+    // ---------------------------------------------------------------------------------------------------
+    #region Events
     private void Start()
     {
         _tolerance = _moveSpeed * Time.fixedDeltaTime; // the distance moved in one fixed update
@@ -43,12 +49,19 @@ public class MovingPlatform : LevelActivatable
 
     protected override void OnActivate()
     {
+        if(_moveToStartRoutine != null)
+            StopCoroutine(_moveToStartRoutine);
+
+        _pathListDirection = 1;
+        if(_currentTarget != _path.Count - 1)
+            _currentTarget++;
+
         _movingPlatformSound?.PlayOneShot(transform.position);
     }
 
     protected override void OnDeactivate()
     {
-        StartCoroutine(MoveToStart());
+        _moveToStartRoutine = StartCoroutine(MoveToStart());
     }
 
     protected override void OnReset()
@@ -57,7 +70,7 @@ public class MovingPlatform : LevelActivatable
         _currentTarget = 1;
         _pathListDirection = 1;
     }
-
+    #endregion
     // ---------------------------------------------------------------------------------------------------
     #region Movement
     private void MovePlatform()
@@ -72,7 +85,14 @@ public class MovingPlatform : LevelActivatable
         else
         {
             // standard movement
-            transform.position += (_heading / _heading.magnitude) * _moveSpeed * Time.fixedDeltaTime;
+            Vector3 move = (_heading / _heading.magnitude) * _moveSpeed * Time.fixedDeltaTime;
+            transform.position += move;
+            if(_isPlayerOnBoard)
+            {
+                _player?.Move(move);
+                //Debug.Log("Moving Player: " + move);
+            }
+
             _delayStartTime = Time.time;
         }
     }
@@ -153,18 +173,24 @@ public class MovingPlatform : LevelActivatable
 
     #endregion
     // ---------------------------------------------------------------------------------------------------
-
+    #region Triggers
     //other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
                 other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+                other.gameObject.layer != LayerMask.NameToLayer("Player") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
         {
             //if (other.transform.root != other.transform)
             //other.transform.parent = transform;
-            other.transform.root.transform.parent = transform;
+            other.transform.parent = transform;
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player Trigger"))
+        {
+            _player = other.transform.root.GetComponent<CharacterController>();
+            _isPlayerOnBoard = true;
         }
     }
 
@@ -172,18 +198,19 @@ public class MovingPlatform : LevelActivatable
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
                 other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Player"))
+                other.gameObject.layer != LayerMask.NameToLayer("Player") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
         {
-            Transform exitingObj = other.gameObject.transform;
-            while(exitingObj.parent != transform)
-            {
-                exitingObj = exitingObj.parent;
-            }
-            exitingObj.parent = null;
+            other.transform.parent = null;
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player Trigger"))
+        {
+            _isPlayerOnBoard = false;
         }
     }
-
-    
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+    #region Debug
 
     private void OnDrawGizmos()
     {
@@ -202,4 +229,6 @@ public class MovingPlatform : LevelActivatable
                 Gizmos.DrawLine(_path[0], _path[_path.Count - 1]);
         }
     }
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OptionsMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _optionsMenu; 
+    [SerializeField] private GameObject _optionsMenu = null; 
     // TODO: find best object for attaching the options menu script
     // Henry - 9/18:
     // It seems obvious that you'd want to put the OptionsMenu script on the Options Menu Object,

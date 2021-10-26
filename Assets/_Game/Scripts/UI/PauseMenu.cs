@@ -6,8 +6,8 @@ using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _background;
-    [SerializeField] private GameObject _book;
+    [SerializeField] private GameObject _background = null;
+    [SerializeField] private GameObject _book = null;
     public bool isPaused = false;
     
     //TODO: create proper way of preventing the player from locking cursor while dead

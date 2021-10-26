@@ -8,9 +8,9 @@ using UnityEngine.SceneManagement;
 
 public class CreditsSequence : MonoBehaviour
 {
-    [SerializeField] private GameObject _creditsContainer;
-    [SerializeField] private float _initialPause;
-    [SerializeField] private float _scrollDuration;
+    [SerializeField] private GameObject _creditsContainer = null;
+    [SerializeField] private float _initialPause = 3;
+    [SerializeField] private float _scrollDuration = 10;
     [SerializeField] private float _finalYPosition = 6200f;
     
     private void Start()
