@@ -11,6 +11,9 @@ namespace Mechanics.Player
     /// Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
+        [Header("Extra Bolt Delay on Warp")]
+        [SerializeField] private float _maxDistFromGround = 200;
+        [SerializeField] private float _delayCastStartDist = 40;
         [Header("External References")]
         [SerializeField] private BoltManager _boltManagerPrefab = null;
         [Header("Internal References")]
@@ -20,6 +23,7 @@ namespace Mechanics.Player
         [SerializeField] private Transform _cameraLookDirection;
 
         private BoltManager _boltManager;
+        private Coroutine _castRoutine;
 
         private bool _boltAbility;
         private bool _warpAbility;
@@ -29,14 +33,21 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        #region Flag Cant Act
+
         private bool _flagCantAct;
+
         public bool FlagCantAct
         {
             get => _flagCantAct;
             set
             {
                 if (value) {
-                    _boltManager.Dissipate();
+                    _boltManager.OnGamePaused();
+                    _playerFeedback.OnGamePaused();
+                    if (_castRoutine != null) {
+                        StopCoroutine(_castRoutine);
+                    }
                 } else {
                     _lockCasting = false;
                     _lockWarp = false;
@@ -45,6 +56,8 @@ namespace Mechanics.Player
                 _flagCantAct = value;
             }
         }
+
+        #endregion
 
         #region Unity Functions
 
@@ -149,7 +162,7 @@ namespace Mechanics.Player
                 _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
-            StartCoroutine(Cast());
+            _castRoutine = StartCoroutine(Cast());
         }
 
         // The main Coroutine for casting the warp bolt
@@ -202,8 +215,9 @@ namespace Mechanics.Player
         private IEnumerator CastTimer()
         {
             _lockCasting = true;
-            _playerFeedback.SetBoltCooldown(PlayerState.Settings.TimeToNextFire);
-            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextFire);
+            float timer = PlayerState.Settings.TimeToNextBolt;
+            _playerFeedback.SetBoltCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockCasting = false;
         }
 
@@ -237,17 +251,36 @@ namespace Mechanics.Player
                 _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
                 StartCoroutine(WarpTimer());
+                if (PlayerState.Settings.BoltCooldownOnWarp) {
+                    StartCoroutine(WarpToBoltTimer());
+                }
             } else {
                 _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
                 _lockWarp = false;
             }
         }
 
+        private IEnumerator WarpToBoltTimer()
+        {
+            _lockCasting = true;
+            float timer = PlayerState.Settings.WarpTimeToNextBolt;
+            float dist = GetDistanceFromGround();
+            if (dist > _delayCastStartDist) {
+                dist -= _delayCastStartDist;
+                float additive = PlayerState.Settings.AdditiveTimePerHeight;
+                timer += dist * additive;
+            }
+            _playerFeedback.SetBoltCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
+            _lockCasting = false;
+        }
+
         private IEnumerator WarpTimer()
         {
             _lockWarp = true;
-            _playerFeedback.SetWarpCooldown(PlayerState.Settings.TimeToNextWarp);
-            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextWarp);
+            float timer = PlayerState.Settings.TimeToNextWarp;
+            _playerFeedback.SetWarpCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockWarp = false;
         }
 
@@ -290,8 +323,9 @@ namespace Mechanics.Player
         private IEnumerator ResidueTimer()
         {
             _lockResidue = true;
-            _playerFeedback.SetResidueCooldown(PlayerState.Settings.TimeToNextResidue);
-            yield return new WaitForSecondsRealtime(PlayerState.Settings.TimeToNextResidue);
+            float timer = PlayerState.Settings.TimeToNextResidue;
+            _playerFeedback.SetResidueCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockResidue = false;
         }
 
@@ -334,6 +368,13 @@ namespace Mechanics.Player
             Vector3 angle = GetRaycast() - current;
 
             return angle.normalized;
+        }
+
+        private float GetDistanceFromGround()
+        {
+            Ray ray = new Ray(transform.position, Vector3.down);
+            Physics.Raycast(ray, out var hit, _maxDistFromGround, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
+            return hit.distance;
         }
 
         private Vector3 GetRaycast()

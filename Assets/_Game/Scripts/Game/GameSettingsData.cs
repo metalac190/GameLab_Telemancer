@@ -4,53 +4,90 @@
 public class GameSettingsData : ScriptableObject
 {
     [Header("Horizontal Movement")]
-    [SerializeField] [Range(0, 20)] private float _moveSpeed = 6f;
-    [SerializeField] [Range(0, 50)] private float _airAcceleration = 25f;
+    [SerializeField] [Range(0, 20)] [Tooltip("The movement speed of the player")]
+    private float _moveSpeed = 6.375f;
+    [SerializeField] [Range(0, 50)] [Tooltip("The movement acceleration of the player when in the air")]
+    private float _airAcceleration = 28f;
 
     [Header("Vertical Movement")]
-    [SerializeField] [Range(0, 20)] private float _jumpForce = 6.2f;
-    [SerializeField] [Range(0, 1)] private float _coyoteJumpTime = 0.3f;
-    [SerializeField] [Range(0, 50)] private float _risingGravity = 20f;
-    [SerializeField] [Range(0, 50)] private float _fallingGravity = 20f;
-    [SerializeField] [Range(0, 0.5f)] private float _floatTime = 0f;
+    [SerializeField] [Range(0, 20)] [Tooltip("The jump force of the player")]
+    private float _jumpForce = 6.2f;
+    [SerializeField] [Range(0, 1)] [Tooltip("How many seconds after leaving solid footing can the player still jump")]
+    private float _coyoteJumpTime = 0.3f;
+    [SerializeField] [Range(0, 50)] [Tooltip("The force of gravity after jumping")]
+    private float _risingGravity = 20f;
+    [SerializeField] [Range(0, 50)] [Tooltip("The force of gravity when falling")]
+    private float _fallingGravity = 20f;
+    [SerializeField] [Range(0, 0.5f)] [Tooltip("How many seconds at the peak of the jump will the player float for")]
+    private float _floatTime = 0f;
 
     [Header("Camera Settings")]
-    [SerializeField] private float _maxLookDown = 90f;
-    [SerializeField] private float _maxLookUp = 90f;
+    [SerializeField] [Range(0, 50)] [Tooltip("0-90 degree lock on the players ability to look down")]
+    private float _maxLookDown = 90f;
+    [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look up")]
+    private float _maxLookUp = 90f;
 
     [Header("Distance Settings")]
-    [SerializeField] private float _maxLookDistance = 20f;
-    [SerializeField] private float _maxInteractDistance = 5;
-    [SerializeField] private LayerMask _lookAtMask = 1;
+    [SerializeField] [Tooltip("The maximum distance that the UI Indicator can see")]
+    private float _maxLookDistance = 20f;
+    [SerializeField] [Tooltip("The maximum distance that the Player can interact from")]
+    private float _maxInteractDistance = 5;
+    [SerializeField] [Tooltip("A layer mask that controls what the UI indicator responds to / can see")]
+    private LayerMask _lookAtMask = 1;
 
     [Header("Action Animation Delays")]
-    [SerializeField] [Range(0, 2)] private float _delayBolt = 0.35f;
-    [SerializeField] [Range(0, 2)] private float _delayWarp = 0.1f;
-    [SerializeField] [Range(0, 2)] private float _delayResidue = 0.1f;
+    [SerializeField] [Range(0, 2)] [Tooltip("The delay on when the bolt fires from when the user press the cast input")]
+    private float _delayBolt = 0.05f;
+    [SerializeField] [Range(0, 2)] [Tooltip("The delay on when the player warps from when the user press the warp input")]
+    private float _delayWarp = 0.05f;
+    [SerializeField] [Range(0, 2)] [Tooltip("The delay on when the residue activates from when the user press the residue input")]
+    private float _delayResidue = 0.05f;
 
     [Header("Action Animation Time")]
-    [SerializeField] [Range(0, 2)] private float _timeToFire = 0.35f;
+    [SerializeField] [Range(0, 2)] [Tooltip("An extra delay on the bolt casting that happens after it spawns and before it starts moving")]
+    private float _timeToFire = 0.05f;
 
     [Header("Action Cooldowns")]
-    [SerializeField] [Range(0, 10)] private float _timeToNextFire = 0.5f;
-    [SerializeField] [Range(0, 10)] private float _timeToNextWarp = 1f;
-    [SerializeField] [Range(0, 10)] private float _timeToNextResidue = 1.5f;
+    [SerializeField] [Range(0, 10)] [Tooltip("A cooldown that limits when the player can cast another bolt")]
+    private float _timeToNextBolt = 0.5f;
+    [SerializeField] [Range(0, 10)] [Tooltip("A cooldown that limits when the player can warp again")]
+    private float _timeToNextWarp = 1f;
+    [SerializeField] [Range(0, 10)] [Tooltip("A cooldown that limits when the player can use residue again")]
+    private float _timeToNextResidue = 1.5f;
+    [SerializeField] [Tooltip("Enable to set additional cooldown on the bolt casting after the player warps")]
+    private bool _boltCooldownOnWarp = true;
+    [SerializeField] [Range(0, 10)] [Tooltip("After warping, a cooldown that limits when the player can cast another bolt")]
+    private float _warpTimeToNextBolt = 0.5f;
+    [SerializeField] [Range(0, 1)] [Tooltip("Additional bolt cooldown (adds to 'Warp Time To Next Bolt') additively when the player is high in the air")]
+    private float _additiveTimePerHeight = 0.1f;
 
     [Header("Action Settings")]
-    [SerializeField] private bool _clearResidueOnFire = true;
+    [SerializeField] [Tooltip("Enable to clear residue from the world when another bolt is casted")]
+    private bool _clearResidueOnFire = true;
 
     [Header("Bolt Movement")]
-    [SerializeField] [Range(0, 2)] private float _boltMoveSpeed = 0.32f;
-    [SerializeField] private float _boltLifeSpan = 0.7f;
-    [SerializeField] private float _boltAirFizzleTime = 0.6f;
+    [SerializeField] [Range(0, 2)] [Tooltip("The movement speed for the bolt. Multiply by 50 to get total movement in one second")]
+    private float _boltMoveSpeed = 0.32f;
+    [SerializeField] [Range(0, 2)] [Tooltip("How many seconds the bolt is alive for in total")]
+    private float _boltLifeSpan = 1.25f;
+    [SerializeField] [Range(0, 1)] [Tooltip("How many seconds of fizzle time the bolt will have (inclusive with Bolt Life Span - Does not add to lifespan)")]
+    private float _boltAirFizzleTime = 0.45f;
 
     [Header("Bolt Visuals")]
-    [SerializeField] private float _boltLightDownDist = 8f;
-    [SerializeField] private float _boltHitFizzleTime = 0.5f;
-    [SerializeField] private float _growDuration = 3f;
-    [SerializeField] private float _growDrag = 8f;
-    [SerializeField] private float _shrinkDuration = 1.2f;
-    [SerializeField] private float _shrinkDrag = 4f;
+    [SerializeField] [Range(0, 1)] [Tooltip("After fizzling, the extra time the bolt is still active. Allows for VFX to disappear naturally")]
+    private float _boltAirExtraParticlesTime = 0.6f;
+    [SerializeField] [Range(0, 1)] [Tooltip("How many seconds of fizzle time the bolt will have once hitting an object")]
+    private float _boltHitFizzleTime = 0.4f;
+    [SerializeField] [Range(0, 20)] [Tooltip("How many units downwards the light under the bolt can reach")]
+    private float _boltLightDownDist = 8f;
+    [SerializeField] [Range(0, 1)] [Tooltip("How many seconds it takes the light to be disabled (fades out)")]
+    private float _boltLightDimTime = 0.4f;
+
+    [Header("Bolt Lightning Visuals")]
+    [SerializeField] [Tooltip("An animation curve to control the size of the lightning over the bolt's lifespan")]
+    private AnimationCurve _lightningSizeOverLife = AnimationCurve.Constant(0, 1, 1);
+    [SerializeField] [Tooltip("An animation curve to control the size of the bolt over the bolt's lifespan")]
+    private AnimationCurve _boltShellSizeOverLife = AnimationCurve.Constant(0, 1, 1);
 
 
     public float MoveSpeed => _moveSpeed;
@@ -69,17 +106,20 @@ public class GameSettingsData : ScriptableObject
     public float DelayWarp => _delayWarp;
     public float DelayResidue => _delayResidue;
     public float TimeToFire => _timeToFire;
-    public float TimeToNextFire => _timeToNextFire;
+    public float TimeToNextBolt => _timeToNextBolt;
     public float TimeToNextWarp => _timeToNextWarp;
     public float TimeToNextResidue => _timeToNextResidue;
+    public bool BoltCooldownOnWarp => _boltCooldownOnWarp;
+    public float WarpTimeToNextBolt => _warpTimeToNextBolt;
+    public float AdditiveTimePerHeight => _additiveTimePerHeight;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
-    public float BoltLifeSpan => _boltLifeSpan;
-    public float BoltAirFizzleTime => _boltLightDownDist;
-    public float BoltLightDownDist => _boltAirFizzleTime;
+    public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
+    public float BoltAirFizzleTime => _boltAirFizzleTime;
+    public float BoltAirExtraParticlesTime => _boltAirExtraParticlesTime;
     public float BoltHitFizzleTime => _boltHitFizzleTime;
-    public float GrowDuration => _growDuration;
-    public float GrowDrag => _growDrag;
-    public float ShrinkDuration => _shrinkDuration;
-    public float ShrinkDrag => _shrinkDrag;
+    public float BoltLightDownDist => _boltLightDownDist;
+    public float BoltLightDimTime => _boltLightDimTime;
+    public AnimationCurve LightningSizeOverLife => _lightningSizeOverLife;
+    public AnimationCurve BoltShellSizeOverLife => _boltShellSizeOverLife;
 }
