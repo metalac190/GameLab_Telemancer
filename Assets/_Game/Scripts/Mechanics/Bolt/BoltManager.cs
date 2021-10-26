@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
+using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -183,29 +186,28 @@ namespace Mechanics.Bolt
 
         public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
         {
-            Debug.Log(_currentBolt);
             if (_currentBolt == null) {
                 GetNewBolt();
             }
             _currentBolt.Redirect(position, rotation, timer);
         }
 
+        public void PrepareToWarp()
+        {
+            if (_currentBolt == null) return;
+            _currentBolt.PrepareToWarp();
+        }
+
         public bool OnWarp()
         {
-            return _currentBolt != null && _currentBolt.OnWarp();
+            if (_currentBolt == null) return false;
+            return _currentBolt.OnWarp();
         }
 
         public void DisableResidue()
         {
             _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
-        }
-
-        public void Dissipate()
-        {
-            if (_currentBolt == null || !_currentBolt.IsAlive) return;
-            _currentBolt.Dissipate(false);
-            _currentBolt = null;
         }
 
         #endregion
