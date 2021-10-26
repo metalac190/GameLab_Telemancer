@@ -28,7 +28,7 @@ public class OptionsMenu : MonoBehaviour
     {
         // Add listener
         UIEvents.current.OnOpenOptionsMenu += OnMenuOpen;
-        UIEvents.current.OnPauseGame += delegate(bool b) { if (!b) _optionsMenu.SetActive(false); };
+        UIEvents.current.OnPauseGame += delegate(bool b) { if (!b) OnMenuClose(); };
         
         // Ensure menu is hidden
         _optionsMenu.SetActive(false);
