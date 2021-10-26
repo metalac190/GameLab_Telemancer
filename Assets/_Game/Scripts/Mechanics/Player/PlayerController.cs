@@ -9,8 +9,10 @@ public class PlayerController : MonoBehaviour {
 
 #pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
     
-    [Header("Components")]
+    // --- Components
+
     private CharacterController controller;
+    private CameraController cameraController;
 
     // --- Horizontal Movement
 
@@ -38,7 +40,6 @@ public class PlayerController : MonoBehaviour {
     // ---
 
     [Header("Debug/Testing")]
-    [SerializeField] [Range(0, 0.5f)] private float teleportLerpLength;
     [SerializeField] private bool infiniteJumps;
 #if UNITY_EDITOR
     public PlayerDebug playerDebug;
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour {
 
     private void Awake() {
         controller = GetComponent<CharacterController>();
+        cameraController = GetComponent<CameraController>();
         OnTeleport.AddListener(() => { 
             moveVelocity = Vector3.zero;
             StartCoroutine(RecentlyTeleportTimer());
@@ -150,30 +152,57 @@ public class PlayerController : MonoBehaviour {
             oldPlayerPos = transform.position;
             newPlayerPos = other.position + offset;
         }
-        StartCoroutine(TeleportLerp(oldPlayerPos, newPlayerPos, other));
+        StartCoroutine(TeleportLerp(oldPlayerPos, newPlayerPos, true, other));
 
         //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
 
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
-        StartCoroutine(TeleportLerp(transform.position, other + offset));
+        StartCoroutine(TeleportLerp(transform.position, other + offset, true));
 
         //Debug.Log("Teleport to raw position " + other);
     }
 
-    private IEnumerator TeleportLerp(Vector3 startPosition, Vector3 endPosition, Transform otherObj = null, Vector3 otherObjOffset = default) {
+    private IEnumerator TeleportLerp(Vector3 startPosition, Vector3 endPosition, bool lerp = false, Transform otherObj = null, Vector3 otherObjOffset = default) {
         controller.enabled = false;
         OnTeleport.Invoke();
 
-        for(float i = 0; i < teleportLerpLength; i += Time.deltaTime) {
-            transform.position = Vector3.Lerp(startPosition, endPosition, i / teleportLerpLength);
-            yield return null;
-        }
-        transform.position = endPosition;
-        if(otherObj) {
+        if(lerp) {
+            float fraction, originalFov = cameraController.FOV, maxFov = cameraController.FOV + PlayerState.Settings.TeleportFovIncrease;
+            bool otherObjectMoved = false;
+
+            for(float i = 0; i < PlayerState.Settings.TeleportTime; i += Time.deltaTime) {
+                fraction = i / PlayerState.Settings.TeleportTime;
+                transform.position = Vector3.Lerp(startPosition, endPosition, fraction); // Move player
+                if(!otherObjectMoved && otherObj && fraction > 0.5f) { // Teleport other object at mid-way point
+                    otherObj.position = startPosition + otherObjOffset;
+                    otherObjectMoved = true;
+                }
+
+                // FOV control
+                if(PlayerState.Settings.TeleportFovIncrease > 0) {
+                    //Debug.Log(fraction);
+                    if(fraction < PlayerState.Settings.TeleportFovMaxPoint) {
+                        fraction /= PlayerState.Settings.TeleportFovMaxPoint;
+                        //Debug.Log("Increase - " + fraction);
+                        cameraController.FOV = originalFov + (PlayerState.Settings.TeleportFovIncrease * fraction);
+                    } else {
+                        fraction = (fraction - PlayerState.Settings.TeleportFovMaxPoint) / (1 - PlayerState.Settings.TeleportFovMaxPoint);
+                        //Debug.Log("Decrease - " + fraction);
+                        cameraController.FOV = maxFov - (PlayerState.Settings.TeleportFovIncrease * fraction);
+                    }
+                }
+
+                yield return null;
+            }
+            cameraController.FOV = originalFov;
+        } else if(otherObj) { // No lerp - still swap objects if applicable
             otherObj.position = startPosition + otherObjOffset;
-            yield return null;
         }
+
+        // End of teleport
+        transform.position = endPosition;
+        yield return null;
         controller.enabled = true;
     }
 
