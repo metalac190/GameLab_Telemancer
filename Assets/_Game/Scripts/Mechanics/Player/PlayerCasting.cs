@@ -232,6 +232,8 @@ namespace Mechanics.Player
                 return;
             }
 
+            _boltManager.PrepareToWarp();
+
             _playerFeedback.OnWarpAction(AbilityActionEnum.InputDetected);
 
             StartCoroutine(Warp());
