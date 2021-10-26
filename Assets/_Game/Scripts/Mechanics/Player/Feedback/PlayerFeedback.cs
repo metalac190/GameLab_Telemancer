@@ -117,6 +117,11 @@ namespace Mechanics.Player
 
         #region Player Animation Events
 
+        public void OnGamePaused()
+        {
+            _playerAnimator.ResetToIdle();
+        }
+
         public void OnAnimationPoint()
         {
         }
