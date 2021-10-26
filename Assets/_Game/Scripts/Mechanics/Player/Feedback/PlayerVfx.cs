@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mechanics.Bolt.Effects;
+using UnityEngine;
 using UnityEngine.VFX;
 
 public class PlayerVfx : MonoBehaviour

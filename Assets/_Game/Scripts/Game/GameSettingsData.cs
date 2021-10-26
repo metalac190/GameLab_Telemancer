@@ -15,8 +15,8 @@ public class GameSettingsData : ScriptableObject
     [SerializeField] [Range(0, 0.5f)] private float _floatTime = 0f;
 
     [Header("Camera Settings")]
-    [SerializeField] private float _maxLookDown = 90f;
-    [SerializeField] private float _maxLookUp = 90f;
+    [SerializeField] [Range(0, 90)] private float _maxLookDown = 90f;
+    [SerializeField] [Range(0, 90)] private float _maxLookUp = 90f;
 
     [Header("Distance Settings")]
     [SerializeField] private float _maxLookDistance = 20f;
@@ -24,12 +24,12 @@ public class GameSettingsData : ScriptableObject
     [SerializeField] private LayerMask _lookAtMask = 1;
 
     [Header("Action Animation Delays")]
-    [SerializeField] [Range(0, 2)] private float _delayBolt = 0.35f;
-    [SerializeField] [Range(0, 2)] private float _delayWarp = 0.1f;
-    [SerializeField] [Range(0, 2)] private float _delayResidue = 0.1f;
+    [SerializeField] [Range(0, 2)] private float _delayBolt = 0.05f;
+    [SerializeField] [Range(0, 2)] private float _delayWarp = 0.05f;
+    [SerializeField] [Range(0, 2)] private float _delayResidue = 0.05f;
 
     [Header("Action Animation Time")]
-    [SerializeField] [Range(0, 2)] private float _timeToFire = 0.35f;
+    [SerializeField] [Range(0, 2)] private float _timeToFire = 0.05f;
 
     [Header("Action Cooldowns")]
     [SerializeField] [Range(0, 10)] private float _timeToNextFire = 0.5f;
@@ -41,16 +41,18 @@ public class GameSettingsData : ScriptableObject
 
     [Header("Bolt Movement")]
     [SerializeField] [Range(0, 2)] private float _boltMoveSpeed = 0.32f;
-    [SerializeField] private float _boltLifeSpan = 0.7f;
-    [SerializeField] private float _boltAirFizzleTime = 0.6f;
+    [SerializeField] [Range(0, 2)] private float _boltLifeSpan = 0.8f;
+    [SerializeField] [Range(0, 1)] private float _boltAirFizzleTime = 0.45f;
 
     [Header("Bolt Visuals")]
-    [SerializeField] private float _boltLightDownDist = 8f;
-    [SerializeField] private float _boltHitFizzleTime = 0.5f;
-    [SerializeField] private float _growDuration = 3f;
-    [SerializeField] private float _growDrag = 8f;
-    [SerializeField] private float _shrinkDuration = 1.2f;
-    [SerializeField] private float _shrinkDrag = 4f;
+    [SerializeField] [Range(0, 1)] private float _boltAirExtraParticlesTime = 0.4f;
+    [SerializeField] [Range(0, 1)] private float _boltHitFizzleTime = 0.4f;
+    [SerializeField] [Range(0, 20)] private float _boltLightDownDist = 8f;
+    [SerializeField] [Range(0, 1)] private float _boltLightDimTime = 0.4f;
+
+    [Header("Bolt Lightning Visuals")]
+    [SerializeField] private AnimationCurve _lightningSizeOverLife = AnimationCurve.Constant(0, 1, 1);
+    [SerializeField] private AnimationCurve _boltShellSizeOverLife = AnimationCurve.Constant(0, 1, 1);
 
 
     public float MoveSpeed => _moveSpeed;
@@ -74,12 +76,12 @@ public class GameSettingsData : ScriptableObject
     public float TimeToNextResidue => _timeToNextResidue;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
-    public float BoltLifeSpan => _boltLifeSpan;
-    public float BoltAirFizzleTime => _boltLightDownDist;
-    public float BoltLightDownDist => _boltAirFizzleTime;
+    public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
+    public float BoltAirFizzleTime => _boltAirFizzleTime;
+    public float BoltAirExtraParticlesTime => _boltAirExtraParticlesTime;
     public float BoltHitFizzleTime => _boltHitFizzleTime;
-    public float GrowDuration => _growDuration;
-    public float GrowDrag => _growDrag;
-    public float ShrinkDuration => _shrinkDuration;
-    public float ShrinkDrag => _shrinkDrag;
+    public float BoltLightDownDist => _boltLightDownDist;
+    public float BoltLightDimTime => _boltLightDimTime;
+    public AnimationCurve LightningSizeOverLife => _lightningSizeOverLife;
+    public AnimationCurve BoltShellSizeOverLife => _boltShellSizeOverLife;
 }
