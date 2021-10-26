@@ -15,12 +15,14 @@ namespace Mechanics.Bolt
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
         [SerializeField] private bool _debugWarpBox = false;
+        [SerializeField] private bool _forceDontDestroy = false;
         [Header("References")]
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Collider _collider;
-        public Collider Collider { get { return _collider; } }
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
+
+        public Collider Collider => _collider;
 
         private bool _isResidue;
         private float _timeAlive;
@@ -42,7 +44,7 @@ namespace Mechanics.Bolt
                         _manager = GetComponent<BoltManager>();
                     }
                     if (_manager == null) {
-                        throw new MissingReferenceException("Missing Bolt Manager in scene");
+                        Debug.LogError("Missing Bolt Manager in scene", gameObject);
                     }
                 }
                 return _manager;
@@ -64,10 +66,11 @@ namespace Mechanics.Bolt
         private void Start()
         {
             // No extra bolt controller should exist
-            if (_manager == null) {
+            if (_manager == null && !_forceDontDestroy) {
                 Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
                 Destroy(gameObject);
             }
+            IsAlive = gameObject.activeSelf;
         }
 
         private void Update()
@@ -135,6 +138,9 @@ namespace Mechanics.Bolt
         public void PrepareToFire(Vector3 position, Vector3 forward, bool isResidue)
         {
             _visuals.gameObject.SetActive(true);
+            if (!_missingFeedback) {
+                _feedback.OnReset();
+            }
             SetPosition(position, forward);
             if (_redirectDelayRoutine != null) {
                 StopCoroutine(_redirectDelayRoutine);
@@ -142,6 +148,9 @@ namespace Mechanics.Bolt
             }
             _isResidue = isResidue;
             SetCastStatus(0);
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
         }
 
         // Update the bolt's position. Called to keep the bolt in the player's hand
@@ -303,10 +312,14 @@ namespace Mechanics.Bolt
 
         public IEnumerator LifetimeDissipateTimer(float dissipateTime, float disableTime)
         {
-            yield return new WaitForSecondsRealtime(dissipateTime);
-            Manager.DissipateBolt();
+            for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
+                yield return null;
+            }
+            if (Manager != null) Manager.DissipateBolt();
             Disable(false);
-            yield return new WaitForSecondsRealtime(disableTime);
+            for (float t = 0; t < disableTime; t += Time.deltaTime) {
+                yield return null;
+            }
             Disable();
         }
 
@@ -315,14 +328,18 @@ namespace Mechanics.Bolt
             if (!IsAlive) return;
             float dissipateTime = PlayerState.Settings.BoltHitFizzleTime;
             PrepareToDissipate(dissipateTime);
+            _checkAlive = false;
+            _feedback.OverrideBoltLifetime(_timeAlive, PlayerState.Settings.BoltLifeSpan, PlayerState.Settings.BoltAirFizzleTime, PlayerState.Settings.BoltHitFizzleTime);
             _dissipateRoutine = StartCoroutine(DissipateTimer(dissipateTime, stopMoving));
         }
 
         private IEnumerator DissipateTimer(float dissipateTime, bool stopMoving)
         {
             Disable(false, stopMoving);
-            yield return new WaitForSecondsRealtime(dissipateTime);
-            Manager.DissipateBolt();
+            for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
+                yield return null;
+            }
+            if (Manager != null) Manager.DissipateBolt();
             Disable();
         }
 
@@ -342,12 +359,15 @@ namespace Mechanics.Bolt
             _checkAlive = false;
             IsAlive = false;
             if (returnToController) {
-                Manager.AddController(this);
+                if (Manager != null) Manager.AddController(this);
             }
         }
 
         private void Enable()
         {
+            if (!_missingFeedback) {
+                _feedback.OnReset();
+            }
             if (!_missingCollider) {
                 _collider.enabled = true;
             }

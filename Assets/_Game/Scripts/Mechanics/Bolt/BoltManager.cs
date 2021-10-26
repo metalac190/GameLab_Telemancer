@@ -115,6 +115,14 @@ namespace Mechanics.Bolt
             OnBoltDissipate?.Invoke(ResidueReady);
         }
 
+        public void OnGamePaused()
+        {
+            if (_currentBolt == null) return;
+            _currentBolt.Disable();
+            _currentBolt = null;
+            _isCasting = false;
+        }
+
         #region Residue
 
         public bool OnActivateResidue()
@@ -175,6 +183,7 @@ namespace Mechanics.Bolt
 
         public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
         {
+            Debug.Log(_currentBolt);
             if (_currentBolt == null) {
                 GetNewBolt();
             }

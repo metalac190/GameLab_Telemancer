@@ -51,10 +51,8 @@ public class GameSettingsData : ScriptableObject
     [SerializeField] [Range(0, 1)] private float _boltLightDimTime = 0.4f;
 
     [Header("Bolt Lightning Visuals")]
-    [SerializeField] private float _growDuration = 3f;
-    [SerializeField] private float _growDrag = 8f;
-    [SerializeField] private float _shrinkDuration = 1.2f;
-    [SerializeField] private float _shrinkDrag = 4f;
+    [SerializeField] private AnimationCurve _lightningSizeOverLife = AnimationCurve.Constant(0, 1, 1);
+    [SerializeField] private AnimationCurve _boltShellSizeOverLife = AnimationCurve.Constant(0, 1, 1);
 
 
     public float MoveSpeed => _moveSpeed;
@@ -78,14 +76,12 @@ public class GameSettingsData : ScriptableObject
     public float TimeToNextResidue => _timeToNextResidue;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
-    public float BoltLifeSpan => _boltLifeSpan;
+    public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
     public float BoltAirFizzleTime => _boltAirFizzleTime;
     public float BoltAirExtraParticlesTime => _boltAirExtraParticlesTime;
     public float BoltHitFizzleTime => _boltHitFizzleTime;
     public float BoltLightDownDist => _boltLightDownDist;
     public float BoltLightDimTime => _boltLightDimTime;
-    public float GrowDuration => _growDuration;
-    public float GrowDrag => _growDrag;
-    public float ShrinkDuration => _shrinkDuration;
-    public float ShrinkDrag => _shrinkDrag;
+    public AnimationCurve LightningSizeOverLife => _lightningSizeOverLife;
+    public AnimationCurve BoltShellSizeOverLife => _boltShellSizeOverLife;
 }
