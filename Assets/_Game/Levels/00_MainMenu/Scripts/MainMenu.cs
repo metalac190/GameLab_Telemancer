@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
     public void Awake()
     {
         // If no existing save, then hide the continue button
-        // ContinueButton.SetActive(false);
+        // ContinueButton.SetEffectActive(false);
 
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
@@ -45,15 +45,14 @@ public class MainMenu : MonoBehaviour
 
         // Load first scene 
         //SceneManager.LoadScene(1);
-        
+
         // alternate method using loading screen
-        
+
         PlayerPrefs.SetInt("CurrentLevel", 2);
         PlayerPrefs.SetInt("Checkpoint", 1);
         PlayerPrefs.SetInt("Level", 2);
         PlayerPrefs.Save();
         SceneManager.LoadScene(1);
-        
     }
 
     public void ContinueGame()
