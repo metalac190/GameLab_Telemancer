@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour {
     // ---
 
     [Header("Debug/Testing")]
+    [SerializeField] [Range(0, 0.5f)] private float teleportLerpLength;
     [SerializeField] private bool infiniteJumps;
 #if UNITY_EDITOR
     public PlayerDebug playerDebug;
@@ -140,36 +141,40 @@ public class PlayerController : MonoBehaviour {
     #region Teleport
 
     public void Teleport(Transform other, Vector3 offset = default) {
-        StartCoroutine(TeleportWithTransform(other, offset));
+        BoxCollider collider = other.GetComponent<BoxCollider>();
+        Vector3 oldPlayerPos, newPlayerPos;
+        if(collider) {
+            oldPlayerPos = controller.bounds.min;
+            newPlayerPos = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
+        } else {
+            oldPlayerPos = transform.position;
+            newPlayerPos = other.position + offset;
+        }
+        StartCoroutine(TeleportLerp(oldPlayerPos, newPlayerPos, other));
 
         //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
 
-    private IEnumerator TeleportWithTransform(Transform other, Vector3 offset) {
-        controller.enabled = false;
-        OnTeleport.Invoke();
-
-        BoxCollider collider = other.GetComponent<BoxCollider>();
-        if(collider) {
-            Vector3 oldPlayerPos = controller.bounds.min;
-            transform.position = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
-            other.position = oldPlayerPos;
-        } else {
-            Vector3 oldPlayerPos = transform.position;
-            transform.position = other.position + offset;
-            other.position = oldPlayerPos;
-        }
-        yield return null;
-        controller.enabled = true;
-    }
-
     public void TeleportToPosition(Vector3 other, Vector3 offset = default) {
-        controller.enabled = false;
-        OnTeleport.Invoke();
-        transform.position = other + offset;
-        controller.enabled = true;
+        StartCoroutine(TeleportLerp(transform.position, other + offset));
 
         //Debug.Log("Teleport to raw position " + other);
+    }
+
+    private IEnumerator TeleportLerp(Vector3 startPosition, Vector3 endPosition, Transform otherObj = null, Vector3 otherObjOffset = default) {
+        controller.enabled = false;
+        OnTeleport.Invoke();
+
+        for(float i = 0; i < teleportLerpLength; i += Time.deltaTime) {
+            transform.position = Vector3.Lerp(startPosition, endPosition, i / teleportLerpLength);
+            yield return null;
+        }
+        transform.position = endPosition;
+        if(otherObj) {
+            otherObj.position = startPosition + otherObjOffset;
+            yield return null;
+        }
+        controller.enabled = true;
     }
 
     /// <summary>
