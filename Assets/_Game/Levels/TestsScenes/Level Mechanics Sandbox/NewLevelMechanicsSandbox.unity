@@ -383,107 +383,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &177810800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 10
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: 8253d41e6e8b11a4cbe77a4f8f82934d, type: 3}
-  enableBackplate:
-    m_OverrideState: 0
-    m_Value: 0
-  backplateType:
-    m_OverrideState: 0
-    m_Value: 0
-  groundLevel:
-    m_OverrideState: 0
-    m_Value: 0
-  scale:
-    m_OverrideState: 0
-    m_Value: {x: 32, y: 32}
-  projectionDistance:
-    m_OverrideState: 0
-    m_Value: 16
-    min: 0.0000001
-  plateRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexOffset:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0}
-  blendAmount:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 100
-  shadowTint:
-    m_OverrideState: 0
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    hdr: 0
-    showAlpha: 1
-    showEyeDropper: 1
-  pointLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  dirLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  rectLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
 --- !u!1 &178512546
 GameObject:
   m_ObjectHideFlags: 0
@@ -1727,7 +1626,7 @@ Transform:
   m_LocalPosition: {x: 11.74, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1682227879}
+  - {fileID: 1151675097}
   - {fileID: 1693324939}
   m_Father: {fileID: 1220832382}
   m_RootOrder: 7
@@ -2070,6 +1969,107 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be5c1b9215caaf143aac152087d757c0, type: 3}
+--- !u!114 &1057900371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 10
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: 8253d41e6e8b11a4cbe77a4f8f82934d, type: 3}
+  enableBackplate:
+    m_OverrideState: 0
+    m_Value: 0
+  backplateType:
+    m_OverrideState: 0
+    m_Value: 0
+  groundLevel:
+    m_OverrideState: 0
+    m_Value: 0
+  scale:
+    m_OverrideState: 0
+    m_Value: {x: 32, y: 32}
+  projectionDistance:
+    m_OverrideState: 0
+    m_Value: 16
+    min: 0.0000001
+  plateRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  blendAmount:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 100
+  shadowTint:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  pointLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  dirLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  rectLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!114 &1088399776 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7882371634956272926, guid: 00e51a92817348c4ea4ba29f229519b0,
@@ -2240,6 +2240,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f90c9d96d3d5c1f43aaa23b923632e46, type: 3}
+--- !u!4 &1151675097 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1620303665}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1159380298 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7882371634956272917, guid: 00e51a92817348c4ea4ba29f229519b0,
@@ -2662,7 +2668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 5ca56ca89d474ed43a1571046489ce94, type: 2}
   m_StaticLightingSkyUniqueID: 1
-  m_SkySettings: {fileID: 177810800}
+  m_SkySettings: {fileID: 1057900371}
   m_SkySettingsFromProfile: {fileID: 7488742677745068149, guid: 5ca56ca89d474ed43a1571046489ce94,
     type: 2}
 --- !u!4 &1438105752
@@ -2856,6 +2862,97 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f5043c84297a49448450f554f56ae64, type: 3}
+--- !u!1 &1579862085 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1021954595512844256, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1620303665}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1620303665
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 945027231}
+    m_Modifications:
+    - target: {fileID: 8443435860192179991, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: _wispPrefab
+      value: 
+      objectReference: {fileID: 7720600474328687289, guid: 30bccee45c2317b4794f654885c45675,
+        type: 3}
+    - target: {fileID: 8443435860192179991, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: _crystal
+      value: 
+      objectReference: {fileID: 1579862085}
+    - target: {fileID: 8443435860192179991, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: _warpPad
+      value: 
+      objectReference: {fileID: 1693324938}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443435860192179993, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
+        type: 3}
+      propertyPath: m_Name
+      value: Warp Rod
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 85f4da31172bf6a42b8fe0618e60e5b7, type: 3}
 --- !u!4 &1621091902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3008360639234261101, guid: 70ec17a0c40a7e1499f99e9d691405f6,
@@ -3330,12 +3427,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00e51a92817348c4ea4ba29f229519b0, type: 3}
---- !u!4 &1682227879 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-    type: 3}
-  m_PrefabInstance: {fileID: 8443435858652591551}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1693324938 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5469995250391460376, guid: 9a5cc5253e063e84090f8ece7ce071fd,
@@ -4723,77 +4814,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b55ce94b4858244daef433a9d46afe7, type: 3}
---- !u!1001 &8443435858652591551
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 945027231}
-    m_Modifications:
-    - target: {fileID: 8443435860192179991, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: _warpPad
-      value: 
-      objectReference: {fileID: 1693324938}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179992, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8443435860192179993, guid: 85f4da31172bf6a42b8fe0618e60e5b7,
-        type: 3}
-      propertyPath: m_Name
-      value: Warp Rod
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 85f4da31172bf6a42b8fe0618e60e5b7, type: 3}
