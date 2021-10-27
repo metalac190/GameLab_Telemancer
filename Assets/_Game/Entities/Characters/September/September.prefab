@@ -479,6 +479,7 @@ MonoBehaviour:
       m_Calls: []
   playerFeedback: {fileID: 6895264153618991445}
   grounded: 0
+  coyoteTimeActive: 0
   walking: 0
   flag_cantAct: 0
   infiniteJumps: 0
@@ -934,6 +935,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcaf2607b423247adaa734851862fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxDistFromGround: 200
+  _delayCastStartDist: 20
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 4073664730457268207}

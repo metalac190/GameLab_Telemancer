@@ -40,6 +40,11 @@ public abstract class OptionSlider : MonoBehaviour
     {
         PlayerPrefs.SetFloat(prefKey.ToString(), n);
     }
+    
+    protected virtual void SaveValue(float n)
+    {
+        PlayerPrefs.SetFloat(prefKey.ToString(), n);
+    }
 
     protected virtual void LoadValue()
     {
@@ -48,11 +53,17 @@ public abstract class OptionSlider : MonoBehaviour
         _slider.value = val;
     }
 
+    protected virtual void SetSlider(int n)
+    {
+        _slider.value = n;
+    }
+
     protected virtual void SetValue(int n)
     {
         SetText(n + "");
         SaveValue(n);
     }
+    
 
     protected virtual void SetText(string s)
     {
