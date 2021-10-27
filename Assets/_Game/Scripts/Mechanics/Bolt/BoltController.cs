@@ -174,6 +174,15 @@ namespace Mechanics.Bolt
             Enable();
         }
 
+        public void PrepareToWarp()
+        {
+            if (_dissipateRoutine != null) {
+                StopCoroutine(_dissipateRoutine);
+            }
+            IsAlive = true;
+            _stopMoving = true;
+        }
+
         // Warp to the bolt's position
         public bool OnWarp()
         {
@@ -223,7 +232,7 @@ namespace Mechanics.Bolt
                     float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
                     transform.position = originalPosition - dist * offset;
                     if (!WarpCollisionCheck()) {
-                        Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
+                        //Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
                         return false;
                     }
                 }
@@ -357,8 +366,8 @@ namespace Mechanics.Bolt
             }
             _stopMoving = stopMoving;
             _checkAlive = false;
-            IsAlive = false;
             if (returnToController) {
+                IsAlive = false;
                 if (Manager != null) Manager.AddController(this);
             }
         }
