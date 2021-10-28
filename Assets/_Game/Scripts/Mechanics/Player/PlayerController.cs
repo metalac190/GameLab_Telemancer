@@ -181,14 +181,11 @@ public class PlayerController : MonoBehaviour {
 
                 // FOV control
                 if(PlayerState.Settings.TeleportFovIncrease > 0) {
-                    //Debug.Log(fraction);
                     if(fraction < PlayerState.Settings.TeleportFovMaxPoint) {
                         fraction /= PlayerState.Settings.TeleportFovMaxPoint;
-                        //Debug.Log("Increase - " + fraction);
                         cameraController.FOV = originalFov + (PlayerState.Settings.TeleportFovIncrease * fraction);
                     } else {
                         fraction = (fraction - PlayerState.Settings.TeleportFovMaxPoint) / (1 - PlayerState.Settings.TeleportFovMaxPoint);
-                        //Debug.Log("Decrease - " + fraction);
                         cameraController.FOV = maxFov - (PlayerState.Settings.TeleportFovIncrease * fraction);
                     }
                 }
