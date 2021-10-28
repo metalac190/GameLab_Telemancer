@@ -21,6 +21,14 @@ public class GameSettingsData : ScriptableObject
     [SerializeField] [Range(0, 0.5f)] [Tooltip("How many seconds at the peak of the jump will the player float for")]
     private float _floatTime = 0f;
 
+    [Header("Teleport")]
+    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount of time the player takes to teleport (incluldes lerping)")]
+    private float _teleportTime = 0.1f;
+    [SerializeField] [Range(0, 90)] [Tooltip("The amount the FOV should increase while teleporting")]
+    private int _teleportFovIncrease = 30;
+    [SerializeField] [Range(0, 1)] [Tooltip("The normalized time at which the FOV reaches its max during the teleport, before going back to normal")]
+    private float _teleportFovMaxPoint = 0.66f;
+
     [Header("Camera Settings")]
     [SerializeField] [Range(0, 50)] [Tooltip("0-90 degree lock on the players ability to look down")]
     private float _maxLookDown = 90f;
@@ -97,6 +105,9 @@ public class GameSettingsData : ScriptableObject
     public float RisingGravity => _risingGravity;
     public float FallingGravity => _fallingGravity;
     public float FloatTime => _floatTime;
+    public float TeleportTime => _teleportTime;
+    public float TeleportFovIncrease => _teleportFovIncrease;
+    public float TeleportFovMaxPoint => _teleportFovMaxPoint;
     public float MaxLookDown => _maxLookDown;
     public float MaxLookUp => _maxLookUp;
     public float MaxLookDistance => _maxLookDistance;
