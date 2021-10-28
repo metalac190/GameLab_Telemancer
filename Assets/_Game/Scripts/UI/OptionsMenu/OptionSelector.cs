@@ -7,13 +7,16 @@ public abstract class OptionSelector : MonoBehaviour
     public enum PlayerPrefKey
     {
         FpsCounter,
-        GraphicsQuality
+        GraphicsQuality,
+        VSync,
+        Fullscreen,
+        AntiAliasing
     }
     
     // Have PlayerPrefKey selected via dropdown menu in the inspector
-    [SerializeField] private PlayerPrefKey prefKey;
+    [SerializeField] private PlayerPrefKey prefKey = PlayerPrefKey.FpsCounter;
     
-    [SerializeField] private Button[] options;
+    [SerializeField] private Button[] options = {};
 
     private void Start()
     {

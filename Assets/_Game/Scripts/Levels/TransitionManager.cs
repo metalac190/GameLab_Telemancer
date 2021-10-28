@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class TransitionManager : MonoBehaviour
 {
     public static TransitionManager tm;
-    [SerializeField] Image fade;
+    [SerializeField] Image fade = null;
     float fadeDuration = 1;
-    string chapterNumber, title = "";
+    string chapterNumber = "", title = "";
     Color transparent = new Color(0, 0, 0, 0);
     Color opaque = new Color(0, 0, 0, 1);
 

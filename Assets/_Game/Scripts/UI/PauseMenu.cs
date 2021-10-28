@@ -6,8 +6,10 @@ using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _background;
-    [SerializeField] private GameObject _book;
+    [SerializeField] private GameObject _background = null;
+    [SerializeField] private GameObject _book = null;
+    [SerializeField] private GameObject _submenu = null;
+    [SerializeField] private GameObject _confirmationPanel = null;
     public bool isPaused = false;
     
     //TODO: create proper way of preventing the player from locking cursor while dead
@@ -40,8 +42,16 @@ public class PauseMenu : MonoBehaviour
     private void Update()
     {
         // TODO: move this somewhere that makes sense
-        if (!_pauseRestricted && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.pKey.wasPressedThisFrame))
-            UIEvents.current.PauseGame(!isPaused);
+        if (!_pauseRestricted &&
+            (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.pKey.wasPressedThisFrame))
+        {
+            if (isPaused && _confirmationPanel.activeSelf)
+                _confirmationPanel.SetActive(false);
+            else if (isPaused && _submenu.activeSelf)
+                _submenu.SetActive(false);
+            else
+                UIEvents.current.PauseGame(!isPaused);
+        }
     }
 
     private void DisplayPauseMenu(bool display)

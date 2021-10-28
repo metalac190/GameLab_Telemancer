@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
+using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -39,7 +42,8 @@ namespace Mechanics.Bolt
 
         private bool _isCasting = false;
         private IWarpInteractable _residueInteractable;
-        
+
+        public BoltController CurrentBolt => _currentBolt;
         public bool CanWarp => _currentBolt != null;
         public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
@@ -82,7 +86,7 @@ namespace Mechanics.Bolt
         private void GetNewBolt()
         {
             if (_currentBolt != null) {
-                _currentBolt.Dissipate(false, false);
+                _currentBolt.Dissipate(false);
                 _currentBolt = null;
             }
             if (_boltControllers.Count == 0) {
@@ -112,6 +116,14 @@ namespace Mechanics.Bolt
             _currentBolt = null;
             _isCasting = false;
             OnBoltDissipate?.Invoke(ResidueReady);
+        }
+
+        public void OnGamePaused()
+        {
+            if (_currentBolt == null) return;
+            _currentBolt.Disable();
+            _currentBolt = null;
+            _isCasting = false;
         }
 
         #region Residue
@@ -180,22 +192,22 @@ namespace Mechanics.Bolt
             _currentBolt.Redirect(position, rotation, timer);
         }
 
+        public void PrepareToWarp()
+        {
+            if (_currentBolt == null) return;
+            _currentBolt.PrepareToWarp();
+        }
+
         public bool OnWarp()
         {
-            return _currentBolt != null && _currentBolt.OnWarp();
+            if (_currentBolt == null) return false;
+            return _currentBolt.OnWarp();
         }
 
         public void DisableResidue()
         {
             _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
-        }
-
-        public void Dissipate()
-        {
-            if (_currentBolt == null || !_currentBolt.IsAlive) return;
-            _currentBolt.Dissipate(false, false);
-            _currentBolt = null;
         }
 
         #endregion

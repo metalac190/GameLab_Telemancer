@@ -11,28 +11,19 @@ namespace Mechanics.Player
     /// Public functions are called by the Player Input System
     public class PlayerCasting : MonoBehaviour
     {
-        [Header("Action Delays")]
-        [SerializeField] private float _timeToNextFire = 0.5f;
-        [SerializeField] private float _timeToNextWarp = 1.5f;
-        [SerializeField] private float _timeToNextResidue = 1.5f;
-        [Header("Action Animation Time")]
-        [SerializeField] private float _delayBolt = 0;
-        [SerializeField] private float _timeToFire = 0;
-        [SerializeField] private float _delayWarp = 0;
-        [SerializeField] private float _delayResidue = 0;
-        [Header("Settings")]
-        [SerializeField] private bool _clearResidueOnFire = true;
-        [SerializeField] private float _boltLookDistance = 20f;
-        [SerializeField] private LayerMask _lookAtMask = 1;
+        [Header("Extra Bolt Delay on Warp")]
+        [SerializeField] private float _maxDistFromGround = 200;
+        [SerializeField] private float _delayCastStartDist = 40;
         [Header("External References")]
-        [SerializeField] private BoltManager _boltManagerPrefab;
+        [SerializeField] private BoltManager _boltManagerPrefab = null;
         [Header("Internal References")]
         [SerializeField] private PlayerState _playerState;
         [SerializeField] private PlayerFeedback _playerFeedback;
-        [SerializeField] private Transform _boltFirePosition = null;
-        [SerializeField] private Transform _cameraLookDirection = null;
+        [SerializeField] private Transform _boltFirePosition;
+        [SerializeField] private Transform _cameraLookDirection;
 
         private BoltManager _boltManager;
+        private Coroutine _castRoutine;
 
         private bool _boltAbility;
         private bool _warpAbility;
@@ -42,14 +33,21 @@ namespace Mechanics.Player
         private bool _lockWarp;
         private bool _lockResidue;
 
+        #region Flag Cant Act
+
         private bool _flagCantAct;
+
         public bool FlagCantAct
         {
             get => _flagCantAct;
             set
             {
                 if (value) {
-                    _boltManager.Dissipate();
+                    _boltManager.OnGamePaused();
+                    _playerFeedback.OnGamePaused();
+                    if (_castRoutine != null) {
+                        StopCoroutine(_castRoutine);
+                    }
                 } else {
                     _lockCasting = false;
                     _lockWarp = false;
@@ -58,6 +56,8 @@ namespace Mechanics.Player
                 _flagCantAct = value;
             }
         }
+
+        #endregion
 
         #region Unity Functions
 
@@ -158,11 +158,11 @@ namespace Mechanics.Player
         {
             _playerFeedback.OnBoltAction(AbilityActionEnum.InputDetected);
 
-            if (_clearResidueOnFire) {
+            if (PlayerState.Settings.ClearResidueOnFire) {
                 _boltManager.DisableResidue();
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
             }
-            StartCoroutine(Cast());
+            _castRoutine = StartCoroutine(Cast());
         }
 
         // The main Coroutine for casting the warp bolt
@@ -171,14 +171,14 @@ namespace Mechanics.Player
             _lockCasting = true;
 
             // Delay Casting
-            yield return new WaitForSecondsRealtime(_delayBolt);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayBolt);
             _boltManager.PrepareToFire(GetBoltPosition(), GetBoltForward(), _residueAbility);
 
             // Time to cast
-            if (_timeToFire > 0) {
-                for (float t = 0; t <= _timeToFire; t += Time.deltaTime) {
+            if (PlayerState.Settings.TimeToFire > 0) {
+                for (float t = 0; t <= PlayerState.Settings.TimeToFire; t += Time.deltaTime) {
                     if (_flagCantAct) yield break;
-                    float delta = t / _timeToFire;
+                    float delta = t / PlayerState.Settings.TimeToFire;
                     CastStatus(delta);
                     HoldPosition();
                     yield return null;
@@ -215,8 +215,9 @@ namespace Mechanics.Player
         private IEnumerator CastTimer()
         {
             _lockCasting = true;
-            _playerFeedback.SetBoltCooldown(_timeToNextFire);
-            yield return new WaitForSecondsRealtime(_timeToNextFire);
+            float timer = PlayerState.Settings.TimeToNextBolt;
+            _playerFeedback.SetBoltCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockCasting = false;
         }
 
@@ -231,6 +232,8 @@ namespace Mechanics.Player
                 return;
             }
 
+            _boltManager.PrepareToWarp();
+
             _playerFeedback.OnWarpAction(AbilityActionEnum.InputDetected);
 
             StartCoroutine(Warp());
@@ -239,7 +242,7 @@ namespace Mechanics.Player
         private IEnumerator Warp()
         {
             _lockWarp = true;
-            yield return new WaitForSecondsRealtime(_delayWarp);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayWarp);
             OnWarp();
         }
 
@@ -250,17 +253,36 @@ namespace Mechanics.Player
                 _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
                 StartCoroutine(WarpTimer());
+                if (PlayerState.Settings.BoltCooldownOnWarp) {
+                    StartCoroutine(WarpToBoltTimer());
+                }
             } else {
                 _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
                 _lockWarp = false;
             }
         }
 
+        private IEnumerator WarpToBoltTimer()
+        {
+            _lockCasting = true;
+            float timer = PlayerState.Settings.WarpTimeToNextBolt;
+            float dist = GetDistanceFromGround();
+            if (dist > _delayCastStartDist) {
+                dist -= _delayCastStartDist;
+                float additive = PlayerState.Settings.AdditiveTimePerHeight;
+                timer += dist * additive;
+            }
+            _playerFeedback.SetBoltCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
+            _lockCasting = false;
+        }
+
         private IEnumerator WarpTimer()
         {
             _lockWarp = true;
-            _playerFeedback.SetWarpCooldown(_timeToNextWarp);
-            yield return new WaitForSecondsRealtime(_timeToNextWarp);
+            float timer = PlayerState.Settings.TimeToNextWarp;
+            _playerFeedback.SetWarpCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockWarp = false;
         }
 
@@ -283,7 +305,7 @@ namespace Mechanics.Player
         private IEnumerator Residue()
         {
             _lockResidue = true;
-            yield return new WaitForSecondsRealtime(_delayResidue);
+            yield return new WaitForSecondsRealtime(PlayerState.Settings.DelayResidue);
             OnUseResidue();
         }
 
@@ -303,8 +325,9 @@ namespace Mechanics.Player
         private IEnumerator ResidueTimer()
         {
             _lockResidue = true;
-            _playerFeedback.SetResidueCooldown(_timeToNextResidue);
-            yield return new WaitForSecondsRealtime(_timeToNextResidue);
+            float timer = PlayerState.Settings.TimeToNextResidue;
+            _playerFeedback.SetResidueCooldown(timer);
+            yield return new WaitForSecondsRealtime(timer);
             _lockResidue = false;
         }
 
@@ -349,17 +372,24 @@ namespace Mechanics.Player
             return angle.normalized;
         }
 
+        private float GetDistanceFromGround()
+        {
+            Ray ray = new Ray(transform.position, Vector3.down);
+            Physics.Raycast(ray, out var hit, _maxDistFromGround, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
+            return hit.distance;
+        }
+
         private Vector3 GetRaycast()
         {
             if (_missingCamera) return transform.position + transform.forward;
 
             Ray ray = new Ray(_cameraLookDirection.position, _cameraLookDirection.forward);
-            Physics.Raycast(ray, out var hit, _boltLookDistance, _lookAtMask, QueryTriggerInteraction.Ignore);
+            Physics.Raycast(ray, out var hit, PlayerState.Settings.MaxLookDistance, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
 
             if (hit.point != Vector3.zero) {
                 return hit.point;
             }
-            return _cameraLookDirection.position + _cameraLookDirection.forward * _boltLookDistance;
+            return _cameraLookDirection.position + _cameraLookDirection.forward * PlayerState.Settings.MaxLookDistance;
         }
 
         // A simple function to get the position of the warp bolt

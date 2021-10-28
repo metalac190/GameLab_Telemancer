@@ -11,17 +11,17 @@ using Mechanics.Player;
 /// </summary>
 public class Scroll : MonoBehaviour, IPlayerInteractable
 {
-    [SerializeField] private VisualEffect _disintigrateVFX;
-    [SerializeField] private GameObject _chainsGroup;
-    [SerializeField] private GameObject _scroll;
-    [SerializeField] private float _pauseLength;
-    [SerializeField] private SFXOneShot scrollOpenSFX;
+    [SerializeField] private VisualEffect _disintigrateVFX = null;
+    [SerializeField] private GameObject _chainsGroup = null;
+    [SerializeField] private GameObject _scroll = null;
+    [SerializeField] private float _pauseLength = 1;
+    [SerializeField] private SFXOneShot scrollOpenSFX = null;
     [SerializeField] private int loadingScreenID = 1;
     private int nextlevelID;
 
-    enum unlockEnum { WarpBolt, Residue }
+    enum unlockEnum { WarpBolt, Residue, None }
 
-    [SerializeField] private unlockEnum _scrollUnlock;
+    [SerializeField] private unlockEnum _scrollUnlock = unlockEnum.WarpBolt;
 
     private bool _used;
 
@@ -74,20 +74,24 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         scrollOpenSFX.PlayOneShot(transform.position);
         
         // HUD - Show ability unlocked 
-        if (_scrollUnlock == unlockEnum.WarpBolt)
+        switch (_scrollUnlock)
         {
-            UIEvents.current.UnlockWarpAbility(true);
-            UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
+            case unlockEnum.WarpBolt:
+                UIEvents.current.UnlockWarpAbility(true);
+                UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
+                break;
+            case unlockEnum.Residue:
+                UIEvents.current.UnlockResidueAbility(true);
+                UIEvents.current.AcquireResidueScroll();
+                break;
         }
-        else
+
+        if (_scrollUnlock != unlockEnum.None)
         {
-            UIEvents.current.UnlockResidueAbility(true);
-            UIEvents.current.AcquireResidueScroll();
+            // Hack fraud way of waiting for player input
+            while (!Keyboard.current.eKey.wasPressedThisFrame)
+                yield return null;
         }
-        
-        // Hack fraud way of waiting for player input
-        while (!Keyboard.current.eKey.wasPressedThisFrame)
-            yield return null;
         
         // load next level
         UIEvents.current.CloseScrollAcquiredScreen();
