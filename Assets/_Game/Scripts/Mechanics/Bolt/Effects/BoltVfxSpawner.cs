@@ -20,6 +20,10 @@ namespace Mechanics.Bolt.Effects
             if (_instantiatedObject == null) {
                 InstantiateVisualEffect();
             }
+        }
+
+        public void OnReset()
+        {
             if (_instantiatedObject != null) {
                 _instantiatedObject.OnReset();
                 if (_lightToDim != null) {
@@ -71,6 +75,7 @@ namespace Mechanics.Bolt.Effects
             if (_boltPrefab == null) return;
             if (_boltPrefab.gameObject.activeInHierarchy) {
                 _instantiatedObject = _boltPrefab;
+                return;
             }
             Transform location = _transformOverride != null ? _transformOverride : transform;
             _instantiatedObject = Instantiate(_boltPrefab, location);
