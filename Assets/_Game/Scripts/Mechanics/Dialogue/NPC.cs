@@ -7,6 +7,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string characterName = "";
     public string talkToNode = "";
     private DialogueRunner runner;
+    private CustomDialogueUI dialogueUI;
     private int offset, randNum, talk;
     private string[] talks;
     private int talkLimit;
@@ -14,16 +15,24 @@ public class NPC : MonoBehaviour, IHoverInteractable
     [Header("Optional")]
     public GameObject interactablePopup;
     bool hasStory = false, storyFinished = false;
+    public bool currentSpeaker = false;
 
     void Start()
     {
         talkLimit = 0;
 
-        if (runner == null)
-            runner = FindObjectOfType<YarnManager>().dialogueRunner;
+        runner = FindObjectOfType<YarnManager>().dialogueRunner;
+        dialogueUI = runner.GetComponent<CustomDialogueUI>();
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
+    }
+
+    void Update()
+    {
+        if(runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted")
+            currentSpeaker = true;
+        else { currentSpeaker = false; }
     }
 
     public void OnInteract()
