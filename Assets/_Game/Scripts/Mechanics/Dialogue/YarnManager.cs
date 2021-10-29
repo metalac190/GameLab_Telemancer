@@ -6,19 +6,31 @@ using Yarn.Unity;
 using UnityEngine.InputSystem;
 using TMPro;
 
-public class DialogueManager : MonoBehaviour
+public class YarnManager : MonoBehaviour
 {
-    [SerializeField] private DialogueRunner runner;
+    public DialogueRunner dialogueRunner;
+    public DialogueRunner tipRunner;
     [SerializeField] private PlayerState player;
     [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
+    [SerializeField] private CanvasGroup tipGroup;
     private int numTalks = 20;
     private int temp;
 
     void Start()
     {
         // Null checks
-        if (runner == null)
-            runner = FindObjectOfType<DialogueRunner>();
+        if (dialogueRunner == null || tipRunner == null)
+        {
+            var runners = FindObjectsOfType<DialogueRunner>();
+            foreach(DialogueRunner runner in runners)
+            {
+                if(runner.name == "DialogueRunner")
+                    dialogueRunner = runner;
+                else if(runner.name == "TipRunner")
+                    tipRunner = runner;
+            }
+        }
+        // dialogueRunner = FindObjectOfType<DialogueRunner>();
         if (player == null)
             player = FindObjectOfType<PlayerState>();
 
@@ -82,5 +94,42 @@ public class DialogueManager : MonoBehaviour
         }
         PlayerPrefs.SetString("TedTalks", talkList);
         PlayerPrefs.SetInt("TedTalkIndex", 0);
+    }
+
+    public void StartTips(float duration){StartCoroutine(FadeInTips(duration));}
+    public void StopTips(float duration){StartCoroutine(FadeOutTips(duration));}
+
+    IEnumerator FadeInTips(float duration)
+    {
+        StopCoroutine(FadeOutTips(duration));
+        float time = 0;
+        float alphaStart = tipGroup.alpha;
+        if(alphaStart > 0)
+            duration *= (1 - alphaStart);
+
+        while (time < duration)
+        {
+            tipGroup.alpha = Mathf.Lerp(alphaStart, 1f, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        tipGroup.alpha = 1;
+    }
+
+    IEnumerator FadeOutTips(float duration)
+    {
+        StopCoroutine(FadeInTips(duration));
+        float time = 0;
+        float alphaStart = tipGroup.alpha;
+        if(alphaStart < 1)
+            duration *= alphaStart;
+
+        while (time < duration)
+        {
+            tipGroup.alpha = Mathf.Lerp(alphaStart, 0f, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        tipGroup.alpha = 0;
     }
 }

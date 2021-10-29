@@ -67,7 +67,6 @@ namespace Mechanics.Player
                 var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
                 if (playerInteractable != null) {
                     SetInteractable(InteractableEnums.PlayerInteractable);
-
                     // If object is type Hover, save reference and call function
                     if(interactionObject.GetComponent<IHoverInteractable>() != null && !_isHovering)
                     {
@@ -76,6 +75,11 @@ namespace Mechanics.Player
                         _hoverObj.OnBeginHover();
                     }
                     return;
+                }
+                else if(_isHovering)
+                {
+                    _isHovering = false;
+                    _hoverObj.OnEndHover();
                 }
             }
             else if(_isHovering)
