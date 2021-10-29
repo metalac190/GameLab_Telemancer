@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914316274}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.5699997}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.6549995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7830911415055248351}
@@ -83,6 +83,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -96,7 +99,7 @@ VisualEffect:
       - m_Value: {x: 336.8647, y: 151.71916, z: 242.36664}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.191, y: -0.14, z: -5.5699997}
+      - m_Value: {x: 0.191, y: -0.14, z: -2.6549995}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -297,6 +300,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -310,7 +316,7 @@ VisualEffect:
       - m_Value: {x: 349.57968, y: 214.57393, z: 113.21175}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0.025743507, y: 0.23541085, z: -5.57}
+      - m_Value: {x: 0.025743507, y: 0.23541085, z: -2.655}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -458,6 +464,37 @@ MonoBehaviour:
   m_Property:
     m_Name: TargetTransform
   Target: {fileID: 5157810820651200961}
+--- !u!1 &2020370064679645867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2971927283926056636}
+  m_Layer: 0
+  m_Name: Bolt Capsule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2971927283926056636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020370064679645867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2914548901067366284}
+  m_Father: {fileID: 7701506834379150216}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2145834031721915863
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +567,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2988043514980007990}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.57}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4742872441381630694}
@@ -589,6 +626,9 @@ VisualEffect:
       - m_Value: 0.5
         m_Name: TargetTangentLength
         m_Overridden: 1
+      - m_Value: 128
+        m_Name: Spawn Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -602,7 +642,7 @@ VisualEffect:
       - m_Value: {x: 35.013645, y: 171.40373, z: 353.7467}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: -0.21674356, y: -0.09541085, z: -5.57}
+      - m_Value: {x: -0.21674356, y: -0.09541085, z: -2.655}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -774,7 +814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4404471019699935701}
   m_LocalRotation: {x: 0.83810765, y: -0.4499811, z: 0.10407522, w: -0.29027745}
-  m_LocalPosition: {x: 0.191, y: -0.14, z: -5.57}
+  m_LocalPosition: {x: 0.191, y: -0.14, z: -2.655}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8985960511452646219}
@@ -804,7 +844,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4571283906105832550}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -7.1}
+  m_LocalPosition: {x: 0, y: 0, z: -3.732}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5382612826945998843}
@@ -892,6 +932,7 @@ Transform:
   - {fileID: 8985960511452646219}
   - {fileID: 4742872441381630694}
   - {fileID: 5382612826945998843}
+  - {fileID: 2971927283926056636}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -917,6 +958,8 @@ MonoBehaviour:
   - {fileID: 5157810820651200961}
   - {fileID: 1087662126641221491}
   - {fileID: 9181464396526497412}
+  _objToScale:
+  - {fileID: 2971927283926056636}
 --- !u!114 &6789601401774915477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,9 +973,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _effectToPlay: {fileID: 2904421725289851946}
+  _capsuleRenderer: {fileID: 4051447547464508643}
   _lightning: {fileID: 2514329137218377425}
-  _timeAliveIncludesFizzle: 0
-  _fizzlingDeltaRange: 0.5
+  _timeAliveIncludesFizzle: 1
+  _fizzlingDeltaRange: 0
 --- !u!1 &7093000474494359961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,7 +1078,7 @@ VisualEffect:
       - m_Value: 0
         m_Name: TargetTangentLength
         m_Overridden: 1
-      - m_Value: 1.58
+      - m_Value: 1
         m_Name: ArcThicknessMultiplier
         m_Overridden: 1
       - m_Value: 0.84
@@ -1042,6 +1086,9 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: 1.5
         m_Name: Noise Frequency
+        m_Overridden: 1
+      - m_Value: 64
+        m_Name: Spawn Rate
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
@@ -1056,7 +1103,7 @@ VisualEffect:
       - m_Value: {x: -0, y: 180, z: 180}
         m_Name: TargetTransform_angles
         m_Overridden: 1
-      - m_Value: {x: 0, y: 0, z: -7.1}
+      - m_Value: {x: 0, y: 0, z: -3.732}
         m_Name: TargetTransform_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}
@@ -1127,6 +1174,50 @@ VisualEffect:
           m_PostInfinity: 2
           m_RotationOrder: 4
         m_Name: NoiseDistributionStrength
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0.05
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.015
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.55778885
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 0.05
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: ArcThicknessDistribution
         m_Overridden: 1
     m_Gradient:
       m_Array: []
@@ -1385,9 +1476,6 @@ VFXRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1408,3 +1496,114 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1001 &3456573968396154983
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2971927283926056636}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7387153
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.35758
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.35758
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d9fe0dea82ffeff40bc4e154755ee73a, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_Name
+      value: pBolt_Capsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e3186af3b6079b840a5d6b65b027d8d1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e3186af3b6079b840a5d6b65b027d8d1, type: 3}
+--- !u!4 &2914548901067366284 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e3186af3b6079b840a5d6b65b027d8d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3456573968396154983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4051447547464508643 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: e3186af3b6079b840a5d6b65b027d8d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3456573968396154983}
+  m_PrefabAsset: {fileID: 0}
