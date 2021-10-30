@@ -11,7 +11,7 @@ public class LevelMusicTrigger : MonoBehaviour
 
     private void Awake()
     {
-        UIEvents.current.OnQuitToMenu += Test;
+        UIEvents.current.OnQuitToMenu += QuitToMenu;
     }
 
     void OnTriggerEnter(Collider col)
@@ -23,7 +23,7 @@ public class LevelMusicTrigger : MonoBehaviour
         }
     }
 
-    void Test()
+    void QuitToMenu()
     {
         Time.timeScale = 1f;
         OnStopMusic?.Invoke();
