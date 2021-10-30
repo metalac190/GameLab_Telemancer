@@ -21,14 +21,11 @@ public class MenuMusicTrigger : MonoBehaviour
         }
     }
 
-    // Add code after build index updated to check which level so 
-    // that you can potentially use a crossfade through Play() instead of Stop()
     void OnContinue()
     {
         mainMenuMusic.Stop();
     }
 
-    // Consider using play once build index updated as well
     void OnNewGame()
     {
         mainMenuMusic.Stop();

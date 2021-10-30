@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using Yarn.Unity;
-using System.Linq;
-using System.Collections.Generic;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
@@ -9,26 +7,32 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string characterName = "";
     public string talkToNode = "";
     private DialogueRunner runner;
+    private CustomDialogueUI dialogueUI;
     private int offset, randNum, talk;
     private string[] talks;
     private int talkLimit;
 
     [Header("Optional")]
-    public YarnProgram scriptToLoad;
     public GameObject interactablePopup;
+    bool hasStory = false, storyFinished = false;
+    public bool currentSpeaker = false;
 
     void Start()
     {
         talkLimit = 0;
 
-        if (runner == null)
-            runner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
-
-        if (scriptToLoad != null)
-            runner.Add(scriptToLoad);
+        runner = FindObjectOfType<YarnManager>().dialogueRunner;
+        dialogueUI = runner.GetComponent<CustomDialogueUI>();
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
+    }
+
+    void Update()
+    {
+        if(runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted")
+            currentSpeaker = true;
+        else { currentSpeaker = false; }
     }
 
     public void OnInteract()
@@ -36,16 +40,19 @@ public class NPC : MonoBehaviour, IHoverInteractable
         if (!runner.IsDialogueRunning)
         {
             interactablePopup.SetActive(false);
+            runner.onDialogueComplete.AddListener(DialogueCompleted);
+
             // If story beat, run dialogue at specified node
             if (characterName == "Ted")
+            {
+                hasStory = true;
                 runner.StartDialogue(talkToNode);
+            }
             // Else kick off dialogue at random Ted Talk
             else
                 runner.StartDialogue(RandomTedTalk());
         }
 
-        // TODO: Find way to hide popup during conversation and reenable after
-        // OnEndHover();
     }
     public void OnBeginHover()
     {
@@ -65,11 +72,19 @@ public class NPC : MonoBehaviour, IHoverInteractable
         if (talkLimit < 5)
         {
             nodeString += GetNextTalk();
-            talkLimit++;
         }
         else
+        {
             nodeString = "Exhausted";
+            runner.onDialogueComplete.RemoveListener(DialogueCompleted);
+        }
         return nodeString;
+    }
+
+    public void DialogueCompleted()
+    {
+        OnBeginHover();
+        talkLimit++;
     }
 
     public int GetNextTalk()
