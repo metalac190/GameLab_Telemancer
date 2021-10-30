@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Handles all menu-related events.
@@ -239,6 +240,14 @@ public class UIEvents : MonoBehaviour
     {
         //OnQuitGame?.Invoke();
         Application.Quit();
+    }
+
+    public event Action OnQuitToMenu;
+
+    public void QuitToMenu()
+    {
+        OnQuitToMenu?.Invoke();
+        SceneManager.LoadScene(0);
     }
 
     #endregion

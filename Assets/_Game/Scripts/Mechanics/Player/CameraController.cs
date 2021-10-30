@@ -34,6 +34,18 @@ public class CameraController : MonoBehaviour {
 
     // -------------------------------------------------------------------------------------------
 
+    public float FOV {
+        get {
+            return mainCamera.fieldOfView;
+        }
+        set {
+            // TODO - convert from horizontal to vertical (copy Henry's script)
+            mainCamera.fieldOfView = value;
+        }
+    }
+
+    // -------------------------------------------------------------------------------------------
+
     public void MoveCamera(InputAction.CallbackContext value) {
         if(!pc.flag_cantAct) {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
@@ -46,7 +58,7 @@ public class CameraController : MonoBehaviour {
 
     public void UpdateSettings() {
         float newFov = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString());
-        mainCamera.fieldOfView = (newFov != 0) ? newFov : 60;
+        FOV = (newFov != 0) ? newFov : 60;
 
         float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
         sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
