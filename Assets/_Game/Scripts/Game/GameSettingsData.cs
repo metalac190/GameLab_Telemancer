@@ -34,6 +34,12 @@ public class GameSettingsData : ScriptableObject
     private float _maxLookDown = 90f;
     [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look up")]
     private float _maxLookUp = 90f;
+    [SerializeField] [Tooltip("Whether or not view bobbing is enabled")]
+    private bool _viewBobbingEnabled = false;
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
+    private float _viewBobbingHorizontal = 0.1f;
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
+    private float _viewBobbingVertical = 0.05f;
 
     [Header("Distance Settings")]
     [SerializeField] [Tooltip("The maximum distance that the UI Indicator can see")]
@@ -110,6 +116,9 @@ public class GameSettingsData : ScriptableObject
     public float TeleportFovMaxPoint => _teleportFovMaxPoint;
     public float MaxLookDown => _maxLookDown;
     public float MaxLookUp => _maxLookUp;
+    public bool ViewBobbingEnabled => _viewBobbingEnabled;
+    public float ViewBobbingHorizontal => _viewBobbingHorizontal;
+    public float ViewBobbingVertical => _viewBobbingVertical;
     public float MaxLookDistance => _maxLookDistance;
     public float MaxInteractDistance => _maxInteractDistance;
     public LayerMask LookAtMask => _lookAtMask;
