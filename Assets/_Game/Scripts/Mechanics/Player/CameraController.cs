@@ -6,18 +6,15 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour {
 
-#pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
     private PlayerController pc;
 
     [SerializeField] private float sensitivity = 10;
 
     [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Transform viewBobber = null;
     [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
-
-#pragma warning restore 0649
 
     // -------------------------------------------------------------------------------------------
 
@@ -62,6 +59,12 @@ public class CameraController : MonoBehaviour {
 
         float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
         sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
+    }
+
+    // -------------------------------------------------------------------------------------------
+
+    private IEnumerator ViewBobbing() {
+        throw new System.NotImplementedException();
     }
 
 }
