@@ -232,7 +232,11 @@ namespace Mechanics.Player
                 return;
             }
 
-            _boltManager.PrepareToWarp();
+            bool ready = _boltManager.PrepareToWarp();
+            if (!ready) {
+                _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
+                return;
+            }
 
             _playerFeedback.OnWarpAction(AbilityActionEnum.InputDetected);
 
@@ -248,17 +252,13 @@ namespace Mechanics.Player
 
         private void OnWarp()
         {
-            if (_boltManager.OnWarp()) {
-                _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
-                _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
+            _boltManager.OnWarp();
+            _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
+            _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
-                StartCoroutine(WarpTimer());
-                if (PlayerState.Settings.BoltCooldownOnWarp) {
-                    StartCoroutine(WarpToBoltTimer());
-                }
-            } else {
-                _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
-                _lockWarp = false;
+            StartCoroutine(WarpTimer());
+            if (PlayerState.Settings.BoltCooldownOnWarp) {
+                StartCoroutine(WarpToBoltTimer());
             }
         }
 

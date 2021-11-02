@@ -174,19 +174,23 @@ namespace Mechanics.Bolt
             Enable();
         }
 
-        public void PrepareToWarp()
+        public bool PrepareToWarp()
         {
+            if (!IsAlive || WarpCollisionTesting()) return false;
+
             if (_dissipateRoutine != null) {
                 StopCoroutine(_dissipateRoutine);
             }
             IsAlive = true;
             _stopMoving = true;
+            return true;
         }
 
         // Warp to the bolt's position
-        public bool OnWarp()
+        public void OnWarp()
         {
-            return IsAlive && Warp();
+            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down);
+            Disable();
         }
 
         #endregion
@@ -194,16 +198,6 @@ namespace Mechanics.Bolt
         // -------------------------------------------------------------------------------------------
 
         #region Private Functions
-
-        private bool Warp()
-        {
-            if (WarpCollisionTesting()) return false;
-
-            // TODO: Fix this line
-            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down);
-            Disable();
-            return true;
-        }
 
         private bool WarpCollisionTesting()
         {
