@@ -190,7 +190,6 @@ namespace Mechanics.Bolt
         // Warp to the bolt's position
         public void OnWarp()
         {
-            Debug.Log(_teleportOffset);
             Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down + _teleportOffset);
             Disable();
         }
