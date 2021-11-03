@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour {
 
     private void FixedUpdate() {
         // Movement
-        if(!flag_cantAct) {
+        if(!flag_cantAct && controller.enabled) {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
             if(grounded) {
@@ -144,15 +144,17 @@ public class PlayerController : MonoBehaviour {
 
     public void Teleport(Transform other, Vector3 offset = default) {
         BoxCollider collider = other.GetComponent<BoxCollider>();
-        Vector3 oldPlayerPos, newPlayerPos;
+        Vector3 oldPlayerPos, newPlayerPos, colliderOffset = Vector3.zero;
         if(collider) {
-            oldPlayerPos = controller.bounds.min;
-            newPlayerPos = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z) + offset;
+            oldPlayerPos = controller.bounds.min + new Vector3(controller.bounds.extents.x, 0f, controller.bounds.extents.z);
+            newPlayerPos = collider.bounds.min + new Vector3(collider.bounds.extents.x, 0f, collider.bounds.extents.z);
+            colliderOffset = other.position - newPlayerPos;
+            newPlayerPos += offset;
         } else {
             oldPlayerPos = transform.position;
             newPlayerPos = other.position + offset;
         }
-        StartCoroutine(TeleportLerp(oldPlayerPos, newPlayerPos, true, other));
+        StartCoroutine(TeleportLerp(oldPlayerPos, newPlayerPos, true, other, colliderOffset));
 
         //Debug.Log("Teleport to " + other.gameObject.name + " at " + (other.position + offset), other.gameObject);
     }
@@ -167,9 +169,9 @@ public class PlayerController : MonoBehaviour {
         controller.enabled = false;
         OnTeleport.Invoke();
 
+        bool otherObjectMoved = false;
         if(lerp) {
             float fraction, originalFov = cameraController.FOV, maxFov = cameraController.FOV + PlayerState.Settings.TeleportFovIncrease;
-            bool otherObjectMoved = false;
 
             for(float i = 0; i < PlayerState.Settings.TeleportTime; i += Time.deltaTime) {
                 fraction = i / PlayerState.Settings.TeleportTime;
@@ -193,7 +195,8 @@ public class PlayerController : MonoBehaviour {
                 yield return null;
             }
             cameraController.FOV = originalFov;
-        } else if(otherObj) { // No lerp - still swap objects if applicable
+        }
+        if(!otherObjectMoved && otherObj) { // Still swap objects if no lerp & applicable or if failed to swap earlier
             otherObj.position = startPosition + otherObjOffset;
         }
 
