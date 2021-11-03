@@ -242,8 +242,11 @@ public class UIEvents : MonoBehaviour
         Application.Quit();
     }
 
+    public event Action OnQuitToMenu;
+
     public void QuitToMenu()
     {
+        OnQuitToMenu?.Invoke();
         SceneManager.LoadScene(0);
     }
 
