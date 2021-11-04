@@ -38,6 +38,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject _scrollAcquiredScreen = null;
     [SerializeField] private Text _spellNameTxt = null;
     [SerializeField] private Text _spellDescTxt = null;
+    [SerializeField] private Image _spellIcon = null;
 
     [Header("Area Notification")]
     [SerializeField] private Text _chapterNumber = null;
@@ -323,6 +324,7 @@ public class HUD : MonoBehaviour
                 _spellNameTxt.text = "WARP";
                 _spellDescTxt.text =
                     "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
+                _spellIcon.gameObject.SetActive(true);
                 _debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
@@ -331,6 +333,7 @@ public class HUD : MonoBehaviour
                 _spellDescTxt.text = 
                     "Now when bolt hits certain objects, it covers that object in magical residue. " + 
                     "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
+                _spellIcon.gameObject.SetActive(true);
                 _debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
@@ -343,6 +346,7 @@ public class HUD : MonoBehaviour
                     "Of teleportation and displacement.\n" +
                     "Our hidden words go out with you,\n" +
                     "Speak of our magic, teach it true.";
+                _spellIcon.gameObject.SetActive(false);
                 _debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
