@@ -153,6 +153,13 @@ public class UIEvents : MonoBehaviour
         OnAcquireResidueScroll?.Invoke();
     }
 
+    public event Action OnAcquireGameEndScroll;
+
+    public void AcquireGameEndScroll()
+    {
+        OnAcquireGameEndScroll?.Invoke();
+    }
+
     public event Action OnCloseScrollAcquiredScreen;
 
     public void CloseScrollAcquiredScreen()
