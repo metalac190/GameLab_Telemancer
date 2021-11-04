@@ -91,6 +91,7 @@ public class HUD : MonoBehaviour
         // scroll listeners
         UIEvents.current.OnAcquireWarpScroll += () => DisplayScrollAcquiredScreen("WARP");
         UIEvents.current.OnAcquireResidueScroll += () => DisplayScrollAcquiredScreen("RESIDUE");
+        UIEvents.current.OnAcquireGameEndScroll += () => DisplayScrollAcquiredScreen("GAME_END");
         UIEvents.current.OnCloseScrollAcquiredScreen += () => DisplayScrollAcquiredScreen("CLOSE");
         
         // watched listener
@@ -110,7 +111,7 @@ public class HUD : MonoBehaviour
 
     private void DisplayDebugHUD(bool isEnabled)
     {
-        _debugSpellsPnl.SetActive(isEnabled);
+        //_debugSpellsPnl.SetActive(isEnabled);
         _debugStatsPnl.SetActive(isEnabled);
     }
 
@@ -319,15 +320,29 @@ public class HUD : MonoBehaviour
     {
         switch (scroll) {
             case "WARP":
-                _spellNameTxt.text = "WARP BOLT";
+                _spellNameTxt.text = "WARP";
                 _spellDescTxt.text =
-                    "Press [LMB] to cast a swirling ball of energy that has teleporting properties depending on the object it.";
+                    "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
                 _debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "RESIDUE":
-                _spellNameTxt.text = "WARP RESIDUE";
-                _spellDescTxt.text = "Lorem Ipsum";
+                _spellNameTxt.text = "RESIDUE";
+                _spellDescTxt.text = 
+                    "Now when bolt hits certain objects, it covers that object in magical residue. " + 
+                    "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
+                _debugSpellsPnl.SetActive(false);
+                _scrollAcquiredScreen.SetActive(true);
+                break;
+            case "GAME_END":
+                _spellNameTxt.text = "";
+                _spellDescTxt.text = 
+                    "As you’ve journeyed thus you’ve uncovered much,\n" +
+                    "Of Gnomish Arcana and secrets such.\n" + 
+                    "Towards the truth you’ve reached attainment\n" + 
+                    "Of teleportation and displacement.\n" +
+                    "Our hidden words go out with you,\n" +
+                    "Speak of our magic, teach it true.";
                 _debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
