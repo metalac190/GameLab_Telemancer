@@ -23,6 +23,7 @@ namespace Mechanics.Bolt
         [SerializeField] private BoltFeedback _feedback;
 
         public Collider Collider => _collider;
+        private Vector3 _teleportOffset;
 
         private bool _isResidue;
         private float _timeAlive;
@@ -174,19 +175,23 @@ namespace Mechanics.Bolt
             Enable();
         }
 
-        public void PrepareToWarp()
+        public bool PrepareToWarp()
         {
+            if (!IsAlive || WarpCollisionTesting()) return false;
+
             if (_dissipateRoutine != null) {
                 StopCoroutine(_dissipateRoutine);
             }
             IsAlive = true;
             _stopMoving = true;
+            return true;
         }
 
         // Warp to the bolt's position
-        public bool OnWarp()
+        public void OnWarp()
         {
-            return IsAlive && Warp();
+            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down + _teleportOffset);
+            Disable();
         }
 
         #endregion
@@ -195,22 +200,15 @@ namespace Mechanics.Bolt
 
         #region Private Functions
 
-        private bool Warp()
-        {
-            if (WarpCollisionTesting()) return false;
-
-            // TODO: Fix this line
-            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down);
-            Disable();
-            return true;
-        }
-
         private bool WarpCollisionTesting()
         {
             // Ensure that warp bolt position is not out of bounds and space is large enough for player
 
             bool collision = WarpCollisionCheck();
-            if (!collision) return false;
+            if (!collision) {
+                _teleportOffset = Vector3.zero;
+                return false;
+            }
 
             // Offsets to try
             Vector3 originalPosition = transform.position;
@@ -230,7 +228,7 @@ namespace Mechanics.Bolt
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
                     float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
-                    transform.position = originalPosition - dist * offset;
+                    _teleportOffset = -dist * offset;
                     if (!WarpCollisionCheck()) {
                         //Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
                         return false;
@@ -239,13 +237,13 @@ namespace Mechanics.Bolt
             }
 
             // Could not avoid collision
-            transform.position = originalPosition;
+            _teleportOffset = Vector3.zero;
             Debug.Log("Warp Failed: Not enough space in area");
             return true;
         }
 
         // Collision check for the warp bolt. Ignores triggers
-        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
+        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position + _teleportOffset, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
 
         private IEnumerator RedirectDelay(Vector3 position, Quaternion rotation, float timer)
         {
