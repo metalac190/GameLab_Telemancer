@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using AudioSystem;
 using UnityEngine;
 
@@ -14,6 +15,12 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXOneShot _playerSnapSound = null;
     [SerializeField] private SFXLoop _playerWalkingSound = null;
     private bool isWalking = false;
+
+    [Header("Walking Controls")]
+    [SerializeField] [MinMaxRange(0, 0.5f)] [Tooltip("The amount of time before the first footstep sound plays")]
+    private RangedFloat _firstFootstepDelay = new RangedFloat(0.1f, 0.15f);
+    [SerializeField] [MinMaxRange(0, 1)] [Tooltip("The random time interval between the *start* of footstep sounds")]
+    private RangedFloat _walkingSoundInterval = new RangedFloat(0.55f, 0.7f);
 
     private void Start()
     {
@@ -49,10 +56,33 @@ public class PlayerSfx : MonoBehaviour
         if (walking) {
             if (!isWalking) {
                 isWalking = true;
-                _playerWalkingSound.Play(transform.position);
+                StartCoroutine(WalkingSounds());
             }
         } else {
             isWalking = false;
+        }
+    }
+
+    // Play footstep sounds at random intervals while walking
+    private IEnumerator WalkingSounds() {
+        // Delay first footstep sound
+        float waitTime = UnityEngine.Random.Range(_firstFootstepDelay.MinValue, _firstFootstepDelay.MaxValue);
+        for(float i = 0; i < waitTime; i += Time.deltaTime) {
+            if(!isWalking)
+                yield break;
+            yield return null;
+        }
+
+        // While walking, play a random footstep sound at a random interval
+        while(isWalking) {
+            _playerWalkingSound.Play(transform.position);
+
+            waitTime = UnityEngine.Random.Range(_walkingSoundInterval.MinValue, _walkingSoundInterval.MaxValue);
+            for(float i = 0; i < waitTime; i += Time.deltaTime) {
+                if(!isWalking)
+                    yield break;
+                yield return null;
+            }
         }
     }
 

@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Yarn.Unity;
 
-public class TranslateDialogue : MonoBehaviour
+public class TranslateDialogue : MonoBehaviour, IPlayerInteractable
 {
     bool triggered = false;
     [SerializeField] private GameObject untranslatedTxt = null, translatedTxt = null;
@@ -30,7 +29,7 @@ public class TranslateDialogue : MonoBehaviour
         tM.SetFloat("dissolveAmount", 1f);
     }
 
-    void OnTriggerEnter()
+    public void OnInteract()
     {
         if (!triggered)
         {
@@ -72,5 +71,4 @@ public class TranslateDialogue : MonoBehaviour
             yield return null;
         }
     }
-
 }

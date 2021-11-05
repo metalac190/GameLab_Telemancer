@@ -74,7 +74,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3767850989500933706}
-  - {fileID: 3729158604350343058}
+  - {fileID: 4698452634589321114}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -105,8 +105,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: TedTalk
   talkToNode: TedTalks1
-  scriptToLoad: {fileID: 2480198943629176163, guid: 12243524e5a740f4688cc2dbe8f9cc3f,
-    type: 3}
   interactablePopup: {fileID: 3767850989500933707}
 --- !u!1 &3767850990308937359
 GameObject:
@@ -189,83 +187,78 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &3767850990743167097
+--- !u!1001 &5097785307723247729
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 3767850990160010816}
     m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.020456905
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+    - target: {fileID: 919132149155446097, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
         type: 3}
       propertyPath: m_Name
       value: ted_Toad
       objectReference: {fileID: 0}
-    - target: {fileID: 2396993737550007434, guid: 3aa94deab644e4b4aa6e63a446fd924d,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6e9609571803e6a4da715856a8ceb88d, type: 2}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3aa94deab644e4b4aa6e63a446fd924d, type: 3}
---- !u!4 &3729158604350343058 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: 29ceeef2bc541cc448dfa9c17f86c94e, type: 3}
+--- !u!4 &4698452634589321114 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3aa94deab644e4b4aa6e63a446fd924d,
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 29ceeef2bc541cc448dfa9c17f86c94e,
     type: 3}
-  m_PrefabInstance: {fileID: 3767850990743167097}
+  m_PrefabInstance: {fileID: 5097785307723247729}
   m_PrefabAsset: {fileID: 0}
