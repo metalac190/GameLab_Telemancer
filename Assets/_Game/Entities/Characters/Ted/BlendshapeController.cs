@@ -11,10 +11,10 @@ public class BlendshapeController : MonoBehaviour
     {
         BlendShapeUpdate();
     }
+
     void BlendShapeUpdate()
     {
-        for (int i = 0; i < _trackerJoints.Length; i++)
-        {
+        for (int i = 0; i < _trackerJoints.Length; i++) {
             _mesh.SetBlendShapeWeight(i, _trackerJoints[i].transform.localScale.x * 100);
         }
     }
