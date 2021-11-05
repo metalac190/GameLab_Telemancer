@@ -239,7 +239,9 @@ namespace Mechanics.Bolt
             // Could not avoid collision
             _teleportOffset = Vector3.zero;
             Debug.Log("Warp Failed: Not enough space in area");
-            return true;
+
+            // Always let the player teleport -- TODO: Can cause issues, but check ^ doesn't work always right now
+            return false;
         }
 
         // Collision check for the warp bolt. Ignores triggers
