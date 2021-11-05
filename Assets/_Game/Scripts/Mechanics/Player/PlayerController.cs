@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
 
     // --- Vertical Movement
 
+    private int jumpBufferFrameCount; // The amount of frames remaining in a jump input buffer
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
@@ -69,15 +70,20 @@ public class PlayerController : MonoBehaviour {
         if(!flag_cantAct && controller.enabled) {
             #region XZ Plane
             Vector3 inputToMovement = ((xzInput.x * transform.right) + (xzInput.z * transform.forward)).normalized;
-            if(grounded) {
-                moveVelocity = (inputToMovement * PlayerState.Settings.MoveSpeed) + (moveVelocity.y * transform.up);
-            } else {
-                float upVelocity = moveVelocity.y;
-                moveVelocity.y = 0;
-                moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * inputToMovement;
-                moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
-                moveVelocity += upVelocity * transform.up;
+            float upVelocity = moveVelocity.y;
+            moveVelocity.y = 0;
+
+            if(grounded) { // Ground movement
+                if(moveVelocity.magnitude > PlayerState.Settings.MoveSpeed) {
+                    moveVelocity = inputToMovement * 
+                        Mathf.Max(moveVelocity.magnitude - (PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime), PlayerState.Settings.MoveSpeed);
+                } else
+                    moveVelocity = inputToMovement * PlayerState.Settings.MoveSpeed;
+            } else { // Air movement
+                moveVelocity = ApplyAirAcceleration(moveVelocity, inputToMovement);
             }
+
+            moveVelocity += upVelocity * Vector3.up;
             #endregion
 
             // -----
@@ -89,11 +95,12 @@ public class PlayerController : MonoBehaviour {
             wasGrounded = grounded;
 
             // Jumping/Gravity
-            if(flag_jump) { // Jump
+            if(flag_jump || (grounded && jumpBufferFrameCount > 0)) { // Jump
                 moveVelocity.y = PlayerState.Settings.JumpForce;
                 playerFeedback.OnPlayerJump();
                 flag_jump = false;
                 flag_canFloat = true;
+                jumpBufferFrameCount = 0;
 
             } else if((grounded && moveVelocity.y < 0) || floating) { // Grounded or floating - stop gravity
                 moveVelocity.y = 0;
@@ -104,6 +111,7 @@ public class PlayerController : MonoBehaviour {
 
             } else { // Gravity
                 moveVelocity.y -= (moveVelocity.y > 0 ? PlayerState.Settings.RisingGravity : PlayerState.Settings.FallingGravity) * Time.fixedDeltaTime;
+                jumpBufferFrameCount = Mathf.Clamp(jumpBufferFrameCount - 1, 0, PlayerState.Settings.JumpBuffer);
             }
             #endregion
 
@@ -133,6 +141,8 @@ public class PlayerController : MonoBehaviour {
         if(value.performed) {
             if(grounded || coyoteTimeActive || infiniteJumps)
                 flag_jump = true;
+            else
+                jumpBufferFrameCount = PlayerState.Settings.JumpBuffer;
         }
     }
 
@@ -225,6 +235,18 @@ public class PlayerController : MonoBehaviour {
     // -------------------------------------------------------------------------------------------
 
     #region Movement
+
+    /// <summary>
+    /// Applies air acceleration to given Vector3
+    /// </summary>
+    /// <param name="moveVelocity">Player's previous movement speed in the XZ plane, before acceleration</param>
+    /// <param name="accelDir">Direction player is attempting to accelerate in (input direction)</param>
+    /// <returns></returns>
+    private Vector3 ApplyAirAcceleration(Vector3 moveVelocity, Vector3 accelDir) {
+        moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * accelDir;
+        moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
+        return moveVelocity;
+    }
 
     private IEnumerator CoyoteTime() {
         coyoteTimeActive = true;
