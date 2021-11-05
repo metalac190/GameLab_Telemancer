@@ -13,6 +13,8 @@ namespace Mechanics.Bolt
         [SerializeField] private BoltController _boltPrefab = null;
         [SerializeField] private int _initialPoolSize = 3;
 
+        public bool ReturnAnimationToHold => _residueInteractable.DoesResidueReturnToHoldAnimation();
+
         private BoltData _boltData;
 
         public BoltData BoltData
