@@ -6,18 +6,15 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour {
 
-#pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
     private PlayerController pc;
 
     [SerializeField] private float sensitivity = 10;
 
     [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Transform viewBobber = null;
     [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
-
-#pragma warning restore 0649
 
     // -------------------------------------------------------------------------------------------
 
@@ -34,6 +31,18 @@ public class CameraController : MonoBehaviour {
 
     // -------------------------------------------------------------------------------------------
 
+    public float FOV {
+        get {
+            return mainCamera.fieldOfView;
+        }
+        set {
+            // TODO - convert from horizontal to vertical (copy Henry's script)
+            mainCamera.fieldOfView = value;
+        }
+    }
+
+    // -------------------------------------------------------------------------------------------
+
     public void MoveCamera(InputAction.CallbackContext value) {
         if(!pc.flag_cantAct) {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
@@ -46,10 +55,16 @@ public class CameraController : MonoBehaviour {
 
     public void UpdateSettings() {
         float newFov = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString());
-        mainCamera.fieldOfView = (newFov != 0) ? newFov : 60;
+        FOV = (newFov != 0) ? newFov : 60;
 
         float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
         sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
+    }
+
+    // -------------------------------------------------------------------------------------------
+
+    private IEnumerator ViewBobbing() {
+        throw new System.NotImplementedException();
     }
 
 }
