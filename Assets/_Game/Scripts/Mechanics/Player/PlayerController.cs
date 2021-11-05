@@ -114,7 +114,9 @@ public class PlayerController : MonoBehaviour {
 
             // Apply
             playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
-            controller.Move(moveVelocity * Time.fixedDeltaTime);
+            if (controller.enabled) {
+                controller.Move(moveVelocity * Time.fixedDeltaTime);
+            }
         }
     }
 
