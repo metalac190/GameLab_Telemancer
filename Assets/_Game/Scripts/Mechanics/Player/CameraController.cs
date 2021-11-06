@@ -1,23 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour {
 
-#pragma warning disable 0649 // Disable "Field is never assigned" warning for SerializeField
-
     private PlayerController pc;
 
-    [SerializeField] private Transform cameraHolder;
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private float maxLookDown = 25f;
-    [SerializeField] private float maxLookUp = 60f;
-    public float sensitivity = 1;
+    [SerializeField] private float sensitivity = 10;
+
+    [SerializeField] private Transform cameraHolder = null;
+    [SerializeField] private Transform viewBobber = null;
+    [SerializeField] private Camera mainCamera = null;
 
     private float xRotation; // Rotation around x-axis (vertical)
-
-#pragma warning restore 0649
 
     // -------------------------------------------------------------------------------------------
 
@@ -29,6 +26,19 @@ public class CameraController : MonoBehaviour {
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    // -------------------------------------------------------------------------------------------
+
+    public float FOV {
+        get {
+            return mainCamera.fieldOfView;
+        }
+        set {
+            // TODO - convert from horizontal to vertical (copy Henry's script)
+            mainCamera.fieldOfView = value;
+        }
     }
 
     // -------------------------------------------------------------------------------------------
@@ -38,17 +48,23 @@ public class CameraController : MonoBehaviour {
             Vector2 mouse = sensitivity * Time.deltaTime * value.ReadValue<Vector2>();
             transform.Rotate(Vector3.up * mouse.x);
 
-            xRotation = Mathf.Clamp(xRotation - mouse.y, -maxLookUp, maxLookDown);
+            xRotation = Mathf.Clamp(xRotation - mouse.y, -PlayerState.Settings.MaxLookUp, PlayerState.Settings.MaxLookDown);
             cameraHolder.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
     }
 
     public void UpdateSettings() {
         float newFov = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Fov.ToString());
-        mainCamera.fieldOfView = (newFov != 0) ? newFov : 60;
+        FOV = (newFov != 0) ? newFov : 60;
 
         float newSensitivity = PlayerPrefs.GetFloat(OptionSlider.PlayerPrefKey.Sensitivity.ToString());
         sensitivity = (newSensitivity != 0) ? newSensitivity : 10;
+    }
+
+    // -------------------------------------------------------------------------------------------
+
+    private IEnumerator ViewBobbing() {
+        throw new System.NotImplementedException();
     }
 
 }

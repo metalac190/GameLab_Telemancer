@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class MenuMusicTrigger : MonoBehaviour
 {
     [SerializeField] MusicEvent mainMenuMusic = null;
-    [SerializeField] Button continueButton;
-    [SerializeField] Button newGameButton;
+    [SerializeField] Button continueButton = null;
+    [SerializeField] Button newGameButton = null;
 
     void Start()
     {
@@ -21,14 +21,11 @@ public class MenuMusicTrigger : MonoBehaviour
         }
     }
 
-    // Add code after build index updated to check which level so 
-    // that you can potentially use a crossfade through Play() instead of Stop()
     void OnContinue()
     {
         mainMenuMusic.Stop();
     }
 
-    // Consider using play once build index updated as well
     void OnNewGame()
     {
         mainMenuMusic.Stop();

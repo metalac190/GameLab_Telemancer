@@ -117,9 +117,13 @@ namespace Mechanics.Player
 
         #region Player Animation Events
 
+        public void OnGamePaused()
+        {
+            _playerAnimator.ResetToIdle();
+        }
+
         public void OnAnimationPoint()
         {
-
         }
 
         public void OnAnimationSnap()
@@ -130,6 +134,12 @@ namespace Mechanics.Player
         #endregion
 
         #region Abilities
+
+        public void SetWatcherLock(bool locked)
+        {
+            _playerToHud.InWatcherRange(locked);
+            _playerSfx.InWatcherRange(locked);
+        }
 
         // Updates what abilities are currently unlocked for the player. Used for visuals / hud
         public void OnUpdateUnlockedAbilities(bool boltAbility, bool warpAbility, bool residueAbility)
@@ -304,14 +314,20 @@ namespace Mechanics.Player
             }
         }
 
-        public void OnResidueAction(AbilityActionEnum action)
+        public void OnResidueRelayAnimation()
+        {
+            if (_missingAnimator) return;
+            _playerAnimator.ReturnToHold();
+        }
+
+        public void OnResidueAction(AbilityActionEnum action, bool playAnimation)
         {
             if (_residueCooldown || _residueState == AbilityStateEnum.Disabled) return;
 
             _playerToHud.OnResidueAction(action);
 
             // TODO: Attempt can still fail, but animation will play anyways
-            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+            if (playAnimation && action == AbilityActionEnum.InputDetected && !_missingAnimator) {
                 _playerAnimator.OnUseResidue();
             }
 

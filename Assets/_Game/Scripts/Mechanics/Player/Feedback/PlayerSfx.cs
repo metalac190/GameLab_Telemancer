@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using AudioSystem;
 using UnityEngine;
 
@@ -15,6 +16,12 @@ public class PlayerSfx : MonoBehaviour
     [SerializeField] private SFXLoop _playerWalkingSound = null;
     private bool isWalking = false;
 
+    [Header("Walking Controls")]
+    [SerializeField] [MinMaxRange(0, 0.5f)] [Tooltip("The amount of time before the first footstep sound plays")]
+    private RangedFloat _firstFootstepDelay = new RangedFloat(0.1f, 0.15f);
+    [SerializeField] [MinMaxRange(0, 1)] [Tooltip("The random time interval between the *start* of footstep sounds")]
+    private RangedFloat _walkingSoundInterval = new RangedFloat(0.55f, 0.7f);
+
     private void Start()
     {
         UIEvents.current.OnPlayerDied += OnPlayerKilled;
@@ -22,8 +29,7 @@ public class PlayerSfx : MonoBehaviour
 
     public void OnPlayerKilled()
     {
-        if (_playerDeathSound != null)
-        {
+        if (_playerDeathSound != null) {
             _playerDeathSound.PlayOneShot(transform.position);
         }
     }
@@ -31,8 +37,7 @@ public class PlayerSfx : MonoBehaviour
     // Player jumped
     public void OnPlayerJump()
     {
-        if (_playerJumpSound != null)
-        {
+        if (_playerJumpSound != null) {
             _playerJumpSound.PlayOneShot(transform.position);
         }
     }
@@ -40,8 +45,7 @@ public class PlayerSfx : MonoBehaviour
     // Player hit ground
     public void OnPlayerLand()
     {
-        if (_playerLandSound != null)
-        {
+        if (_playerLandSound != null) {
             _playerLandSound.PlayOneShot(transform.position);
         }
     }
@@ -49,28 +53,55 @@ public class PlayerSfx : MonoBehaviour
     // Can be used for footsteps or slight wind noise when moving through air quickly
     public void SetPlayerMovementSpeed(Vector3 speed, bool grounded, bool walking)
     {
-        if(walking)
-        {
-            if (!isWalking)
-            {
+        if (walking) {
+            if (!isWalking) {
                 isWalking = true;
-                _playerWalkingSound.Play(transform.position);
+                StartCoroutine(WalkingSounds());
             }
-        }
-        else
-        {
+        } else {
             isWalking = false;
+        }
+    }
+
+    // Play footstep sounds at random intervals while walking
+    private IEnumerator WalkingSounds() {
+        // Delay first footstep sound
+        float waitTime = UnityEngine.Random.Range(_firstFootstepDelay.MinValue, _firstFootstepDelay.MaxValue);
+        for(float i = 0; i < waitTime; i += Time.deltaTime) {
+            if(!isWalking)
+                yield break;
+            yield return null;
+        }
+
+        // While walking, play a random footstep sound at a random interval
+        while(isWalking) {
+            _playerWalkingSound.Play(transform.position);
+
+            waitTime = UnityEngine.Random.Range(_walkingSoundInterval.MinValue, _walkingSoundInterval.MaxValue);
+            for(float i = 0; i < waitTime; i += Time.deltaTime) {
+                if(!isWalking)
+                    yield break;
+                yield return null;
+            }
         }
     }
 
     public void OnAnimationSnap()
     {
-        if (_playerSnapSound != null)
-        {
+        if (_playerSnapSound != null) {
             _playerSnapSound.PlayOneShot(transform.position);
         }
     }
-    
+
+    public void InWatcherRange(bool inRange)
+    {
+        if (inRange) {
+            // In sight of watcher
+        } else {
+            // No longer in sight of watcher
+        }
+    }
+
     public void OnBoltReady()
     {
     }

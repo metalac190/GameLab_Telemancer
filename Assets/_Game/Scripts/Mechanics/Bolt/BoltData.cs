@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Mechanics.Bolt
+﻿namespace Mechanics.Bolt
 {
     /// Summary:
     /// The Bolt Data struct that is used by the Bolt Controller
@@ -9,7 +7,6 @@ namespace Mechanics.Bolt
     public struct BoltData
     {
         public bool Valid;
-        public BoltController WarpBolt => BoltManager.GetBolt;
         public BoltManager BoltManager;
         public PlayerController PlayerController;
 
