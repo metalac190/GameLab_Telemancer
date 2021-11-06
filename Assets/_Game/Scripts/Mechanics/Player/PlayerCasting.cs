@@ -55,8 +55,8 @@ namespace Mechanics.Player
             set
             {
                 if (value) {
-                    _boltManager.OnGamePaused();
-                    _playerFeedback.OnGamePaused();
+                    //_boltManager.OnGamePaused();
+                    //_playerFeedback.OnGamePaused();
                     if (_castRoutine != null) {
                         StopCoroutine(_castRoutine);
                     }

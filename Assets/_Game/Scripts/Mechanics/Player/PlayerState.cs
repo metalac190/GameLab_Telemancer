@@ -30,11 +30,13 @@ namespace Mechanics.Player
         private bool _warpAbility;
         private bool _residueAbility;
 
-        private bool _locked = false;
+        private bool _locked;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
-        private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
+        private bool FlagCantAct() => _locked || (_isAlive && _isPaused);
+
+        #region Unity Functions
 
         private void OnValidate()
         {
@@ -50,12 +52,14 @@ namespace Mechanics.Player
         {
             _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
-            UIEvents.current.OnPauseGame += GamePaused;
+            UIEvents.current.OnPauseGame += OnGamePaused;
             _boltAbility = _unlockedBolt;
             _warpAbility = _unlockedWarp;
             _residueAbility = _unlockedResidue;
             UpdateUnlocks();
         }
+
+        #endregion
 
         public void SetWatcherLocks(bool boltLocked, bool warpLocked, bool residueLocked)
         {
@@ -88,10 +92,9 @@ namespace Mechanics.Player
             _playerController.flag_cantAct = FlagCantAct();
         }
 
-        public void GamePaused(bool paused)
+        public void OnGamePaused(bool paused)
         {
-            // TODO: (It works) But why is it !paused?
-            _isPaused = !paused;
+            _isPaused = paused;
             _castingController.FlagCantAct = FlagCantAct();
             _playerController.flag_cantAct = FlagCantAct();
         }
@@ -130,6 +133,8 @@ namespace Mechanics.Player
         {
             OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
         }
+
+        #region Null Checks
 
         private void NullCheck()
         {
@@ -170,5 +175,7 @@ namespace Mechanics.Player
                 }
             }
         }
+
+        #endregion
     }
 }
