@@ -19,7 +19,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private int loadingScreenID = 1;
     private int nextlevelID;
 
-    enum unlockEnum { WarpBolt, Residue, None }
+    enum unlockEnum { WarpBolt, Residue, GameEnd, None }
 
     [SerializeField] private unlockEnum _scrollUnlock = unlockEnum.WarpBolt;
 
@@ -83,6 +83,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
             case unlockEnum.Residue:
                 UIEvents.current.UnlockResidueAbility(true);
                 UIEvents.current.AcquireResidueScroll();
+                break;
+            case unlockEnum.GameEnd:
+                UIEvents.current.AcquireGameEndScroll();
                 break;
         }
 

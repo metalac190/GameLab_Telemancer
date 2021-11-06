@@ -314,14 +314,20 @@ namespace Mechanics.Player
             }
         }
 
-        public void OnResidueAction(AbilityActionEnum action)
+        public void OnResidueRelayAnimation()
+        {
+            if (_missingAnimator) return;
+            _playerAnimator.ReturnToHold();
+        }
+
+        public void OnResidueAction(AbilityActionEnum action, bool playAnimation)
         {
             if (_residueCooldown || _residueState == AbilityStateEnum.Disabled) return;
 
             _playerToHud.OnResidueAction(action);
 
             // TODO: Attempt can still fail, but animation will play anyways
-            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+            if (playAnimation && action == AbilityActionEnum.InputDetected && !_missingAnimator) {
                 _playerAnimator.OnUseResidue();
             }
 
