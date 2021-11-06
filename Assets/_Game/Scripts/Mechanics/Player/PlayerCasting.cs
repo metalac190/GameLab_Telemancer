@@ -71,7 +71,6 @@ namespace Mechanics.Player
                 SetUnlocks(false, false, false);
             }
             if (!_missingWarpBolt) {
-                _boltManager.OnResidueReady += OnResidueReady;
                 _boltManager.OnBoltDissipate += OnBoltDissipate;
             }
             FlagCantAct = false;
@@ -83,7 +82,6 @@ namespace Mechanics.Player
                 _playerState.OnChangeUnlocks -= SetUnlocks;
             }
             if (!_missingWarpBolt) {
-                _boltManager.OnResidueReady -= OnResidueReady;
                 _boltManager.OnBoltDissipate -= OnBoltDissipate;
             }
         }
@@ -349,15 +347,13 @@ namespace Mechanics.Player
             _playerFeedback.OnUpdateUnlockedAbilities(bolt, warp, residue);
         }
 
-        private void OnResidueReady()
-        {
-            _playerFeedback.SetResidueState(AbilityStateEnum.Ready);
-        }
-
         private void OnBoltDissipate(bool residueReady)
         {
             _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
             _playerFeedback.OnBoltDissipate(residueReady);
+            if (residueReady) {
+                _playerFeedback.SetResidueState(AbilityStateEnum.Ready);
+            }
         }
 
         #endregion
