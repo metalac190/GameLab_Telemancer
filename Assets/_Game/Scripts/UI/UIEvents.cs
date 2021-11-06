@@ -153,6 +153,13 @@ public class UIEvents : MonoBehaviour
         OnAcquireResidueScroll?.Invoke();
     }
 
+    public event Action OnAcquireGameEndScroll;
+
+    public void AcquireGameEndScroll()
+    {
+        OnAcquireGameEndScroll?.Invoke();
+    }
+
     public event Action OnCloseScrollAcquiredScreen;
 
     public void CloseScrollAcquiredScreen()
@@ -242,8 +249,11 @@ public class UIEvents : MonoBehaviour
         Application.Quit();
     }
 
+    public event Action OnQuitToMenu;
+
     public void QuitToMenu()
     {
+        OnQuitToMenu?.Invoke();
         SceneManager.LoadScene(0);
     }
 
