@@ -162,7 +162,7 @@ namespace Mechanics.Player
                 if (_castingController == null) {
                     _castingController = GetComponent<PlayerCasting>();
                     if (_castingController == null) {
-                        Debug.LogError("No Player Casting component found on player");
+                        Debug.LogError("No Player Casting component found on player", gameObject);
                     }
                 }
             }
@@ -171,7 +171,7 @@ namespace Mechanics.Player
                 if (_playerFeedback == null) {
                     _playerFeedback = GetComponent<PlayerFeedback>();
                     if (_playerFeedback == null) {
-                        Debug.LogError("No Player Feedback component found on player");
+                        Debug.LogError("No Player Feedback component found on player", gameObject);
                     }
                 }
             }

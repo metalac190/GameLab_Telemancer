@@ -70,7 +70,7 @@ namespace Mechanics.Bolt
         {
             // No extra bolt controller should exist
             if (_manager == null && !_forceDontDestroy) {
-                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Debug.LogWarning("No Extra Bolts should exist in scene. Only Bolt Manager");
                 Destroy(gameObject);
             }
             IsAlive = gameObject.activeSelf;
@@ -238,7 +238,7 @@ namespace Mechanics.Bolt
 
             // Could not avoid collision
             _teleportOffset = Vector3.zero;
-            Debug.Log("Warp Failed: Not enough space in area");
+            Debug.Log("Warp should not be possible (Allowing player to warp anyways)" + transform.position, gameObject);
 
             // Always let the player teleport -- TODO: Can cause issues, but check ^ doesn't work always right now
             return false;

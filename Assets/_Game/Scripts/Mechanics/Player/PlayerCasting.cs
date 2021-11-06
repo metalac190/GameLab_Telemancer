@@ -201,7 +201,7 @@ namespace Mechanics.Player
             float airTime = _playerFeedback.GetAirTime();
             float airDistance = GetDistanceFromGround();
             if (airTime >= _delayCastAirTime && airDistance >= _delayCastAirDist) {
-                Debug.Log("Flying is not allowed");
+                Debug.Log("Flying is not allowed (Adds extra delay to warp to prevent flying)", gameObject);
                 AddWarpDelay(PlayerState.Settings.ExtraWarpTimeInAir);
             }
 

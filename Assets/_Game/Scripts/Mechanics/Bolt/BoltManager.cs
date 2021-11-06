@@ -35,7 +35,7 @@ namespace Mechanics.Bolt
                 if (!_boltData.Valid) {
                     _boltData = new BoltData(this, PlayerController);
                     if (!_boltData.Valid) {
-                        Debug.Log("Invalid data");
+                        Debug.LogError("Invalid Bolt Data on the Bolt Manager", gameObject);
                     }
                 }
                 return _boltData;
