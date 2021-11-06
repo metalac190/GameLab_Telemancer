@@ -120,7 +120,7 @@ public class HUD : MonoBehaviour
     {
         _respawnMenu.SetActive(isEnabled);
         _xhair.transform.parent.gameObject.SetActive(!isEnabled);
-        _debugSpellsPnl.SetActive(!isEnabled && _debugMode);
+        //_debugSpellsPnl.SetActive(!isEnabled && _debugMode);
 
         // Set timescale
         Time.timeScale = isEnabled ? 0f : 1f;
@@ -325,7 +325,7 @@ public class HUD : MonoBehaviour
                 _spellDescTxt.text =
                     "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
                 _spellIcon.gameObject.SetActive(true);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "RESIDUE":
@@ -334,7 +334,7 @@ public class HUD : MonoBehaviour
                     "Now when bolt hits certain objects, it covers that object in magical residue. " + 
                     "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
                 _spellIcon.gameObject.SetActive(true);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "GAME_END":
@@ -347,11 +347,11 @@ public class HUD : MonoBehaviour
                     "Our hidden words go out with you,\n" +
                     "Speak of our magic, teach it true.";
                 _spellIcon.gameObject.SetActive(false);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             default:
-                _debugSpellsPnl.SetActive(_debugMode);
+                //_debugSpellsPnl.SetActive(_debugMode);
                 _scrollAcquiredScreen.SetActive(false);
                 break;
         }
