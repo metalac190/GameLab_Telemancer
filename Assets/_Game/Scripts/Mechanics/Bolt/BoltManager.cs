@@ -211,9 +211,11 @@ namespace Mechanics.Bolt
 
         public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
         {
-            if (CurrentBolt == null) {
-                GetNewBolt();
+            if (CurrentBolt != null) {
+                CurrentBolt.Disable(true, false);
             }
+
+            GetNewBolt();
             CurrentBolt.Redirect(position, rotation, timer);
         }
 
