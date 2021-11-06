@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour {
             if(grounded) { // Ground movement
                 if(moveVelocity.magnitude > PlayerState.Settings.MoveSpeed) {
                     moveVelocity = inputToMovement * 
-                        Mathf.Max(moveVelocity.magnitude - (PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime), PlayerState.Settings.MoveSpeed);
+                        Mathf.Max(moveVelocity.magnitude - (PlayerState.Settings.AirAcceleration / 2 * Time.fixedDeltaTime), PlayerState.Settings.MoveSpeed);
                 } else
                     moveVelocity = inputToMovement * PlayerState.Settings.MoveSpeed;
             } else { // Air movement
@@ -245,9 +245,20 @@ public class PlayerController : MonoBehaviour {
     /// <param name="accelDir">Direction player is attempting to accelerate in (input direction)</param>
     /// <returns></returns>
     private Vector3 ApplyAirAcceleration(Vector3 moveVelocity, Vector3 accelDir) {
-        moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * accelDir;
+
+        float projection = Vector3.Dot(moveVelocity, accelDir);
+        float acceleration = PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime;
+
+        // Clamp
+        if(projection + acceleration > PlayerState.Settings.MoveSpeed) {
+            acceleration = PlayerState.Settings.MoveSpeed - projection;
+            acceleration *= Time.fixedDeltaTime * 2; // ???
+        }
+
+        return moveVelocity + (accelDir * acceleration);
+        /*moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * accelDir;
         moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
-        return moveVelocity;
+        return moveVelocity;*/
     }
 
     private IEnumerator CoyoteTime() {
