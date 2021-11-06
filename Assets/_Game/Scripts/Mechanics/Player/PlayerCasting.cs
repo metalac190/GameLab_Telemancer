@@ -140,7 +140,7 @@ namespace Mechanics.Player
 
             // Ensure that residue is not locked
             if (_lockResidue) {
-                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful);
+                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful, true);
                 return;
             }
 
@@ -232,7 +232,11 @@ namespace Mechanics.Player
                 return;
             }
 
-            _boltManager.PrepareToWarp();
+            bool ready = _boltManager.PrepareToWarp();
+            if (!ready) {
+                _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
+                return;
+            }
 
             _playerFeedback.OnWarpAction(AbilityActionEnum.InputDetected);
 
@@ -248,17 +252,13 @@ namespace Mechanics.Player
 
         private void OnWarp()
         {
-            if (_boltManager.OnWarp()) {
-                _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
-                _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
+            _boltManager.OnWarp();
+            _playerFeedback.OnWarpAction(AbilityActionEnum.Acted);
+            _playerFeedback.SetWarpState(AbilityStateEnum.Idle);
 
-                StartCoroutine(WarpTimer());
-                if (PlayerState.Settings.BoltCooldownOnWarp) {
-                    StartCoroutine(WarpToBoltTimer());
-                }
-            } else {
-                _playerFeedback.OnWarpAction(AbilityActionEnum.AttemptedUnsuccessful);
-                _lockWarp = false;
+            StartCoroutine(WarpTimer());
+            if (PlayerState.Settings.BoltCooldownOnWarp) {
+                StartCoroutine(WarpToBoltTimer());
             }
         }
 
@@ -293,11 +293,15 @@ namespace Mechanics.Player
         private void PrepareForResidue()
         {
             if (!_boltManager.ResidueReady) {
-                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful);
+                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful, true);
                 return;
             }
 
-            _playerFeedback.OnResidueAction(AbilityActionEnum.InputDetected);
+            if (_boltManager.ReturnAnimationToHold) {
+                _playerFeedback.OnResidueRelayAnimation();
+            } else {
+                _playerFeedback.OnResidueAction(AbilityActionEnum.InputDetected, true);
+            }
 
             StartCoroutine(Residue());
         }
@@ -312,12 +316,12 @@ namespace Mechanics.Player
         private void OnUseResidue()
         {
             if (_boltManager.OnActivateResidue()) {
-                _playerFeedback.OnResidueAction(AbilityActionEnum.Acted);
+                _playerFeedback.OnResidueAction(AbilityActionEnum.Acted, true);
                 _playerFeedback.SetResidueState(AbilityStateEnum.Idle);
 
                 StartCoroutine(ResidueTimer());
             } else {
-                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful);
+                _playerFeedback.OnResidueAction(AbilityActionEnum.AttemptedUnsuccessful, true);
                 _lockResidue = false;
             }
         }
