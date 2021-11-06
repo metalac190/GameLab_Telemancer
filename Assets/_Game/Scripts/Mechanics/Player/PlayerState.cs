@@ -127,6 +127,7 @@ namespace Mechanics.Player
 
             _playerController.flag_cantAct = FlagCantAct();
             _castingController.FlagCantAct = FlagCantAct();
+            _castingController.HardResetBoltAndAnimator();
         }
 
         private void UpdateUnlocks()

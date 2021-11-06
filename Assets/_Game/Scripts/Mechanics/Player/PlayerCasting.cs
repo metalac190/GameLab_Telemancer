@@ -124,6 +124,12 @@ namespace Mechanics.Player
 
         #endregion
 
+        public void HardResetBoltAndAnimator()
+        {
+            _boltManager.OnGamePaused();
+            _playerFeedback.OnGamePaused();
+        }
+
         // -------------------------------------------------------------------------------------------
 
         #region Bolt Casting
