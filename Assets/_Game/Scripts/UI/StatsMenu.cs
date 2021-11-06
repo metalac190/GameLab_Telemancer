@@ -15,6 +15,7 @@ public class StatsMenu : MonoBehaviour
 
     private int _framesPerSecond;
     private float _playerSpeed;
+    private Vector3 _playerVelocity;
     private float _currentTime;
     private Vector3 _playerPosition;
     private int _boltsFired;
@@ -64,9 +65,11 @@ public class StatsMenu : MonoBehaviour
             _currentTime += Time.deltaTime;
             DisplayTimer();
         }
-        
+
         // update speedometer
-        _speedometerValue.text = _player.velocity.magnitude.ToString("F2") + " ups";
+        _playerVelocity = _player.velocity;
+        _playerVelocity.y = 0;
+        _speedometerValue.text = _playerVelocity.magnitude.ToString("F2") + " ups";
         
         // update position
         _playerPosition = _player.transform.position;
