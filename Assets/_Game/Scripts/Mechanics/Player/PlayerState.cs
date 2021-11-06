@@ -34,7 +34,7 @@ namespace Mechanics.Player
         private bool _isAlive = true;
         private bool _isPaused = true;
 
-        private bool FlagCantAct() => _locked || (_isAlive && _isPaused);
+        private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
 
         #region Unity Functions
 
@@ -94,7 +94,7 @@ namespace Mechanics.Player
 
         public void OnGamePaused(bool paused)
         {
-            _isPaused = paused;
+            _isPaused = !paused;
             _castingController.FlagCantAct = FlagCantAct();
             _playerController.flag_cantAct = FlagCantAct();
         }
