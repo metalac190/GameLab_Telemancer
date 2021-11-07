@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class PlayerToHud : MonoBehaviour
@@ -17,7 +16,7 @@ public class PlayerToHud : MonoBehaviour
         _previousTarget = type;
     }
 
-    public void InWatcherRange(bool inRange) 
+    public void InWatcherRange(bool inRange)
     {
         UIEvents.current.PlayerWatched(inRange);
     }

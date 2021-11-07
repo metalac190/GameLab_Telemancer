@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Mechanics.Player;
-using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
 {
+    /// Summary:
+    /// The pool manager for bolts.
+    /// Called by player casting and is the middleman for the Bolt Controllers
+    /// Also controls residue
     public class BoltManager : MonoBehaviour
     {
         [SerializeField] private PlayerController _playerController;
@@ -14,6 +15,18 @@ namespace Mechanics.Bolt
         [SerializeField] private int _initialPoolSize = 3;
 
         private BoltData _boltData;
+        private IWarpInteractable _residueInteractable;
+        private bool _isCasting;
+
+        // Invoked when the bolt dissipates. True if residue is now ready
+        public event Action<bool> OnBoltDissipate = delegate { };
+
+        #region Properties
+
+        public BoltController CurrentBolt { get; private set; }
+        public bool CanWarp => CurrentBolt != null && _residueInteractable == null;
+        public bool ResidueReady => _residueInteractable != null;
+        public bool ReturnAnimationToHold => _residueInteractable.DoesResidueReturnToHoldAnimation();
 
         public BoltData BoltData
         {
@@ -22,7 +35,7 @@ namespace Mechanics.Bolt
                 if (!_boltData.Valid) {
                     _boltData = new BoltData(this, PlayerController);
                     if (!_boltData.Valid) {
-                        Debug.Log("Invalid data");
+                        Debug.LogError("Invalid Bolt Data on the Bolt Manager", gameObject);
                     }
                 }
                 return _boltData;
@@ -40,28 +53,17 @@ namespace Mechanics.Bolt
             }
         }
 
-        private bool _isCasting = false;
-        private IWarpInteractable _residueInteractable;
+        #endregion
 
-        public BoltController CurrentBolt => _currentBolt;
-        public bool CanWarp => _currentBolt != null;
-        public bool ResidueReady => _residueInteractable != null;
-        public event Action OnResidueReady = delegate { };
-        public event Action<bool> OnBoltDissipate = delegate { };
+        #region Unity Functions
 
-        #region Bolt Pool
-
-        private List<BoltController> _boltControllers = new List<BoltController>();
-        private BoltController _currentBolt;
-
-        public void OnEnable()
+        private void Awake()
         {
-            if (_boltPrefab == null) {
-                throw new MissingFieldException("Missing Bolt Prefab Reference on " + gameObject);
-            }
-            for (int i = _boltControllers.Count; i < _initialPoolSize; ++i) {
-                CreateNewBolt();
-            }
+            BuildInitialPool();
+        }
+
+        private void OnEnable()
+        {
             UIEvents.current.OnPlayerRespawn += OnPlayerRespawn;
         }
 
@@ -71,11 +73,30 @@ namespace Mechanics.Bolt
                 UIEvents.current.OnPlayerRespawn -= OnPlayerRespawn;
         }
 
+        #endregion
+
+        // -------------------------------------------------------------------------------------------
+
+        #region Bolt Pool
+
+        private List<BoltController> _boltControllers = new List<BoltController>();
+
+        private void BuildInitialPool()
+        {
+            if (_boltPrefab == null) {
+                throw new MissingFieldException("Missing Bolt Prefab Reference on " + gameObject);
+            }
+
+            for (int i = _boltControllers.Count; i < _initialPoolSize; ++i) {
+                CreateNewBolt();
+            }
+        }
+
         public void AddController(BoltController controller)
         {
             if (_boltControllers.Contains(controller)) {
-                if (_currentBolt == controller) {
-                    _currentBolt = null;
+                if (CurrentBolt == controller) {
+                    CurrentBolt = null;
                 }
                 return;
             }
@@ -85,16 +106,16 @@ namespace Mechanics.Bolt
 
         private void GetNewBolt()
         {
-            if (_currentBolt != null) {
-                _currentBolt.Dissipate(false);
-                _currentBolt = null;
+            if (CurrentBolt != null) {
+                CurrentBolt.Dissipate(false);
+                CurrentBolt = null;
             }
             if (_boltControllers.Count == 0) {
                 CreateNewBolt();
             }
             BoltController controller = _boltControllers[0];
             _boltControllers.Remove(controller);
-            _currentBolt = controller;
+            CurrentBolt = controller;
             controller.gameObject.SetActive(true);
         }
 
@@ -108,23 +129,29 @@ namespace Mechanics.Bolt
 
         #endregion
 
-        public void OnPlayerRespawn()
+        #region Game Wide
+
+        private void OnPlayerRespawn()
         {
-            if (_currentBolt != null) {
-                _currentBolt.Disable();
+            if (CurrentBolt != null) {
+                CurrentBolt.Disable();
             }
-            _currentBolt = null;
+            CurrentBolt = null;
             _isCasting = false;
             OnBoltDissipate?.Invoke(ResidueReady);
         }
 
         public void OnGamePaused()
         {
-            if (_currentBolt == null) return;
-            _currentBolt.Disable();
-            _currentBolt = null;
+            if (CurrentBolt == null) return;
+            CurrentBolt.Disable();
+            CurrentBolt = null;
             _isCasting = false;
         }
+
+        #endregion
+
+        // -------------------------------------------------------------------------------------------
 
         #region Residue
 
@@ -138,19 +165,17 @@ namespace Mechanics.Bolt
 
         #endregion
 
-
         #region Bolt To Manager
 
         public void SetResidue(IWarpInteractable interactable)
         {
             _residueInteractable = interactable;
-            OnResidueReady?.Invoke();
         }
 
-        public void DissipateBolt()
+        public void DissipateBolt(BoltController controller)
         {
-            if (_isCasting) return;
-            _currentBolt = null;
+            if (_isCasting || CurrentBolt != controller) return;
+            CurrentBolt = null;
             OnBoltDissipate?.Invoke(ResidueReady);
         }
 
@@ -162,46 +187,48 @@ namespace Mechanics.Bolt
         {
             GetNewBolt();
             _isCasting = true;
-            _currentBolt.PrepareToFire(position, forward, isResidue);
+            CurrentBolt.PrepareToFire(position, forward, isResidue);
         }
 
         public void SetPosition(Vector3 position, Vector3 forward)
         {
             if (!_isCasting) return;
-            _currentBolt.SetPosition(position, forward);
+            CurrentBolt.SetPosition(position, forward);
         }
 
         public void SetCastStatus(float size)
         {
             if (!_isCasting) return;
-            _currentBolt.SetCastStatus(size);
+            CurrentBolt.SetCastStatus(size);
         }
 
         public void Fire(Vector3 position, Vector3 forward)
         {
             if (!_isCasting) return;
-            _currentBolt.Fire(position, forward);
+            CurrentBolt.Fire(position, forward);
             _isCasting = false;
         }
 
         public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
         {
-            if (_currentBolt == null) {
-                GetNewBolt();
+            if (CurrentBolt != null) {
+                CurrentBolt.Disable(true, false);
             }
-            _currentBolt.Redirect(position, rotation, timer);
+
+            GetNewBolt();
+            CurrentBolt.Redirect(position, rotation, timer);
         }
 
-        public void PrepareToWarp()
+        public bool PrepareToWarp()
         {
-            if (_currentBolt == null) return;
-            _currentBolt.PrepareToWarp();
+            if (CurrentBolt == null || _residueInteractable != null) return false;
+            return CurrentBolt.PrepareToWarp();
         }
 
-        public bool OnWarp()
+        public void OnWarp()
         {
-            if (_currentBolt == null) return false;
-            return _currentBolt.OnWarp();
+            if (CurrentBolt == null) return;
+            CurrentBolt.OnWarp();
         }
 
         public void DisableResidue()
