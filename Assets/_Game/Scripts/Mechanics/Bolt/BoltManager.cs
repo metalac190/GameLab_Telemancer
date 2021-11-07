@@ -13,6 +13,8 @@ namespace Mechanics.Bolt
         [SerializeField] private BoltController _boltPrefab = null;
         [SerializeField] private int _initialPoolSize = 3;
 
+        public bool ReturnAnimationToHold => _residueInteractable.DoesResidueReturnToHoldAnimation();
+
         private BoltData _boltData;
 
         public BoltData BoltData
@@ -44,7 +46,7 @@ namespace Mechanics.Bolt
         private IWarpInteractable _residueInteractable;
 
         public BoltController CurrentBolt => _currentBolt;
-        public bool CanWarp => _currentBolt != null;
+        public bool CanWarp => _currentBolt != null && _residueInteractable == null;
         public bool ResidueReady => _residueInteractable != null;
         public event Action OnResidueReady = delegate { };
         public event Action<bool> OnBoltDissipate = delegate { };
@@ -192,16 +194,16 @@ namespace Mechanics.Bolt
             _currentBolt.Redirect(position, rotation, timer);
         }
 
-        public void PrepareToWarp()
+        public bool PrepareToWarp()
         {
-            if (_currentBolt == null) return;
-            _currentBolt.PrepareToWarp();
+            if (_currentBolt == null || _residueInteractable != null) return false;
+            return _currentBolt.PrepareToWarp();
         }
 
-        public bool OnWarp()
+        public void OnWarp()
         {
-            if (_currentBolt == null) return false;
-            return _currentBolt.OnWarp();
+            if (_currentBolt == null) return;
+            _currentBolt.OnWarp();
         }
 
         public void DisableResidue()

@@ -40,6 +40,11 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
     {
     }
 
+    public bool DoesResidueReturnToHoldAnimation()
+    {
+        return true;
+    }
+
 
     private void OnDrawGizmos()
     {

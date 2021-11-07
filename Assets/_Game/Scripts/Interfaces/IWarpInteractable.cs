@@ -19,4 +19,5 @@ public interface IWarpInteractable
 
     // Called when the Residue is canceled or deactivated
     void OnDisableWarpResidue();
+    bool DoesResidueReturnToHoldAnimation();
 }
