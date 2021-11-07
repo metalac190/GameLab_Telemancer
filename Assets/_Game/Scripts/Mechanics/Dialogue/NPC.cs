@@ -32,16 +32,19 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     void Update()
     {
-        if(runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted")
+        if (runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted") {
+            _animator.SetTalking(true);
             currentSpeaker = true;
-        else { currentSpeaker = false; }
+        } else {
+            _animator.SetTalking(false);
+            currentSpeaker = false;
+        }
     }
 
     public void OnInteract()
     {
         if (!runner.IsDialogueRunning)
         {
-            _animator.SetTalking(true);
             interactablePopup.SetActive(false);
             runner.onDialogueComplete.AddListener(DialogueCompleted);
 
