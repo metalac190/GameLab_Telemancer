@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Mechanics.Dialogue;
+using UnityEngine;
 using Yarn.Unity;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
+    [SerializeField] private TedAnimator _animator;
 
     public string characterName = "";
     public string talkToNode = "";
@@ -30,9 +32,13 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     void Update()
     {
-        if(runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted")
+        if (runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted") {
+            _animator.SetTalking(true);
             currentSpeaker = true;
-        else { currentSpeaker = false; }
+        } else {
+            _animator.SetTalking(false);
+            currentSpeaker = false;
+        }
     }
 
     public void OnInteract()
@@ -83,6 +89,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     public void DialogueCompleted()
     {
+        _animator.SetTalking(false);
         OnBeginHover();
         talkLimit++;
     }
