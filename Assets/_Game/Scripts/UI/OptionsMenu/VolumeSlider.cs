@@ -9,14 +9,15 @@ public class VolumeSlider : OptionSlider
      protected override void SetText(string s)
      {
         float percent = float.Parse(s) / 10f;
-          base.SetText(percent + "%");
+        base.SetText(percent + "%");
      }
 
     protected override void SetValue(int n)
     {
-        float temp = (float)n / 1000;
-        float volume = Mathf.Log10(temp) * 20; // Convert to dB
-        print("n is and db volume is: " + n + " " + volume);
+        float volume = -80;
+        if (n != 0)
+            volume = Mathf.Log10((float)n / 1000) * 20; // Convert to dB
+
         mixer.audioMixer.SetFloat(parameterName, volume);
         base.SetValue(n);
     }
