@@ -2,9 +2,9 @@
 
 public class SfxVolumeSlider : OptionSlider
 {
-    protected override void SaveValue(int n)
+    protected override void SaveValue(float n)
     {
-        PlayerPrefs.SetInt("SfxVolume", n);
+        PlayerPrefs.SetFloat("SfxVolume", n);
         // Play a funny sound effect
     }
 }
