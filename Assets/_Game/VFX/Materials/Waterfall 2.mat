@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: River 2
+  m_Name: Waterfall 2
   m_Shader: {fileID: -6465566751694194690, guid: 4c12c0efda11849449992a9059071dd2,
     type: 3}
-  m_ShaderKeywords: _BLENDMODE_ALPHA _ENABLE_FOG_ON_TRANSPARENT _SURFACE_TYPE_TRANSPARENT
+  m_ShaderKeywords: _BLENDMODE_ALPHA _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -121,8 +121,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_6F576F19: 1
-    - Vector1_8FA92966: 0
-    - Vector1_ECF2F190: 0.01
+    - Vector1_ECF2F190: 0.021
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -172,7 +171,7 @@ Material:
     - _EmissiveIntensity: 1
     - _EmissiveIntensityUnit: 0
     - _EnableBlendModePreserveSpecularLighting: 1
-    - _EnableFogOnTransparent: 1
+    - _EnableFogOnTransparent: 0
     - _EnableGeometricSpecularAA: 0
     - _EnergyConservingSpecularColor: 1
     - _HeightAmplitude: 0.02
@@ -244,18 +243,18 @@ Material:
     - _ZTestModeDistortion: 4
     - _ZTestTransparent: 4
     - _ZWrite: 0
-    - _depth: 0.01
-    - _depthStrength: 0.14
-    - _ior: 0.25
-    - _mainNormalTiling: 0.1
-    - _mainSpeed: 0.143
-    - _normalStrength: 1
+    - _depth: 1.1
+    - _depthStrength: 0.235
+    - _ior: 0.172
+    - _mainNormalTiling: 0.37
+    - _mainSpeed: 0.24
+    - _normalStrength: 0.318
     - _refractionStrength: 0
-    - _secondaryNormalTiling: -0.01
-    - _secondarySpeed: 0.034
+    - _secondaryNormalTiling: 0.11
+    - _secondarySpeed: 0.79
     - _smoothness: 0.981
     m_Colors:
-    - Vector3_D86D95EA: {r: 0, g: 0, b: 0, a: 0}
+    - Vector3_D86D95EA: {r: 90, g: 0, b: 180, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -272,10 +271,10 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - _deepWaterColor: {r: 0, g: 1, b: 0.16728637, a: 1}
+    - _deepWaterColor: {r: 0.14711612, g: 0.40676364, b: 0.5471698, a: 0.49019608}
     - _mainDirection: {r: -1, g: 0.125, b: 0, a: 0}
-    - _secondaryDir: {r: 0.86, g: -1, b: 0, a: 0}
-    - _shallowWaterColor: {r: 0.6509804, g: 0.35603043, b: 0.34117648, a: 0.7176471}
+    - _secondaryDir: {r: -1, g: 0, b: 0, a: 0}
+    - _shallowWaterColor: {r: 0.34082395, g: 0.54997444, b: 0.6509434, a: 0.5176471}
 --- !u!114 &448448799909569050
 MonoBehaviour:
   m_ObjectHideFlags: 11
