@@ -712,6 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 810caadd09c19ef47927859f8bd6381c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _debug: 0
   _playerFeedback: {fileID: 6895264153618991445}
 --- !u!1 &7118940373562341606
 GameObject:
@@ -757,7 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxDistFromGround: 200
-  _delayCastStartDist: 20
+  _delayCastStartDist: 5
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 4073664730457268207}
@@ -899,6 +900,7 @@ MonoBehaviour:
   _warpTrigger: snap_teleport
   _interactableTrigger: interact_hitInteractable
   _residueIdleTrigger: residue_idle
+  _relayInteract: relay_interact
   _boltDissipateTrigger: dissipate
 --- !u!1 &8165399778769351662
 GameObject:

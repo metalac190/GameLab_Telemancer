@@ -22,18 +22,22 @@ namespace Mechanics.Bolt
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
 
-        public Collider Collider => _collider;
+        private BoltManager _manager;
+
         private Vector3 _teleportOffset;
 
-        private bool _isResidue;
+        private bool _checkAlive = true;
         private float _timeAlive;
         private bool _stopMoving;
-        private bool _checkAlive = true;
+        private bool _isResidue;
 
         private Coroutine _redirectDelayRoutine;
         private Coroutine _dissipateRoutine;
 
-        private BoltManager _manager;
+        #region Properties
+
+        public bool IsAlive { get; private set; }
+        public Collider Collider => _collider;
 
         public BoltManager Manager
         {
@@ -53,9 +57,7 @@ namespace Mechanics.Bolt
             private set => _manager = value;
         }
 
-        public bool IsAlive { get; private set; }
-
-        // -------------------------------------------------------------------------------------------
+        #endregion
 
         #region Unity Functions
 
@@ -68,7 +70,7 @@ namespace Mechanics.Bolt
         {
             // No extra bolt controller should exist
             if (_manager == null && !_forceDontDestroy) {
-                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Debug.LogWarning("No Extra Bolts should exist in scene. Only Bolt Manager");
                 Destroy(gameObject);
             }
             IsAlive = gameObject.activeSelf;
@@ -107,8 +109,6 @@ namespace Mechanics.Bolt
             }
         }
 
-        #endregion
-
         private void OnDrawGizmos()
         {
             if (_debugWarpBox) {
@@ -116,6 +116,8 @@ namespace Mechanics.Bolt
                 Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
             }
         }
+
+        #endregion
 
         // -------------------------------------------------------------------------------------------
 
@@ -196,8 +198,6 @@ namespace Mechanics.Bolt
 
         #endregion
 
-        // -------------------------------------------------------------------------------------------
-
         #region Private Functions
 
         private bool WarpCollisionTesting()
@@ -238,8 +238,10 @@ namespace Mechanics.Bolt
 
             // Could not avoid collision
             _teleportOffset = Vector3.zero;
-            Debug.Log("Warp Failed: Not enough space in area");
-            return true;
+            Debug.Log("Warp should not be possible (Allowing player to warp anyways)" + transform.position, gameObject);
+
+            // Always let the player teleport -- TODO: Can cause issues, but check ^ doesn't work always right now
+            return false;
         }
 
         // Collision check for the warp bolt. Ignores triggers
@@ -322,7 +324,7 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable(false);
             for (float t = 0; t < disableTime; t += Time.deltaTime) {
                 yield return null;
@@ -346,7 +348,7 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable();
         }
 
