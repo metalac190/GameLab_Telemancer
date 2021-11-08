@@ -7,10 +7,21 @@ public class RelayStone : WarpResidueInteractable
 {
     [Header("Relay Stone")]
     [SerializeField] private RelayStone _relayPair = null;
+    public RelayStone RelayPair { get => _relayPair; }
     [SerializeField] private GameObject _boltSource = null;
+    public GameObject BoltSource { get => _boltSource; }
+
+    [Header("Wisps")]
+    [SerializeField] GameObject _wisp = null;
+    [SerializeField] private bool _wispActive = true;
 
     [Header("Debuging")]
     [SerializeField] private float _trajectoryRayGizmo = 5;
+
+    private void Start()
+    {
+        SetWisp();
+    }
 
     public override bool OnWarpBoltImpact(BoltData data)
     {
@@ -35,6 +46,15 @@ public class RelayStone : WarpResidueInteractable
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), currentBolt.Collider, true);
         yield return new WaitForSecondsRealtime(0.25f);
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), currentBolt.Collider, false);
+    }
+
+    private void SetWisp()
+    {
+        if(_wispActive)
+        {
+            _relayPair._wispActive = false;
+            _relayPair._wisp?.gameObject.SetActive(false);
+        }
     }
 
     private void OnDrawGizmos()
