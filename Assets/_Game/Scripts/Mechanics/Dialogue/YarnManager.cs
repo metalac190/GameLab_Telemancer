@@ -30,12 +30,12 @@ public class YarnManager : MonoBehaviour
                     tipRunner = runner;
             }
         }
-        // dialogueRunner = FindObjectOfType<DialogueRunner>();
+
         if (player == null)
             player = FindObjectOfType<PlayerState>();
 
         // Randomize Ted talks once
-        if (PlayerPrefs.GetString("TedTalks") != "")
+        if (PlayerPrefs.GetString("TedTalks") == "")
             RandomizeTedTalks();
     }
 
