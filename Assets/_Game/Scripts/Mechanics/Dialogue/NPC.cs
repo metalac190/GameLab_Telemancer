@@ -36,6 +36,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
             currentPopup = storyPopup;
         else
             currentPopup = interactablePopup;
+
+        currentPopup.SetActive(true);
     }
 
     void Update()
@@ -43,13 +45,27 @@ public class NPC : MonoBehaviour, IHoverInteractable
         if (runner.IsDialogueRunning)
         {
             if (dialogueUI.currentSpeaker == "Ted")
+            {
                 currentSpeaker = true;
-            else { currentSpeaker = false; }
+                _animator.SetTalking(true);
+            }
+            else
+            {
+                currentSpeaker = false;
+                _animator.SetTalking(false);
+            }
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
                 dialogueFinished = false;
+                _animator.SetTalking(false);
+            }
         }
-        else { currentSpeaker = false; }
+        else
+        {
+            currentSpeaker = false;
+            _animator.SetTalking(false);
+        }
     }
 
     public void OnInteract()
@@ -106,10 +122,11 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public void DialogueCompleted()
     {
         _animator.SetTalking(false);
-        if (hasStory)
+        if (hasStory && !storyFinished)
         {
-            hasStory = false;
             storyFinished = true;
+            currentPopup.SetActive(false);
+            currentPopup = interactablePopup;
         }
         else { talkLimit++; }
         dialogueFinished = true;
