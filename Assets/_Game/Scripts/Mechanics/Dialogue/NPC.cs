@@ -1,6 +1,7 @@
 ﻿using Mechanics.Dialogue;
 using UnityEngine;
 using Yarn.Unity;
+using UnityEngine.InputSystem;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
@@ -14,10 +15,9 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private string[] talks;
     private int talkLimit;
 
-    [Header("Optional")]
-    public GameObject interactablePopup;
-    bool hasStory = false, storyFinished = false;
-    public bool currentSpeaker = false;
+    public GameObject interactablePopup, storyPopup, currentPopup;
+    private bool hasStory = false, storyFinished = false, firstInteract = true;
+    public bool dialogueFinished = true, currentSpeaker = false;
 
     void Start()
     {
@@ -28,16 +28,43 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
+
+        if (characterName == "Ted")
+            hasStory = true;
+
+        if (hasStory)
+            currentPopup = storyPopup;
+        else
+            currentPopup = interactablePopup;
+
+        currentPopup.SetActive(true);
     }
 
     void Update()
     {
-        if (runner.IsDialogueRunning && dialogueUI.currentSpeaker == "Ted") {
-            _animator.SetTalking(true);
-            currentSpeaker = true;
-        } else {
-            _animator.SetTalking(false);
+        if (runner.IsDialogueRunning)
+        {
+            if (dialogueUI.currentSpeaker == "Ted")
+            {
+                currentSpeaker = true;
+                _animator.SetTalking(true);
+            }
+            else
+            {
+                currentSpeaker = false;
+                _animator.SetTalking(false);
+            }
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                dialogueFinished = false;
+                _animator.SetTalking(false);
+            }
+        }
+        else
+        {
             currentSpeaker = false;
+            _animator.SetTalking(false);
         }
     }
 
@@ -45,31 +72,36 @@ public class NPC : MonoBehaviour, IHoverInteractable
     {
         if (!runner.IsDialogueRunning)
         {
-            interactablePopup.SetActive(false);
-            runner.onDialogueComplete.AddListener(DialogueCompleted);
+            if (firstInteract)
+            {
+                firstInteract = false;
+                runner.onDialogueComplete.AddListener(DialogueCompleted);
+            }
+
+            currentPopup.SetActive(false);
 
             // If story beat, run dialogue at specified node
-            if (characterName == "Ted")
+            if (characterName == "Ted" && !storyFinished)
             {
                 hasStory = true;
                 runner.StartDialogue(talkToNode);
             }
             // Else kick off dialogue at random Ted Talk
-            else
+            else if (!hasStory || storyFinished)
                 runner.StartDialogue(RandomTedTalk());
+
         }
 
     }
     public void OnBeginHover()
     {
-        // Debug.Log("Begin Hover");
-        interactablePopup.SetActive(true);
+        currentPopup.SetActive(true);
     }
 
     public void OnEndHover()
     {
-        // Debug.Log("End Hover");
-        interactablePopup.SetActive(false);
+        if (!hasStory)
+            currentPopup.SetActive(false);
     }
 
     public string RandomTedTalk()
@@ -90,8 +122,15 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public void DialogueCompleted()
     {
         _animator.SetTalking(false);
+        if (hasStory && !storyFinished)
+        {
+            storyFinished = true;
+            currentPopup.SetActive(false);
+            currentPopup = interactablePopup;
+        }
+        else { talkLimit++; }
+        dialogueFinished = true;
         OnBeginHover();
-        talkLimit++;
     }
 
     public int GetNextTalk()
@@ -101,6 +140,12 @@ public class NPC : MonoBehaviour, IHoverInteractable
             PlayerPrefs.SetInt("TedTalkIndex", 0);
         else
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
+        return int.Parse(talks[index]);
+    }
+
+    public int GetCurrentTalk()
+    {
+        int index = PlayerPrefs.GetInt("TedTalkIndex");
         return int.Parse(talks[index]);
     }
 
