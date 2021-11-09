@@ -22,13 +22,13 @@ namespace AudioSystem
         [Space(15)]
         [SerializeField] LayerType layerType = LayerType.Additive;
         [Space(15)]
-        [SerializeField] AudioMixerGroup mixer;
+        [SerializeField] AudioMixerGroup mixer = null;
 
         public AudioClip[] MusicLayers => musicLayers;
         public LayerType LayerType => layerType;
         public AudioMixerGroup Mixer => mixer;
 
-        [Header("Temp Volume Control")]
+        [Header("Volume Control")]
         [Space(15)]
         [Range(0, 1)]
         [SerializeField]
@@ -36,7 +36,7 @@ namespace AudioSystem
 
         public float TempVolume => tempVolume;
 
-        [Header("Fade Times (WIP - Add ranges to these)")]
+        [Header("Fade Times (In Seconds)")]
         [Space(15)]
         [SerializeField] float initialFadeInTime = 0;
         [SerializeField] float crossfadeTime = 0;
@@ -55,6 +55,72 @@ namespace AudioSystem
             }
 
             MusicManager.Instance.PlayMusic(this, CrossfadeTime);
+        }
+
+        public void Stop()
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.StopMusic();
+        }
+
+        public void IncreaseLayerIndex(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.IncreaseLayerIndex(fadeTime);
+        }
+
+        public void DecreaseLayerIndex(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.DecreaseLayerIndex(fadeTime);
+        }
+
+        public void SetLayerIndex0(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(0, fadeTime);
+        }
+
+        public void SetLayerIndex1(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(1, fadeTime);
+        }
+
+        public void SetLayerIndex2(float fadeTime)
+        {
+            if (musicLayers == null)
+            {
+                Debug.LogWarning("MusicEvent.Stop(): No music clip specified!");
+                return;
+            }
+
+            MusicManager.Instance.SetLayerIndex(2, fadeTime);
         }
     }
 }

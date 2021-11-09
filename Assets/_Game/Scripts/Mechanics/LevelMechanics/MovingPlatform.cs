@@ -1,20 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 //[RequireComponent(typeof(Rigidbody))]
 public class MovingPlatform : LevelActivatable
 {
+    private enum _movementTypes { LINEAR, LOOP_LINEAR, LOOP_CIRCULAR};
     [Header("MovingPlatform")]
+    [SerializeField] private _movementTypes _movementType = _movementTypes.LOOP_LINEAR;
     [SerializeField] private List<Vector3> _path = new List<Vector3>(); // each point along the path the platform will follow. _points[0] should be it's starting position
     private int _currentTarget = 1;
     private int _pathListDirection = 1; // determines wether the platform is moving forwards or backwards through _points
 
+    private bool _isPlayerOnBoard = false;
+    private CharacterController _player = null;
+
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _delayTime = 2f; // how long the platform should pause at it's destination before moving again
     private float _delayStartTime;
-    private float _tolerance; 
+    private float _tolerance;
+    private Coroutine _moveToStartRoutine = null;
 
+    [Header("Audio")]
+    [SerializeField] private SFXOneShot _movingPlatformSound = null;
+
+    // ---------------------------------------------------------------------------------------------------
+    #region Events
     private void Start()
     {
         _tolerance = _moveSpeed * Time.fixedDeltaTime; // the distance moved in one fixed update
@@ -37,14 +49,30 @@ public class MovingPlatform : LevelActivatable
 
     protected override void OnActivate()
     {
-        // vfx & sfx?
+        if(_moveToStartRoutine != null)
+            StopCoroutine(_moveToStartRoutine);
+
+        _pathListDirection = 1;
+        if(_currentTarget != _path.Count - 1)
+            _currentTarget++;
+
+        _movingPlatformSound?.PlayOneShot(transform.position);
     }
 
     protected override void OnDeactivate()
     {
-        StartCoroutine(MoveToStart());
+        _moveToStartRoutine = StartCoroutine(MoveToStart());
     }
 
+    protected override void OnReset()
+    {
+        transform.position = _path[0];
+        _currentTarget = 1;
+        _pathListDirection = 1;
+    }
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+    #region Movement
     private void MovePlatform()
     {
         // get direction and distance to move
@@ -57,13 +85,36 @@ public class MovingPlatform : LevelActivatable
         else
         {
             // standard movement
-            transform.position += (_heading / _heading.magnitude) * _moveSpeed * Time.fixedDeltaTime;
+            Vector3 move = (_heading / _heading.magnitude) * _moveSpeed * Time.fixedDeltaTime;
+            transform.position += move;
+            if(_isPlayerOnBoard)
+            {
+                _player?.Move(move);
+                //Debug.Log("Moving Player: " + move);
+            }
+
             _delayStartTime = Time.time;
         }
     }
 
-    // after platform reaches it's target, get the next target, and wait if at either end of path
     private void UpdateTarget()
+    {
+        switch(_movementType)
+        {
+            case _movementTypes.LOOP_LINEAR:
+                UpdateTargetLoopLinear();
+                break;
+            case _movementTypes.LOOP_CIRCULAR:
+                UpdateTargetLoopCircular();
+                break;
+            case _movementTypes.LINEAR:
+                UpdateTargetLinear();
+                break;
+        }
+    }
+
+    // after platform reaches it's target, get the next target, and wait if at either end of path
+    private void UpdateTargetLoopLinear()
     {
         if (Time.time - _delayStartTime >= _delayTime) // wait for _delayTime to move targets
         {
@@ -82,31 +133,19 @@ public class MovingPlatform : LevelActivatable
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void UpdateTargetLoopCircular()
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Player"))
-        {
-            //if (other.transform.root != other.transform)
-            //other.transform.parent = transform;
-            other.transform.root.transform.parent = transform;
-        }
+        _currentTarget += _pathListDirection;
+        if (_currentTarget >= _path.Count)
+            _currentTarget = 0;
     }
 
-    private void OnTriggerExit(Collider other)
+    private void UpdateTargetLinear()
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
-                other.gameObject.layer != LayerMask.NameToLayer("Player"))
-        {
-            Transform exitingObj = other.gameObject.transform;
-            while(exitingObj.parent != transform)
-            {
-                exitingObj = exitingObj.parent;
-            }
-            exitingObj.parent = null;
-        }
+        if (_currentTarget >= _path.Count - 1)
+            return;
+        else
+            _currentTarget += _pathListDirection;
     }
 
     IEnumerator MoveToStart()
@@ -124,7 +163,7 @@ public class MovingPlatform : LevelActivatable
             }
             else
             {
-                UpdateTarget();
+                UpdateTargetLoopLinear();
             }
             yield return new WaitForFixedUpdate();
         }
@@ -132,16 +171,64 @@ public class MovingPlatform : LevelActivatable
         _pathListDirection = 1;
     }
 
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+    #region Triggers
+    //other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
+        {
+            //if (other.transform.root != other.transform)
+            //other.transform.parent = transform;
+            other.transform.parent = transform;
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player Trigger"))
+        {
+            _player = other.transform.root.GetComponent<CharacterController>();
+            _isPlayerOnBoard = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Warp Bolt") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Ground Detector") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player") &&
+                other.gameObject.layer != LayerMask.NameToLayer("Player Trigger"))
+        {
+            other.transform.parent = null;
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player Trigger"))
+        {
+            _isPlayerOnBoard = false;
+        }
+    }
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
+    #region Debug
+
     private void OnDrawGizmos()
     {
         if(_path.Count > 0)
         {
             Gizmos.DrawWireSphere(_path[0], 0.25f);
-            Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+            if(_movementType != _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawWireSphere(_path[_path.Count - 1], 0.25f);
+
             for (int i = 0; i < _path.Count - 1; i++)
             {
                 Gizmos.DrawLine(_path[i], _path[i + 1]);
             }
+
+            if (_movementType == _movementTypes.LOOP_CIRCULAR)
+                Gizmos.DrawLine(_path[0], _path[_path.Count - 1]);
         }
     }
+    #endregion
+    // ---------------------------------------------------------------------------------------------------
 }

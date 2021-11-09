@@ -2,53 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AudioSystem;
+using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class AudioTester : MonoBehaviour
 {
-    [SerializeField] MusicEvent songA;
-    [SerializeField] MusicEvent songB;
-    [SerializeField] MusicEvent songC;
+    [SerializeField] MusicEvent songA = null;
+    [SerializeField] MusicEvent songB = null;
+    [SerializeField] MusicEvent songC = null;
 
-    [SerializeField] SFXOneShot soundA;
-    [SerializeField] SFXLoop soundB;
+    [SerializeField] int decreaseMusicLayerTransitionTime = 0;
+    [SerializeField] int increaseMusicLayerTransitionTime = 0;
+    [SerializeField] int setMusicLayerNumber = 0;
+    [SerializeField] int setMusicLayerTransitionTime = 0;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             songA.Play();
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Keyboard.current.wKey.wasPressedThisFrame)
         {
             songB.Play();
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             songC.Play();
         }
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
         {
-            soundA.PlayOneShot(transform.position);
+            MusicManager.Instance.DecreaseLayerIndex(decreaseMusicLayerTransitionTime);
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
-            soundB.Play(transform.position);
+            MusicManager.Instance.IncreaseLayerIndex(increaseMusicLayerTransitionTime);
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Keyboard.current.aKey.wasPressedThisFrame)
         {
-            MusicManager.Instance.DecreaseLayerIndex(5);
+            MusicManager.Instance.StopMusic();
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Keyboard.current.dKey.wasPressedThisFrame)
         {
-            MusicManager.Instance.IncreaseLayerIndex(5);
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            MusicManager.Instance.StopMusic(1);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            MusicManager.Instance.SetLayerIndex(3, 5f);
+            MusicManager.Instance.SetLayerIndex(setMusicLayerNumber,
+                setMusicLayerTransitionTime);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Mechanics.WarpBolt;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Mechanics.Bolt;
 using UnityEngine;
 
 public class DelayStone : MonoBehaviour, IWarpInteractable
@@ -10,11 +10,12 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
 
     [Header("Debuging")]
     [SerializeField] private float _trajectoryRayGizmo = 5;
+
     public bool OnWarpBoltImpact(BoltData data)
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
-        data.WarpBolt.Redirect(transform.position + (transform.forward * 2), transform.rotation, _delayTime);
+        data.BoltManager.RedirectBolt(transform.position + (transform.forward * 2), transform.rotation, _delayTime);
         Debug.Log("bolt redirected");
 
         // Don't dissipate the warp bolt!
@@ -34,10 +35,15 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
     public void OnActivateWarpResidue(BoltData data)
     {
     }
+
     public void OnDisableWarpResidue()
     {
     }
 
+    public bool DoesResidueReturnToHoldAnimation()
+    {
+        return true;
+    }
 
 
     private void OnDrawGizmos()
