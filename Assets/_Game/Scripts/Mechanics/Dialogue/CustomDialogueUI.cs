@@ -168,6 +168,7 @@ namespace Yarn.Unity {
         /// <seealso cref="textSpeed"/>
         /// <seealso cref="onLineFinishDisplaying"/>
         public DialogueRunner.StringUnityEvent onSpeakerChange;
+        public string currentSpeaker;
 
         /// <summary>
         /// A <see cref="UnityEngine.Events.UnityEvent"/> that is called
@@ -337,7 +338,11 @@ namespace Yarn.Unity {
 
                 text = dialogue;
 
-                onSpeakerChange?.Invoke(name);
+                if(name != currentSpeaker)
+                {
+                    currentSpeaker = name;
+                    onSpeakerChange?.Invoke(name);
+                }
             }
 
             if (textSpeed > 0.0f) {

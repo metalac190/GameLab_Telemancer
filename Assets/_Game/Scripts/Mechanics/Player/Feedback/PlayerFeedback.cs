@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Mechanics.Player
 {
@@ -52,6 +51,8 @@ namespace Mechanics.Player
         private bool _isJumping;
         private bool _isPlayerGrounded;
 
+        private float _lastTimeOnGround;
+
         #region Crosshair
 
         /* Player Crosshair
@@ -78,6 +79,7 @@ namespace Mechanics.Player
             if (!_missingAnimator) {
                 _playerAnimator.OnJump();
             }
+            _lastTimeOnGround = Time.time;
         }
 
         // Player walked off a platform. No longer grounded
@@ -87,6 +89,7 @@ namespace Mechanics.Player
             if (!_missingAnimator) {
                 _playerAnimator.OnFall();
             }
+            _lastTimeOnGround = Time.time;
         }
 
         // Player was falling and hit ground
@@ -111,6 +114,12 @@ namespace Mechanics.Player
                     OnPlayerFall();
                 }
             }
+        }
+
+        public float GetAirTime()
+        {
+            if (_isPlayerGrounded) return 0;
+            return Time.time - _lastTimeOnGround;
         }
 
         #endregion
@@ -216,21 +225,19 @@ namespace Mechanics.Player
             }
         }
 
-        public void SetBoltCooldown(float cooldownDuration)
-        {
-            StartCoroutine(BoltCooldown(cooldownDuration));
-        }
-
-        private IEnumerator BoltCooldown(float duration)
+        public void StartBoltCooldown()
         {
             SetBoltState(AbilityStateEnum.Idle);
             _boltCooldown = true;
-            for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = t / duration;
-                _playerToHud.SetBoltCooldown(delta);
-                yield return null;
-            }
-            _playerToHud.SetBoltCooldown(1);
+        }
+
+        public void SetBoltCooldown(float cooldownDelta)
+        {
+            _playerToHud.SetBoltCooldown(cooldownDelta);
+        }
+
+        public void EndBoltCooldown()
+        {
             _boltCooldown = false;
             SetBoltState(AbilityStateEnum.Ready);
         }
@@ -277,22 +284,20 @@ namespace Mechanics.Player
             }
         }
 
-        public void SetWarpCooldown(float cooldownDuration)
-        {
-            StartCoroutine(WarpCooldown(cooldownDuration));
-        }
-
-        private IEnumerator WarpCooldown(float duration)
+        public void StartWarpCooldown()
         {
             _warpCooldown = true;
-            for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = t / duration;
-                _playerToHud.SetWarpCooldown(delta);
-                yield return null;
-            }
-            _playerToHud.SetWarpCooldown(1);
-            _warpCooldown = false;
+        }
+
+        public void SetWarpCooldown(float cooldownDelta)
+        {
+            _playerToHud.SetWarpCooldown(cooldownDelta);
+        }
+
+        public void EndWarpCooldown()
+        {
             _playerToHud.UpdateWarpState(_warpState);
+            _warpCooldown = false;
         }
 
         #endregion
@@ -314,14 +319,20 @@ namespace Mechanics.Player
             }
         }
 
-        public void OnResidueAction(AbilityActionEnum action)
+        public void OnResidueRelayAnimation()
+        {
+            if (_missingAnimator) return;
+            _playerAnimator.ReturnToHold();
+        }
+
+        public void OnResidueAction(AbilityActionEnum action, bool playAnimation)
         {
             if (_residueCooldown || _residueState == AbilityStateEnum.Disabled) return;
 
             _playerToHud.OnResidueAction(action);
 
             // TODO: Attempt can still fail, but animation will play anyways
-            if (action == AbilityActionEnum.InputDetected && !_missingAnimator) {
+            if (playAnimation && action == AbilityActionEnum.InputDetected && !_missingAnimator) {
                 _playerAnimator.OnUseResidue();
             }
 
@@ -331,20 +342,18 @@ namespace Mechanics.Player
             }
         }
 
-        public void SetResidueCooldown(float cooldownDuration)
-        {
-            StartCoroutine(ResidueCooldown(cooldownDuration));
-        }
-
-        private IEnumerator ResidueCooldown(float duration)
+        public void StartResidueCooldown()
         {
             _residueCooldown = true;
-            for (float t = 0; t < duration; t += Time.deltaTime) {
-                float delta = t / duration;
-                _playerToHud.SetResidueCooldown(delta);
-                yield return null;
-            }
-            _playerToHud.SetResidueCooldown(0);
+        }
+
+        public void SetResidueCooldown(float cooldownDelta)
+        {
+            _playerToHud.SetResidueCooldown(cooldownDelta);
+        }
+
+        public void EndResidueCooldown()
+        {
             _residueCooldown = false;
             _playerToHud.UpdateResidueState(_residueState);
         }

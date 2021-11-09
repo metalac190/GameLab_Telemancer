@@ -7,8 +7,9 @@ public class Door : LevelActivatable
 {
     [Header("Door")]
     [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _openY = 0;
+    [SerializeField] private float _openY = -5.1f;
     [SerializeField] private float _closedY = 0;
+    [SerializeField] private GameObject _door = null;
 
     [Header("Audio")]
     [SerializeField] private SFXOneShot _openDoorSound = null;
@@ -16,7 +17,7 @@ public class Door : LevelActivatable
 
     protected override void OnActivate()
     {
-        if (transform.localPosition.y != _openY)
+        if (_door.transform.localPosition.y != _openY)
         {
             StartCoroutine(MoveDoor(_openY, true));
             _openDoorSound?.PlayOneShot(transform.position);
@@ -25,7 +26,7 @@ public class Door : LevelActivatable
 
     protected override void OnDeactivate()
     {
-        if (transform.localPosition.y != _closedY)
+        if (_door.transform.localPosition.y != _closedY)
         {
             StartCoroutine(MoveDoor(_closedY, false));
             _closeDoorSound?.PlayOneShot(transform.position);
@@ -35,18 +36,18 @@ public class Door : LevelActivatable
     protected override void OnReset()
     {
         if(!IsCurrentlyActive)
-            transform.localPosition = new Vector3(transform.localPosition.x, _closedY, transform.localPosition.z);
+            _door.transform.localPosition = new Vector3(_door.transform.localPosition.x, _closedY, _door.transform.localPosition.z);
         else
-            transform.localPosition = new Vector3(transform.localPosition.x, _openY, transform.localPosition.z);
+            _door.transform.localPosition = new Vector3(_door.transform.localPosition.x, _openY, _door.transform.localPosition.z);
     }
 
     IEnumerator MoveDoor(float target, bool opening)
     {
         //Debug.Log("Opening Door");
-        while(opening == IsCurrentlyActive && transform.localPosition.y != target)
+        while(opening == IsCurrentlyActive && _door.transform.localPosition.y != target)
         {
-            float newPos = Mathf.Lerp(transform.localPosition.y, target, Time.fixedDeltaTime * _moveSpeed);
-            transform.localPosition = new Vector3(transform.localPosition.x, newPos, transform.localPosition.z);
+            float newPos = Mathf.Lerp(_door.transform.localPosition.y, target, Time.fixedDeltaTime * _moveSpeed);
+            _door.transform.localPosition = new Vector3(_door.transform.localPosition.x, newPos, _door.transform.localPosition.z);
             yield return new WaitForEndOfFrame();
         }
         //Debug.Log("Door open");
