@@ -142,11 +142,11 @@ namespace Mechanics.Bolt
 
         private void BuildImpactPool()
         {
-            if (_boltPrefab == null) {
+            if (_impactPrefab == null) {
                 throw new MissingFieldException("Missing Bolt Prefab Reference on " + gameObject);
             }
 
-            for (int i = _boltControllers.Count; i < _initialBoltPool; ++i) {
+            for (int i = _impactControllers.Count; i < _initialImpactPool; ++i) {
                 CreateNewImpact();
             }
         }

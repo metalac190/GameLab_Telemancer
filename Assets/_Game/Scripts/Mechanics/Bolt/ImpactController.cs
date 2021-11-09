@@ -6,8 +6,13 @@ namespace Mechanics.Bolt
 {
     public class ImpactController : MonoBehaviour
     {
+        [Header("High Quality")]
         [SerializeField] private VfxController _impactVfxPrefab = null;
+        [SerializeField] [Range(0.1f, 3f)] private float _timeForVfx = 1.5f;
+
+        [Header("Low Quality")]
         [SerializeField] private LowQualityCollisionParticles _lowQualityImpactPrefab = null;
+        [SerializeField] [Range(0.1f, 3f)] private float _timeForParticles = 1.5f;
 
         private VfxController _impactVfx;
         private LowQualityCollisionParticles _lowQualityImpact;
@@ -45,13 +50,14 @@ namespace Mechanics.Bolt
                 _impactVfx.transform.forward = normal;
 
                 _impactVfx.Play(hitInteractable);
+                StartCoroutine(AutoKill(_timeForVfx));
             } else {
                 _lowQualityImpact.transform.position = position;
                 _lowQualityImpact.transform.forward = normal;
 
                 _lowQualityImpact.Play(hitInteractable);
+                StartCoroutine(AutoKill(_timeForParticles));
             }
-            StartCoroutine(AutoKill(2));
         }
 
         private IEnumerator AutoKill(float timer)
