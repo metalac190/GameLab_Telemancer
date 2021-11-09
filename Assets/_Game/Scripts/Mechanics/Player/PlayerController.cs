@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour {
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
+    private Vector3 collisionHitNormal;
+
     // ---
 
     [Header("General Control")]
@@ -117,6 +119,13 @@ public class PlayerController : MonoBehaviour {
 
             // -----
 
+            // TODO - Slide off slopes
+            if(!grounded && moveVelocity.y <= 0.1f) {
+                moveVelocity = SlideOffSurface(moveVelocity, collisionHitNormal);
+            }
+
+            // -----
+
             // Is Walking
             walking = grounded && moveVelocity.magnitude > 0.5f;
 
@@ -126,6 +135,11 @@ public class PlayerController : MonoBehaviour {
                 controller.Move(moveVelocity * Time.fixedDeltaTime);
             }
         }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        collisionHitNormal = hit.normal;
+        //Debug.Log(hit.normal);
     }
 
     #endregion
@@ -259,6 +273,22 @@ public class PlayerController : MonoBehaviour {
         /*moveVelocity += PlayerState.Settings.AirAcceleration * Time.fixedDeltaTime * accelDir;
         moveVelocity = moveVelocity.normalized * Mathf.Clamp(moveVelocity.magnitude, 0, PlayerState.Settings.MoveSpeed);
         return moveVelocity;*/
+    }
+
+    /// <summary>
+    /// Returns a velocity that accounts for sliding the player down a slope
+    /// </summary>
+    /// <param name="moveVelocity">The players intended movement vector</param>
+    /// <param name="hitNormal">The hit normal of the player's collision</param>
+    /// <returns></returns>
+    private Vector3 SlideOffSurface(Vector3 moveVelocity, Vector3 hitNormal) {
+        Debug.Log("Sliding off a surface with normal " + hitNormal);
+
+        if(Vector3.Angle(Vector3.up, hitNormal) >= 70f) {
+
+            return moveVelocity; // TODO - adjust for slopes based on normal
+        }
+        return moveVelocity;
     }
 
     private IEnumerator CoyoteTime() {
