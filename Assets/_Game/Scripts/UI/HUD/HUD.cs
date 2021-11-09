@@ -104,6 +104,9 @@ public class HUD : MonoBehaviour
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
 
+        int showDebugHud = (int)PlayerPrefs.GetFloat("FpsCounter", 0f);
+        _debugMode = showDebugHud == 1;
+
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
         _scrollAcquiredScreen.SetActive(false);
