@@ -282,11 +282,12 @@ public class PlayerController : MonoBehaviour {
     /// <param name="hitNormal">The hit normal of the player's collision</param>
     /// <returns></returns>
     private Vector3 SlideOffSurface(Vector3 moveVelocity, Vector3 hitNormal) {
-        Debug.Log("Sliding off a surface with normal " + hitNormal);
-
-        if(Vector3.Angle(Vector3.up, hitNormal) >= 70f) {
-
-            return moveVelocity; // TODO - adjust for slopes based on normal
+        float angle = Vector3.Angle(Vector3.up, hitNormal);
+        if(55f <= angle && angle <= 90f) {
+            moveVelocity.x = (1 - hitNormal.y) * hitNormal.x * (1f - 0.2f);
+            moveVelocity.z = (1 - hitNormal.y) * hitNormal.z * (1f - 0.2f);
+            Debug.Log(string.Format("Sliding off surface with normal {0} and angle {1}", hitNormal, Vector3.Angle(Vector3.up, hitNormal)));
+            return moveVelocity;
         }
         return moveVelocity;
     }
