@@ -15,17 +15,24 @@ namespace Mechanics.Bolt.Effects
 
         private BoltVfxController _instantiatedObject;
         private BoltLowQualityEffect _lowQualityObject;
-        private float _lightIntensity = -1;
 
+        private float _lightIntensity = -1;
         private bool _useVfx;
+        private bool _missingVfx;
 
         private void OnEnable()
         {
             _useVfx = PlayerPrefs.GetFloat("SimplifiedVisuals") == 0;
-            if (_useVfx && _instantiatedObject == null && _boltPrefab != null) {
-                InstantiateVisualEffect();
+            if (_useVfx) {
+                if (_instantiatedObject == null && _boltPrefab != null) {
+                    InstantiateVisualEffect();
+                }
+                _missingVfx = _instantiatedObject == null;
             } else {
-                InstantiateParticles();
+                if (_lowQualityObject == null && _boltLowQuality != null) {
+                    InstantiateParticles();
+                }
+                _missingVfx = _lowQualityObject == null;
             }
         }
 

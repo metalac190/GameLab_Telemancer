@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Mechanics.Bolt.Effects
 {
@@ -17,15 +16,10 @@ namespace Mechanics.Bolt.Effects
             }
         }
 
-        public void AutoKill(float timer)
+        public void Stop()
         {
-            StartCoroutine(Kill(timer));
-        }
-
-        private IEnumerator Kill(float timer)
-        {
-            yield return new WaitForSecondsRealtime(timer);
-            Destroy(gameObject);
+            _successfulHit.Stop();
+            _failedHit.Stop();
         }
     }
 }

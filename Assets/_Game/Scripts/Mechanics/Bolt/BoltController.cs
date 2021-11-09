@@ -373,8 +373,9 @@ namespace Mechanics.Bolt
 
         private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
+            _manager.PlayImpact(position, normal, hitInteractable);
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position, normal, hitInteractable);
+                _feedback.OnBoltImpact(position);
             }
         }
 

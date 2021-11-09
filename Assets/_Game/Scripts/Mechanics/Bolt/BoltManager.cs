@@ -11,8 +11,14 @@ namespace Mechanics.Bolt
     public class BoltManager : MonoBehaviour
     {
         [SerializeField] private PlayerController _playerController;
+
+        [Header("Bolt")]
         [SerializeField] private BoltController _boltPrefab = null;
-        [SerializeField] private int _initialPoolSize = 3;
+        [SerializeField] private int _initialBoltPool = 3;
+
+        [Header("Impact")]
+        [SerializeField] private ImpactController _impactPrefab = null;
+        [SerializeField] private int _initialImpactPool = 3;
 
         private BoltData _boltData;
         private IWarpInteractable _residueInteractable;
@@ -59,7 +65,8 @@ namespace Mechanics.Bolt
 
         private void Awake()
         {
-            BuildInitialPool();
+            BuildBoltPool();
+            BuildImpactPool();
         }
 
         private void OnEnable()
@@ -81,13 +88,13 @@ namespace Mechanics.Bolt
 
         private List<BoltController> _boltControllers = new List<BoltController>();
 
-        private void BuildInitialPool()
+        private void BuildBoltPool()
         {
             if (_boltPrefab == null) {
                 throw new MissingFieldException("Missing Bolt Prefab Reference on " + gameObject);
             }
 
-            for (int i = _boltControllers.Count; i < _initialPoolSize; ++i) {
+            for (int i = _boltControllers.Count; i < _initialBoltPool; ++i) {
                 CreateNewBolt();
             }
         }
@@ -125,6 +132,51 @@ namespace Mechanics.Bolt
             BoltController newBolt = Instantiate(_boltPrefab, transform);
             newBolt.SetManager(this);
             AddController(newBolt);
+        }
+
+        #endregion
+
+        #region Impact Pool
+
+        private List<ImpactController> _impactControllers = new List<ImpactController>();
+
+        private void BuildImpactPool()
+        {
+            if (_boltPrefab == null) {
+                throw new MissingFieldException("Missing Bolt Prefab Reference on " + gameObject);
+            }
+
+            for (int i = _boltControllers.Count; i < _initialBoltPool; ++i) {
+                CreateNewImpact();
+            }
+        }
+
+        public void AddController(ImpactController controller)
+        {
+            if (_impactControllers.Contains(controller)) {
+                return;
+            }
+            _impactControllers.Add(controller);
+            controller.gameObject.SetActive(false);
+        }
+
+        private ImpactController GetNewImpact()
+        {
+            if (_impactControllers.Count == 0) {
+                CreateNewImpact();
+            }
+            ImpactController controller = _impactControllers[0];
+            _impactControllers.Remove(controller);
+            controller.gameObject.SetActive(true);
+            return controller;
+        }
+
+        private void CreateNewImpact()
+        {
+            if (_impactPrefab == null) return;
+            ImpactController newImpact = Instantiate(_impactPrefab, transform);
+            newImpact.SetManager(this);
+            AddController(newImpact);
         }
 
         #endregion
@@ -171,6 +223,12 @@ namespace Mechanics.Bolt
         #endregion
 
         #region Bolt To Manager
+
+        public void PlayImpact(Vector3 position, Vector3 normal, bool hitInteractable)
+        {
+            var controller = GetNewImpact();
+            controller.PlayImpact(position, normal, hitInteractable);
+        }
 
         public void SetResidue(IWarpInteractable interactable)
         {

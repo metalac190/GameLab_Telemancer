@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2698616413634711480
+--- !u!1 &7300642717996629813
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2698616413634711479}
-  - component: {fileID: 2698616413634711478}
+  - component: {fileID: 2094005827480780328}
+  - component: {fileID: 5590350368469005850}
   m_Layer: 0
-  m_Name: BoltManager
+  m_Name: ImpactController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2698616413634711479
+--- !u!4 &2094005827480780328
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2698616413634711480}
+  m_GameObject: {fileID: 7300642717996629813}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,22 +31,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2698616413634711478
+--- !u!114 &5590350368469005850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2698616413634711480}
+  m_GameObject: {fileID: 7300642717996629813}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e23592d2598821458b0ac4a88279335, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a1154d4948694349971ecb7b65efdf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 0}
-  _boltPrefab: {fileID: 3230216783552704634, guid: beb2bcfc2d9a74e40aa4e1e095c50a88,
+  _impactVfxPrefab: {fileID: 7133037124337845470, guid: e0aaac28d24401b43a763f24ee4cb7b9,
     type: 3}
-  _initialBoltPool: 3
-  _impactPrefab: {fileID: 5590350368469005850, guid: 8ffc7c35786f9c24e98661d615fed334,
+  _lowQualityImpactPrefab: {fileID: 3845171365673506260, guid: 7ad27bb5da83f8d48b16ae707bc85b35,
     type: 3}
-  _initialImpactPool: 3
