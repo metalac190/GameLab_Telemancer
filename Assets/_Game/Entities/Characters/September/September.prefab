@@ -712,6 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 810caadd09c19ef47927859f8bd6381c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _debug: 0
   _playerFeedback: {fileID: 6895264153618991445}
 --- !u!1 &7118940373562341606
 GameObject:
@@ -757,7 +758,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxDistFromGround: 200
-  _delayCastStartDist: 20
+  _delayCastAirDist: 5
+  _delayCastAirTime: 1.25
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 4073664730457268207}
@@ -899,6 +901,7 @@ MonoBehaviour:
   _warpTrigger: snap_teleport
   _interactableTrigger: interact_hitInteractable
   _residueIdleTrigger: residue_idle
+  _relayInteract: relay_interact
   _boltDissipateTrigger: dissipate
 --- !u!1 &8165399778769351662
 GameObject:
@@ -963,8 +966,8 @@ MonoBehaviour:
   _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
   _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
     type: 2}
-  _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
-  _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
+  _playerJumpSound: {fileID: 11400000, guid: bf7fa1cd843f5ce418100f0ddd9d1ef8, type: 2}
+  _playerLandSound: {fileID: 11400000, guid: e388aa0f3ff757c46a7fe3a5695ca10e, type: 2}
   _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
   _playerSnapSound: {fileID: 11400000, guid: e8b7d380162035341993be3ec5b65a6d, type: 2}
   _playerWalkingSound: {fileID: 11400000, guid: 7b61c8d6861c44a47ab9523cc9355a2e,
