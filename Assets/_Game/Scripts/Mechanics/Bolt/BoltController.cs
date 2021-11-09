@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Mechanics.Player;
-using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -13,7 +12,6 @@ namespace Mechanics.Bolt
     {
         [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
-        [SerializeField] private float _collisionCheckDistance = 1;
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
         [SerializeField] private bool _debugWarpBox = false;
@@ -27,7 +25,6 @@ namespace Mechanics.Bolt
         private BoltManager _manager;
 
         private Vector3 _teleportOffset;
-        private Vector3 _prevPosition;
 
         private bool _checkAlive = true;
         private float _timeAlive;
@@ -90,9 +87,7 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving) return;
 
-            _prevPosition = transform.position;
             MoveBolt();
-            CollisionCheck();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -101,7 +96,17 @@ namespace Mechanics.Bolt
 
             var contact = other.GetContact(0);
 
-            Collide(other.gameObject, contact.point, contact.normal);
+            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
+            if (interactable != null) {
+                if (_isResidue) {
+                    SetResidue(interactable, contact.point, contact.normal);
+                } else {
+                    WarpInteract(interactable, contact.point, contact.normal);
+                }
+            } else {
+                Dissipate(true);
+                PlayCollisionParticles(contact.point, contact.normal, false);
+            }
         }
 
         private void OnDrawGizmos()
@@ -195,21 +200,6 @@ namespace Mechanics.Bolt
 
         #region Private Functions
 
-        private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
-        {
-            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
-            if (interactable != null) {
-                if (_isResidue) {
-                    SetResidue(interactable, collisionPoint, collisionNormal);
-                } else {
-                    WarpInteract(interactable, collisionPoint, collisionNormal);
-                }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(collisionPoint, collisionNormal, false);
-            }
-        }
-
         private bool WarpCollisionTesting()
         {
             // Ensure that warp bolt position is not out of bounds and space is large enough for player
@@ -302,15 +292,6 @@ namespace Mechanics.Bolt
             if (_missingRigidbody) return;
 
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
-        }
-
-        private void CollisionCheck()
-        {
-            Vector3 direction = (_prevPosition - _rb.position).normalized * _collisionCheckDistance;
-            Ray ray = new Ray(transform.position - direction, direction);
-            Physics.Raycast(ray, out var hit, _collisionCheckDistance, _collisionMask, QueryTriggerInteraction.Ignore);
-            if (hit.collider == null) return;
-            Collide(hit.collider.gameObject, hit.point, hit.normal);
         }
 
         private void CheckLifetime()
