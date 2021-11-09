@@ -106,7 +106,6 @@ namespace Mechanics.Bolt.Effects
         private void InstantiateParticles()
         {
             _useVfx = false;
-            if (_boltLowQuality == null) return;
             if (_boltLowQuality.gameObject.activeInHierarchy) {
                 _lowQualityObject = _boltLowQuality;
                 return;

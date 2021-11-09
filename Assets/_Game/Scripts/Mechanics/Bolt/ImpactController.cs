@@ -26,12 +26,12 @@ namespace Mechanics.Bolt
             _useVfx = PlayerPrefs.GetFloat("SimplifiedVisuals") == 0;
             if (_useVfx) {
                 if (_impactVfx == null && _impactVfxPrefab != null) {
-                    _impactVfx = Instantiate(_impactVfxPrefab);
+                    _impactVfx = Instantiate(_impactVfxPrefab, transform);
                 }
                 _missingVfx = _impactVfx == null;
             } else {
                 if (_lowQualityImpact == null && _lowQualityImpactPrefab != null) {
-                    _lowQualityImpact = Instantiate(_lowQualityImpactPrefab);
+                    _lowQualityImpact = Instantiate(_lowQualityImpactPrefab, transform);
                 }
                 _missingVfx = _lowQualityImpact == null;
             }
