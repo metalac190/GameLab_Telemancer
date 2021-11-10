@@ -19,8 +19,18 @@ namespace Mechanics.Bolt
 
         [Header("VFX on Impact")]
         [SerializeField] private VfxController _boltImpactVfx = null;
+        [SerializeField] private LowQualityCollisionParticles _lowQualityImpact = null;
 
-        private bool _overrideBoltLife = false;
+        private bool _overrideBoltLife;
+        private bool _useVfx;
+
+        private void OnEnable()
+        {
+            _useVfx = PlayerPrefs.GetFloat("SimplifiedVisuals") == 0;
+            if (_useVfx && _boltImpactVfx == null) {
+                _useVfx = false;
+            }
+        }
 
         public void SetBoltCastDelta(float delta)
         {
@@ -61,9 +71,17 @@ namespace Mechanics.Bolt
         {
             // TODO: Remove nasty instantiation -- reuse objects in some way
 
-            if (_boltImpactVfx != null) {
-                VfxController controller = Instantiate(_boltImpactVfx);
+            if (_useVfx) {
+                var controller = Instantiate(_boltImpactVfx);
                 // Play particles at collision normal
+                controller.transform.position = position;
+                controller.transform.forward = normal;
+
+                controller.Play(interactable);
+
+                controller.AutoKill(2);
+            } else if (_lowQualityImpact != null) {
+                var controller = Instantiate(_lowQualityImpact);
                 controller.transform.position = position;
                 controller.transform.forward = normal;
 
