@@ -27,6 +27,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Color _xhairColorWarp = new Color(0.6352941f, 0.7490196f, 0.9411765f, 1f);
     [SerializeField] private Color _xhairColorInteract = Color.green;
     private Color _xhairColorNormal = Color.white;
+    [SerializeField] private float _spottedXhairOpacity = 0.1f;
 
     [Header("Respawn Menu")]
     [SerializeField] private GameObject _respawnMenu = null;
@@ -97,12 +98,20 @@ public class HUD : MonoBehaviour
         
         // watched listener
         UIEvents.current.OnPlayerWatched += DisplayWatcherIndicator;
+        UIEvents.current.OnPlayerWatched += b =>
+        {
+            //ChangeXhairColor(InteractableEnums.Null);
+            UIEvents.current.ChangeXhairColor(InteractableEnums.Null);
+        };
     }
 
     private void Start()
     {
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
+
+        int showDebugHud = (int)PlayerPrefs.GetFloat("FpsCounter", 0f);
+        _debugMode = showDebugHud == 1;
 
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
@@ -120,7 +129,7 @@ public class HUD : MonoBehaviour
     {
         _respawnMenu.SetActive(isEnabled);
         _xhair.transform.parent.gameObject.SetActive(!isEnabled);
-        _debugSpellsPnl.SetActive(!isEnabled && _debugMode);
+        //_debugSpellsPnl.SetActive(!isEnabled && _debugMode);
 
         // Set timescale
         Time.timeScale = isEnabled ? 0f : 1f;
@@ -285,14 +294,26 @@ public class HUD : MonoBehaviour
         // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
         switch (target) {
             case InteractableEnums.WarpInteractable:
-                _xhair.color = _xhairColorWarp;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorWarp.r, _xhairColorWarp.g, _xhairColorWarp.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorWarp;
                 break;
             case InteractableEnums.PlayerInteractable:
-                _xhair.color = _xhairColorInteract;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorInteract.r, _xhairColorInteract.g, _xhairColorInteract.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorInteract;
                 break;
             case InteractableEnums.Object:
             case InteractableEnums.Null:
-                _xhair.color = _xhairColorNormal;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorNormal.r, _xhairColorNormal.g, _xhairColorNormal.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorNormal;
                 break;
         }
     }
@@ -325,7 +346,7 @@ public class HUD : MonoBehaviour
                 _spellDescTxt.text =
                     "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
                 _spellIcon.gameObject.SetActive(true);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "RESIDUE":
@@ -334,7 +355,7 @@ public class HUD : MonoBehaviour
                     "Now when bolt hits certain objects, it covers that object in magical residue. " + 
                     "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
                 _spellIcon.gameObject.SetActive(true);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "GAME_END":
@@ -347,11 +368,11 @@ public class HUD : MonoBehaviour
                     "Our hidden words go out with you,\n" +
                     "Speak of our magic, teach it true.";
                 _spellIcon.gameObject.SetActive(false);
-                _debugSpellsPnl.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             default:
-                _debugSpellsPnl.SetActive(_debugMode);
+                //_debugSpellsPnl.SetActive(_debugMode);
                 _scrollAcquiredScreen.SetActive(false);
                 break;
         }

@@ -24,15 +24,15 @@ public class GameSettingsData : ScriptableObject
     private float _floatTime = 0f;
 
     [Header("Teleport")]
-    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount of time the player takes to teleport (incluldes lerping)")]
+    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount of time the player takes to teleport (includes lerping)")]
     private float _teleportTime = 0.1f;
     [SerializeField] [Range(0, 90)] [Tooltip("The amount the FOV should increase while teleporting")]
-    private int _teleportFovIncrease = 30;
+    private int _teleportFovIncrease = 0;
     [SerializeField] [Range(0, 1)] [Tooltip("The normalized time at which the FOV reaches its max during the teleport, before going back to normal")]
-    private float _teleportFovMaxPoint = 0.66f;
+    private float _teleportFovMaxPoint = 1;
 
     [Header("Camera Settings")]
-    [SerializeField] [Range(0, 50)] [Tooltip("0-90 degree lock on the players ability to look down")]
+    [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look down")]
     private float _maxLookDown = 90f;
     [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look up")]
     private float _maxLookUp = 90f;
@@ -72,10 +72,10 @@ public class GameSettingsData : ScriptableObject
     private float _timeToNextResidue = 1.5f;
     [SerializeField] [Tooltip("Enable to set additional cooldown on the bolt casting after the player warps")]
     private bool _boltCooldownOnWarp = true;
-    [SerializeField] [Range(0, 10)] [Tooltip("After warping, a cooldown that limits when the player can cast another bolt")]
-    private float _warpTimeToNextBolt = 0.5f;
-    [SerializeField] [Range(0, 1)] [Tooltip("Additional bolt cooldown (adds to 'Warp Time To Next Bolt') additively when the player is high in the air")]
-    private float _additiveTimePerHeight = 0.1f;
+    [SerializeField] [Range(0, 10)] [Tooltip("An extra cooldown on the bolt ability applied after the player warps")]
+    private float _boltTimeAfterWarp = 0.5f;
+    [SerializeField] [Range(0, 10)] [Tooltip("An extra cooldown on the warp ability applied after casting in mid-air - to prevent flying")]
+    private float _extraWarpTimeInAir = 2f;
 
     [Header("Action Settings")]
     [SerializeField] [Tooltip("Enable to clear residue from the world when another bolt is casted")]
@@ -133,8 +133,8 @@ public class GameSettingsData : ScriptableObject
     public float TimeToNextWarp => _timeToNextWarp;
     public float TimeToNextResidue => _timeToNextResidue;
     public bool BoltCooldownOnWarp => _boltCooldownOnWarp;
-    public float WarpTimeToNextBolt => _warpTimeToNextBolt;
-    public float AdditiveTimePerHeight => _additiveTimePerHeight;
+    public float BoltTimeAfterWarp => _boltTimeAfterWarp;
+    public float ExtraWarpTimeInAir => _extraWarpTimeInAir;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
     public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
