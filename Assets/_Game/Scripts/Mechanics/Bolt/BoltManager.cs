@@ -143,9 +143,14 @@ namespace Mechanics.Bolt
 
         public void OnGamePaused()
         {
-            if (CurrentBolt == null) return;
-            CurrentBolt.Disable();
-            CurrentBolt = null;
+            if (CurrentBolt != null) {
+                CurrentBolt.Disable();
+                CurrentBolt = null;
+            }
+            if (_residueInteractable != null) {
+                _residueInteractable.OnDisableWarpResidue();
+                _residueInteractable = null;
+            }
             _isCasting = false;
         }
 
