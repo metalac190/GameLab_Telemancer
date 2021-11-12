@@ -32,7 +32,7 @@ MonoBehaviour:
   _maxInteractDistance: 5
   _lookAtMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 32769
   _delayBolt: 0.05
   _delayWarp: 0.05
   _delayResidue: 0.05
@@ -41,8 +41,8 @@ MonoBehaviour:
   _timeToNextWarp: 1
   _timeToNextResidue: 1.5
   _boltCooldownOnWarp: 1
-  _warpTimeToNextBolt: 1
-  _extraWarpDelay: 2
+  _boltTimeAfterWarp: 0.5
+  _extraWarpTimeInAir: 2
   _clearResidueOnFire: 1
   _boltMoveSpeed: 0.32
   _boltLifeSpan: 1.25
