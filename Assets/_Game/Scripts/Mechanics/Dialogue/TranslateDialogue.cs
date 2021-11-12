@@ -46,6 +46,7 @@ public class TranslateDialogue : MonoBehaviour, IPlayerInteractable
     {
         StartCoroutine(Dissolve(fadeTime));
         StartCoroutine(Undissolve(fadeTime, waitTime));
+        GetComponent<Collider>().enabled = false;
         triggered = true;
     }
 

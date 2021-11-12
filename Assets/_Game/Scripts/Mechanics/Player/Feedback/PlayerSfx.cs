@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using AudioSystem;
 using UnityEngine;
 
@@ -64,22 +63,23 @@ public class PlayerSfx : MonoBehaviour
     }
 
     // Play footstep sounds at random intervals while walking
-    private IEnumerator WalkingSounds() {
+    private IEnumerator WalkingSounds()
+    {
         // Delay first footstep sound
         float waitTime = UnityEngine.Random.Range(_firstFootstepDelay.MinValue, _firstFootstepDelay.MaxValue);
-        for(float i = 0; i < waitTime; i += Time.deltaTime) {
-            if(!isWalking)
+        for (float i = 0; i < waitTime; i += Time.deltaTime) {
+            if (!isWalking)
                 yield break;
             yield return null;
         }
 
         // While walking, play a random footstep sound at a random interval
-        while(isWalking) {
+        while (isWalking) {
             _playerWalkingSound.Play(transform.position);
 
             waitTime = UnityEngine.Random.Range(_walkingSoundInterval.MinValue, _walkingSoundInterval.MaxValue);
-            for(float i = 0; i < waitTime; i += Time.deltaTime) {
-                if(!isWalking)
+            for (float i = 0; i < waitTime; i += Time.deltaTime) {
+                if (!isWalking)
                     yield break;
                 yield return null;
             }

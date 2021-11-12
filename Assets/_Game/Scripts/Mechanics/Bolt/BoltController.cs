@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Mechanics.Player;
+using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -12,6 +13,7 @@ namespace Mechanics.Bolt
     {
         [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
+        [SerializeField] private float _collisionCheckDistance = 1;
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
         [SerializeField] private bool _debugWarpBox = false;
@@ -22,18 +24,23 @@ namespace Mechanics.Bolt
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
 
-        public Collider Collider => _collider;
-        private Vector3 _teleportOffset;
+        private BoltManager _manager;
 
-        private bool _isResidue;
+        private Vector3 _teleportOffset;
+        private Vector3 _prevPosition;
+
+        private bool _checkAlive = true;
         private float _timeAlive;
         private bool _stopMoving;
-        private bool _checkAlive = true;
+        private bool _isResidue;
 
         private Coroutine _redirectDelayRoutine;
         private Coroutine _dissipateRoutine;
 
-        private BoltManager _manager;
+        #region Properties
+
+        public bool IsAlive { get; private set; }
+        public Collider Collider => _collider;
 
         public BoltManager Manager
         {
@@ -53,9 +60,7 @@ namespace Mechanics.Bolt
             private set => _manager = value;
         }
 
-        public bool IsAlive { get; private set; }
-
-        // -------------------------------------------------------------------------------------------
+        #endregion
 
         #region Unity Functions
 
@@ -68,7 +73,7 @@ namespace Mechanics.Bolt
         {
             // No extra bolt controller should exist
             if (_manager == null && !_forceDontDestroy) {
-                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Debug.LogWarning("No Extra Bolts should exist in scene. Only Bolt Manager");
                 Destroy(gameObject);
             }
             IsAlive = gameObject.activeSelf;
@@ -85,7 +90,9 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving) return;
 
+            _prevPosition = transform.position;
             MoveBolt();
+            CollisionCheck();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -94,20 +101,8 @@ namespace Mechanics.Bolt
 
             var contact = other.GetContact(0);
 
-            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
-            if (interactable != null) {
-                if (_isResidue) {
-                    SetResidue(interactable, contact.point, contact.normal);
-                } else {
-                    WarpInteract(interactable, contact.point, contact.normal);
-                }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(contact.point, contact.normal, false);
-            }
+            Collide(other.gameObject, contact.point, contact.normal);
         }
-
-        #endregion
 
         private void OnDrawGizmos()
         {
@@ -116,6 +111,8 @@ namespace Mechanics.Bolt
                 Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
             }
         }
+
+        #endregion
 
         // -------------------------------------------------------------------------------------------
 
@@ -196,9 +193,22 @@ namespace Mechanics.Bolt
 
         #endregion
 
-        // -------------------------------------------------------------------------------------------
-
         #region Private Functions
+
+        private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
+        {
+            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
+            if (interactable != null) {
+                if (_isResidue) {
+                    SetResidue(interactable, collisionPoint, collisionNormal);
+                } else {
+                    WarpInteract(interactable, collisionPoint, collisionNormal);
+                }
+            } else {
+                Dissipate(true);
+                PlayCollisionParticles(collisionPoint, collisionNormal, false);
+            }
+        }
 
         private bool WarpCollisionTesting()
         {
@@ -238,8 +248,10 @@ namespace Mechanics.Bolt
 
             // Could not avoid collision
             _teleportOffset = Vector3.zero;
-            Debug.Log("Warp Failed: Not enough space in area");
-            return true;
+            Debug.Log("Warp should not be possible (Allowing player to warp anyways)" + transform.position, gameObject);
+
+            // Always let the player teleport -- TODO: Can cause issues, but check ^ doesn't work always right now
+            return false;
         }
 
         // Collision check for the warp bolt. Ignores triggers
@@ -292,6 +304,15 @@ namespace Mechanics.Bolt
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
         }
 
+        private void CollisionCheck()
+        {
+            Vector3 direction = (_prevPosition - _rb.position).normalized * _collisionCheckDistance;
+            Ray ray = new Ray(transform.position - direction, direction);
+            Physics.Raycast(ray, out var hit, _collisionCheckDistance, _collisionMask, QueryTriggerInteraction.Ignore);
+            if (hit.collider == null) return;
+            Collide(hit.collider.gameObject, hit.point, hit.normal);
+        }
+
         private void CheckLifetime()
         {
             _timeAlive += Time.deltaTime;
@@ -322,7 +343,7 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable(false);
             for (float t = 0; t < disableTime; t += Time.deltaTime) {
                 yield return null;
@@ -346,7 +367,7 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable();
         }
 
