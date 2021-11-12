@@ -6461,9 +6461,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuContainer: {fileID: 304077063863539331}
+  _warpIcon: {fileID: 0}
   _warpLockedIcon: {fileID: 875031910468885154}
   _warpNameTxt: {fileID: 8668618817034706253}
   _warpDescTxt: {fileID: 8459472774553521938}
+  _residueIcon: {fileID: 0}
   _residueLockedIcon: {fileID: 7841318055852316430}
   _residueNameTxt: {fileID: 5869351476070436372}
   _residueDescTxt: {fileID: 7526242879381356595}
@@ -7004,7 +7006,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7801277639629353049}
-        m_MethodName: QuitGame
+        m_MethodName: QuitToMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7544,7 +7546,8 @@ MonoBehaviour:
   _scrollAcquiredScreen: {fileID: 1406797485387680385}
   _spellNameTxt: {fileID: 4522741930857971370}
   _spellDescTxt: {fileID: 7526965654895232396}
-  _spellIcon: {fileID: 6538158306943266160}
+  _warpIcon: {fileID: 6538158306943266160}
+  _residueIcon: {fileID: 5807134971102473203}
   _chapterNumber: {fileID: 2431407605033398339}
   _chapterName: {fileID: 2431407604685939158}
   _chNumColor: {r: 1, g: 1, b: 1, a: 1}
@@ -9217,7 +9220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.42745098}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -9988,6 +9991,80 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!1 &3070499550770865996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4833006838481347768}
+  - component: {fileID: 3619966348840730363}
+  - component: {fileID: 5807134971102473203}
+  m_Layer: 5
+  m_Name: ResidueUnlock_Icon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4833006838481347768
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070499550770865996}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7700625592859949434}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 960, y: -434}
+  m_SizeDelta: {x: 256, y: 256}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3619966348840730363
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070499550770865996}
+  m_CullTransparentMesh: 0
+--- !u!114 &5807134971102473203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3070499550770865996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4eccb6e086805fe4a9c7ab28ebbc5847, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3133924984975658286
 GameObject:
   m_ObjectHideFlags: 0
@@ -16974,7 +17051,7 @@ GameObject:
   - component: {fileID: 7379323676236781326}
   - component: {fileID: 6538158306943266160}
   m_Layer: 5
-  m_Name: AbilityUnlock_Icon
+  m_Name: WarpUnlock_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16989,7 +17066,7 @@ RectTransform:
   m_GameObject: {fileID: 4572125789340344189}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_Children: []
   m_Father: {fileID: 7700625592859949434}
   m_RootOrder: 0
@@ -17026,7 +17103,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 268102863685f7748a62d10eb6691b8f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 89f5d806c8ab3764492f3f6a9712511f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -18477,11 +18554,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7700625592859949434}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960, y: -606}
+  m_AnchoredPosition: {x: 960, y: -912}
   m_SizeDelta: {x: 950, y: 300}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &9211475673388392767
@@ -18758,7 +18835,7 @@ GameObject:
   - component: {fileID: 2017305887019997335}
   - component: {fileID: 1703372191725552998}
   m_Layer: 0
-  m_Name: Bolt Img
+  m_Name: Warp Img
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18810,7 +18887,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 67fe89d3037d7ba4e80f7ebcf985eae4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 89f5d806c8ab3764492f3f6a9712511f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19362,6 +19439,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8673027981068616112}
+  - {fileID: 4833006838481347768}
   - {fileID: 9152400863097444970}
   m_Father: {fileID: 5661759365709007270}
   m_RootOrder: 3
@@ -20769,7 +20847,7 @@ GameObject:
   - component: {fileID: 5483117435981582551}
   - component: {fileID: 2143163618764677094}
   m_Layer: 0
-  m_Name: Bolt Img
+  m_Name: Residue Img
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20821,7 +20899,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 67fe89d3037d7ba4e80f7ebcf985eae4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4eccb6e086805fe4a9c7ab28ebbc5847, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -21958,9 +22036,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuContainer: {fileID: 7165158016136473994}
+  _warpIcon: {fileID: 5379874761659744581}
   _warpLockedIcon: {fileID: 2616278749472629399}
   _warpNameTxt: {fileID: 2634210823233032886}
   _warpDescTxt: {fileID: 1690015864412991411}
+  _residueIcon: {fileID: 6397937799983685587}
   _residueLockedIcon: {fileID: 2554731062084484748}
   _residueNameTxt: {fileID: 1636706908397659461}
   _residueDescTxt: {fileID: 9045970588504286447}
