@@ -11,9 +11,9 @@ public class ScrollMenu : MonoBehaviour
    private string _residueName, _residueDesc;
 
    [SerializeField] private GameObject _menuContainer = null;
-   [SerializeField] private GameObject _warpLockedIcon = null;
+   [SerializeField] private GameObject _warpIcon = null, _warpLockedIcon = null;
    [SerializeField] private TextMeshProUGUI _warpNameTxt = null, _warpDescTxt = null;
-   [SerializeField] private GameObject _residueLockedIcon = null;
+   [SerializeField] private GameObject _residueIcon = null, _residueLockedIcon = null;
    [SerializeField] private TextMeshProUGUI _residueNameTxt = null, _residueDescTxt = null;
    
    private void Awake()
@@ -44,6 +44,7 @@ public class ScrollMenu : MonoBehaviour
       _warpNameTxt.text = b ? _warpName : "Locked";
       _warpDescTxt.text = b ? _warpDesc : "Spell not yet discovered";
       _warpLockedIcon.SetActive(!b);
+      _warpIcon.SetActive(b);
    }
 
    private void UnlockResidue(bool b)
@@ -51,5 +52,6 @@ public class ScrollMenu : MonoBehaviour
       _residueNameTxt.text = b ? _residueName : "Locked";
       _residueDescTxt.text = b ? _residueDesc : "Spell not yet discovered";
       _residueLockedIcon.SetActive(!b);
+      _residueIcon.SetActive(b);
    }
 }
