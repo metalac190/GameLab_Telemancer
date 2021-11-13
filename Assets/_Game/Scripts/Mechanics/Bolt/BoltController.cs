@@ -306,6 +306,7 @@ namespace Mechanics.Bolt
 
         private void CollisionCheck()
         {
+            if (_timeAlive < 0.1f) return;
             Vector3 direction = (_prevPosition - _rb.position).normalized * _collisionCheckDistance;
             Ray ray = new Ray(transform.position - direction, direction);
             Physics.Raycast(ray, out var hit, _collisionCheckDistance, _collisionMask, QueryTriggerInteraction.Ignore);
@@ -373,8 +374,9 @@ namespace Mechanics.Bolt
 
         private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
+            _manager.PlayImpact(position, normal, hitInteractable);
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position, normal, hitInteractable);
+                _feedback.OnBoltImpact(position);
             }
         }
 
