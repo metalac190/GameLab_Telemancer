@@ -30,19 +30,19 @@ public class YarnManager : MonoBehaviour
                     tipRunner = runner;
             }
         }
-        // dialogueRunner = FindObjectOfType<DialogueRunner>();
+
         if (player == null)
             player = FindObjectOfType<PlayerState>();
 
         // Randomize Ted talks once
-        if (PlayerPrefs.GetString("TedTalks") != "")
+        if (PlayerPrefs.GetString("TedTalks") == "")
             RandomizeTedTalks();
     }
 
     public void DialogueStart()
     {
         // Remove all player control when we're in dialogue
-        player.GamePaused(true);
+        player.OnGamePaused(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -50,7 +50,7 @@ public class YarnManager : MonoBehaviour
     public void DialogueEnd()
     {
         // Allow player control once dialogue is finished
-        player.GamePaused(false);
+        player.OnGamePaused(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }

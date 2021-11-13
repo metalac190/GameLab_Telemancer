@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Mechanics.Player;
+using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -22,17 +23,24 @@ namespace Mechanics.Bolt
         [SerializeField] private Transform _visuals;
         [SerializeField] private BoltFeedback _feedback;
 
-        public Collider Collider => _collider;
+        private BoltManager _manager;
 
-        private bool _isResidue;
+        private Vector3 _teleportOffset;
+        private Vector3 _prevPosition;
+        private GameObject _ignoreCollisionObject;
+
+        private bool _checkAlive = true;
         private float _timeAlive;
         private bool _stopMoving;
-        private bool _checkAlive = true;
+        private bool _isResidue;
 
         private Coroutine _redirectDelayRoutine;
         private Coroutine _dissipateRoutine;
 
-        private BoltManager _manager;
+        #region Properties
+
+        public bool IsAlive { get; private set; }
+        public Collider Collider => _collider;
 
         public BoltManager Manager
         {
@@ -52,14 +60,13 @@ namespace Mechanics.Bolt
             private set => _manager = value;
         }
 
-        public bool IsAlive { get; private set; }
-
-        // -------------------------------------------------------------------------------------------
+        #endregion
 
         #region Unity Functions
 
         private void OnEnable()
         {
+            _prevPosition = Vector3.zero;
             NullChecks();
         }
 
@@ -67,7 +74,7 @@ namespace Mechanics.Bolt
         {
             // No extra bolt controller should exist
             if (_manager == null && !_forceDontDestroy) {
-                Debug.Log("No Extra Bolts should exist in scene. Only Bolt Manager");
+                Debug.LogWarning("No Extra Bolts should exist in scene. Only Bolt Manager");
                 Destroy(gameObject);
             }
             IsAlive = gameObject.activeSelf;
@@ -84,7 +91,10 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving) return;
 
+            bool checkThisFrame = _prevPosition != Vector3.zero;
+            _prevPosition = transform.position;
             MoveBolt();
+            if (checkThisFrame) CollisionCheck();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -93,20 +103,8 @@ namespace Mechanics.Bolt
 
             var contact = other.GetContact(0);
 
-            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
-            if (interactable != null) {
-                if (_isResidue) {
-                    SetResidue(interactable, contact.point, contact.normal);
-                } else {
-                    WarpInteract(interactable, contact.point, contact.normal);
-                }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(contact.point, contact.normal, false);
-            }
+            Collide(other.gameObject, contact.point, contact.normal);
         }
-
-        #endregion
 
         private void OnDrawGizmos()
         {
@@ -115,6 +113,8 @@ namespace Mechanics.Bolt
                 Gizmos.DrawWireCube(transform.position, _playerRadius * 2);
             }
         }
+
+        #endregion
 
         // -------------------------------------------------------------------------------------------
 
@@ -125,8 +125,9 @@ namespace Mechanics.Bolt
             Manager = manager;
         }
 
-        public void Redirect(Vector3 position, Quaternion rotation, float timer)
+        public void Redirect(GameObject exitObj, Vector3 position, Quaternion rotation, float timer)
         {
+            _ignoreCollisionObject = exitObj;
             if (timer == 0 || !_isResidue) {
                 FinishRedirect(position, rotation);
             } else {
@@ -174,35 +175,42 @@ namespace Mechanics.Bolt
             Enable();
         }
 
-        public void PrepareToWarp()
+        public bool PrepareToWarp()
         {
+            if (!IsAlive || WarpCollisionTesting()) return false;
+
             if (_dissipateRoutine != null) {
                 StopCoroutine(_dissipateRoutine);
             }
             IsAlive = true;
             _stopMoving = true;
+            return true;
         }
 
         // Warp to the bolt's position
-        public bool OnWarp()
+        public void OnWarp()
         {
-            return IsAlive && Warp();
+            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down + _teleportOffset);
+            Disable();
         }
 
         #endregion
 
-        // -------------------------------------------------------------------------------------------
-
         #region Private Functions
 
-        private bool Warp()
+        private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
         {
-            if (WarpCollisionTesting()) return false;
-
-            // TODO: Fix this line
-            Manager.BoltData.PlayerController.TeleportToPosition(transform.position, Vector3.down);
-            Disable();
-            return true;
+            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
+            if (interactable != null) {
+                if (_isResidue) {
+                    SetResidue(interactable, collisionPoint, collisionNormal);
+                } else {
+                    WarpInteract(interactable, collisionPoint, collisionNormal);
+                }
+            } else {
+                Dissipate(true);
+                PlayCollisionParticles(collisionPoint, collisionNormal, false);
+            }
         }
 
         private bool WarpCollisionTesting()
@@ -210,7 +218,10 @@ namespace Mechanics.Bolt
             // Ensure that warp bolt position is not out of bounds and space is large enough for player
 
             bool collision = WarpCollisionCheck();
-            if (!collision) return false;
+            if (!collision) {
+                _teleportOffset = Vector3.zero;
+                return false;
+            }
 
             // Offsets to try
             Vector3 originalPosition = transform.position;
@@ -230,7 +241,7 @@ namespace Mechanics.Bolt
                 bool hitObj = Physics.Linecast(originalPosition, originalPosition + offset, out var hit);
                 if (hitObj) {
                     float dist = (offset.magnitude - hit.distance) / offset.magnitude + _overCorrection;
-                    transform.position = originalPosition - dist * offset;
+                    _teleportOffset = -dist * offset;
                     if (!WarpCollisionCheck()) {
                         //Debug.Log("Warp Collision, adjusting from " + originalPosition + " to " + transform.position);
                         return false;
@@ -239,13 +250,15 @@ namespace Mechanics.Bolt
             }
 
             // Could not avoid collision
-            transform.position = originalPosition;
-            Debug.Log("Warp Failed: Not enough space in area");
-            return true;
+            _teleportOffset = Vector3.zero;
+            Debug.Log("Warp should not be possible (Allowing player to warp anyways)" + transform.position, gameObject);
+
+            // Always let the player teleport -- TODO: Can cause issues, but check ^ doesn't work always right now
+            return false;
         }
 
         // Collision check for the warp bolt. Ignores triggers
-        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
+        private bool WarpCollisionCheck() => Physics.CheckBox(transform.position + _teleportOffset, _playerRadius, Quaternion.identity, _collisionMask, QueryTriggerInteraction.Ignore);
 
         private IEnumerator RedirectDelay(Vector3 position, Quaternion rotation, float timer)
         {
@@ -290,8 +303,17 @@ namespace Mechanics.Bolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
-
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
+        }
+
+        private void CollisionCheck()
+        {
+            Vector3 direction = (_prevPosition - _rb.position);
+            Ray ray = new Ray(transform.position - direction, direction);
+            Physics.Raycast(ray, out var hit, direction.magnitude, _collisionMask, QueryTriggerInteraction.Ignore);
+            if (hit.collider == null) return;
+            if (hit.collider.gameObject == _ignoreCollisionObject) return;
+            Collide(hit.collider.gameObject, hit.point, hit.normal);
         }
 
         private void CheckLifetime()
@@ -324,7 +346,7 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable(false);
             for (float t = 0; t < disableTime; t += Time.deltaTime) {
                 yield return null;
@@ -348,14 +370,15 @@ namespace Mechanics.Bolt
             for (float t = 0; t < dissipateTime; t += Time.deltaTime) {
                 yield return null;
             }
-            if (Manager != null) Manager.DissipateBolt();
+            if (Manager != null) Manager.DissipateBolt(this);
             Disable();
         }
 
         private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
+            _manager.PlayImpact(position, normal, hitInteractable);
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position, normal, hitInteractable);
+                _feedback.OnBoltImpact(position);
             }
         }
 

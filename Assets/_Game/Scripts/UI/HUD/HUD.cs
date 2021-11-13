@@ -38,6 +38,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject _scrollAcquiredScreen = null;
     [SerializeField] private Text _spellNameTxt = null;
     [SerializeField] private Text _spellDescTxt = null;
+    [SerializeField] private Image _warpIcon = null, _residueIcon = null;
 
     [Header("Area Notification")]
     [SerializeField] private Text _chapterNumber = null;
@@ -91,6 +92,7 @@ public class HUD : MonoBehaviour
         // scroll listeners
         UIEvents.current.OnAcquireWarpScroll += () => DisplayScrollAcquiredScreen("WARP");
         UIEvents.current.OnAcquireResidueScroll += () => DisplayScrollAcquiredScreen("RESIDUE");
+        UIEvents.current.OnAcquireGameEndScroll += () => DisplayScrollAcquiredScreen("GAME_END");
         UIEvents.current.OnCloseScrollAcquiredScreen += () => DisplayScrollAcquiredScreen("CLOSE");
         
         // watched listener
@@ -110,7 +112,7 @@ public class HUD : MonoBehaviour
 
     private void DisplayDebugHUD(bool isEnabled)
     {
-        _debugSpellsPnl.SetActive(isEnabled);
+        //_debugSpellsPnl.SetActive(isEnabled);
         _debugStatsPnl.SetActive(isEnabled);
     }
 
@@ -118,7 +120,7 @@ public class HUD : MonoBehaviour
     {
         _respawnMenu.SetActive(isEnabled);
         _xhair.transform.parent.gameObject.SetActive(!isEnabled);
-        _debugSpellsPnl.SetActive(!isEnabled && _debugMode);
+        //_debugSpellsPnl.SetActive(!isEnabled && _debugMode);
 
         // Set timescale
         Time.timeScale = isEnabled ? 0f : 1f;
@@ -319,20 +321,40 @@ public class HUD : MonoBehaviour
     {
         switch (scroll) {
             case "WARP":
-                _spellNameTxt.text = "WARP BOLT";
+                _spellNameTxt.text = "WARP";
                 _spellDescTxt.text =
-                    "Press [LMB] to cast a swirling ball of energy that has teleporting properties depending on the object it.";
-                _debugSpellsPnl.SetActive(false);
+                    "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
+                _warpIcon.gameObject.SetActive(true);
+                _residueIcon.gameObject.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             case "RESIDUE":
-                _spellNameTxt.text = "WARP RESIDUE";
-                _spellDescTxt.text = "Lorem Ipsum";
-                _debugSpellsPnl.SetActive(false);
+                _spellNameTxt.text = "RESIDUE";
+                _spellDescTxt.text = 
+                    "Now when bolt hits certain objects, it covers that object in magical residue. " + 
+                    "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
+                _warpIcon.gameObject.SetActive(false);
+                _residueIcon.gameObject.SetActive(true);
+                //_debugSpellsPnl.SetActive(false);
+                _scrollAcquiredScreen.SetActive(true);
+                break;
+            case "GAME_END":
+                _spellNameTxt.text = "";
+                _spellDescTxt.text = 
+                    "As you’ve journeyed thus you’ve uncovered much,\n" +
+                    "Of Gnomish Arcana and secrets such.\n" + 
+                    "Towards the truth you’ve reached attainment\n" + 
+                    "Of teleportation and displacement.\n" +
+                    "Our hidden words go out with you,\n" +
+                    "Speak of our magic, teach it true.";
+                _warpIcon.gameObject.SetActive(false);
+                _residueIcon.gameObject.SetActive(false);
+                //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
             default:
-                _debugSpellsPnl.SetActive(_debugMode);
+                //_debugSpellsPnl.SetActive(_debugMode);
                 _scrollAcquiredScreen.SetActive(false);
                 break;
         }

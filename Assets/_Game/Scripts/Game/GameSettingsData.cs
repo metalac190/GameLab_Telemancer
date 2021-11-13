@@ -10,6 +10,8 @@ public class GameSettingsData : ScriptableObject
     private float _airAcceleration = 28f;
 
     [Header("Vertical Movement")]
+    [SerializeField] [Range(0, 10)] [Tooltip("The amount of physics frames (default: 1/50 sec) the game will buffer a jump input")]
+    private int _jumpBuffer = 3;
     [SerializeField] [Range(0, 20)] [Tooltip("The jump force of the player")]
     private float _jumpForce = 6.2f;
     [SerializeField] [Range(0, 1)] [Tooltip("How many seconds after leaving solid footing can the player still jump")]
@@ -22,18 +24,24 @@ public class GameSettingsData : ScriptableObject
     private float _floatTime = 0f;
 
     [Header("Teleport")]
-    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount of time the player takes to teleport (incluldes lerping)")]
+    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount of time the player takes to teleport (includes lerping)")]
     private float _teleportTime = 0.1f;
     [SerializeField] [Range(0, 90)] [Tooltip("The amount the FOV should increase while teleporting")]
-    private int _teleportFovIncrease = 30;
+    private int _teleportFovIncrease = 0;
     [SerializeField] [Range(0, 1)] [Tooltip("The normalized time at which the FOV reaches its max during the teleport, before going back to normal")]
-    private float _teleportFovMaxPoint = 0.66f;
+    private float _teleportFovMaxPoint = 1;
 
     [Header("Camera Settings")]
-    [SerializeField] [Range(0, 50)] [Tooltip("0-90 degree lock on the players ability to look down")]
+    [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look down")]
     private float _maxLookDown = 90f;
     [SerializeField] [Range(0, 90)] [Tooltip("0-90 degree lock on the players ability to look up")]
     private float _maxLookUp = 90f;
+    [SerializeField] [Tooltip("Whether or not view bobbing is enabled")]
+    private bool _viewBobbingEnabled = false;
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
+    private float _viewBobbingHorizontal = 0.1f;
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
+    private float _viewBobbingVertical = 0.05f;
 
     [Header("Distance Settings")]
     [SerializeField] [Tooltip("The maximum distance that the UI Indicator can see")]
@@ -64,10 +72,10 @@ public class GameSettingsData : ScriptableObject
     private float _timeToNextResidue = 1.5f;
     [SerializeField] [Tooltip("Enable to set additional cooldown on the bolt casting after the player warps")]
     private bool _boltCooldownOnWarp = true;
-    [SerializeField] [Range(0, 10)] [Tooltip("After warping, a cooldown that limits when the player can cast another bolt")]
-    private float _warpTimeToNextBolt = 0.5f;
-    [SerializeField] [Range(0, 1)] [Tooltip("Additional bolt cooldown (adds to 'Warp Time To Next Bolt') additively when the player is high in the air")]
-    private float _additiveTimePerHeight = 0.1f;
+    [SerializeField] [Range(0, 10)] [Tooltip("An extra cooldown on the bolt ability applied after the player warps")]
+    private float _boltTimeAfterWarp = 0.5f;
+    [SerializeField] [Range(0, 10)] [Tooltip("An extra cooldown on the warp ability applied after casting in mid-air - to prevent flying")]
+    private float _extraWarpTimeInAir = 2f;
 
     [Header("Action Settings")]
     [SerializeField] [Tooltip("Enable to clear residue from the world when another bolt is casted")]
@@ -100,6 +108,7 @@ public class GameSettingsData : ScriptableObject
 
     public float MoveSpeed => _moveSpeed;
     public float AirAcceleration => _airAcceleration;
+    public int JumpBuffer => _jumpBuffer;
     public float JumpForce => _jumpForce;
     public float CoyoteJumpTime => _coyoteJumpTime;
     public float RisingGravity => _risingGravity;
@@ -110,6 +119,9 @@ public class GameSettingsData : ScriptableObject
     public float TeleportFovMaxPoint => _teleportFovMaxPoint;
     public float MaxLookDown => _maxLookDown;
     public float MaxLookUp => _maxLookUp;
+    public bool ViewBobbingEnabled => _viewBobbingEnabled;
+    public float ViewBobbingHorizontal => _viewBobbingHorizontal;
+    public float ViewBobbingVertical => _viewBobbingVertical;
     public float MaxLookDistance => _maxLookDistance;
     public float MaxInteractDistance => _maxInteractDistance;
     public LayerMask LookAtMask => _lookAtMask;
@@ -121,8 +133,8 @@ public class GameSettingsData : ScriptableObject
     public float TimeToNextWarp => _timeToNextWarp;
     public float TimeToNextResidue => _timeToNextResidue;
     public bool BoltCooldownOnWarp => _boltCooldownOnWarp;
-    public float WarpTimeToNextBolt => _warpTimeToNextBolt;
-    public float AdditiveTimePerHeight => _additiveTimePerHeight;
+    public float BoltTimeAfterWarp => _boltTimeAfterWarp;
+    public float ExtraWarpTimeInAir => _extraWarpTimeInAir;
     public bool ClearResidueOnFire => _clearResidueOnFire;
     public float BoltMoveSpeed => _boltMoveSpeed;
     public float BoltLifeSpan => _boltLifeSpan - _boltAirFizzleTime;
