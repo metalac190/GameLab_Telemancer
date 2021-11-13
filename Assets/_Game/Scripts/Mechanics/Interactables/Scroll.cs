@@ -16,6 +16,8 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private GameObject _scroll = null;
     [SerializeField] private float _pauseLength = 1;
     [SerializeField] private SFXOneShot scrollOpenSFX = null;
+    [SerializeField] private SFXOneShot discoveryJingleSFX = null;
+    [SerializeField] private SFXOneShot upgradeSFX = null;
     [SerializeField] private int loadingScreenID = 1;
     private int nextlevelID;
 
@@ -48,7 +50,10 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         
         // play VFX
         _disintigrateVFX.Play();
-        
+
+        // play SFX
+        scrollOpenSFX.PlayOneShot(transform.position);
+
         // hide chains
         _chainsGroup.SetActive(false);
         
@@ -70,21 +75,21 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     {
         yield return new WaitForSecondsRealtime(_pauseLength);
 
-        //Play sound
-        scrollOpenSFX.PlayOneShot(transform.position);
-        
         // HUD - Show ability unlocked 
         switch (_scrollUnlock)
         {
             case unlockEnum.WarpBolt:
+                upgradeSFX.PlayOneShot(transform.position);
                 UIEvents.current.UnlockWarpAbility(true);
                 UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
                 break;
             case unlockEnum.Residue:
+                upgradeSFX.PlayOneShot(transform.position);
                 UIEvents.current.UnlockResidueAbility(true);
                 UIEvents.current.AcquireResidueScroll();
                 break;
             case unlockEnum.GameEnd:
+                upgradeSFX.PlayOneShot(transform.position);
                 UIEvents.current.AcquireGameEndScroll();
                 break;
         }
@@ -95,7 +100,10 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
             while (!Keyboard.current.eKey.wasPressedThisFrame)
                 yield return null;
         }
-        
+
+        //Play sound
+        discoveryJingleSFX.PlayOneShot(transform.position);
+
         // load next level
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);
