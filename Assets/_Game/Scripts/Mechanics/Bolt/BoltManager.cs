@@ -272,14 +272,14 @@ namespace Mechanics.Bolt
             _isCasting = false;
         }
 
-        public void RedirectBolt(Vector3 position, Quaternion rotation, float timer)
+        public void RedirectBolt(GameObject exitObject, Vector3 position, Quaternion rotation, float timer)
         {
             if (CurrentBolt != null) {
                 CurrentBolt.Disable(true, false);
             }
 
             GetNewBolt();
-            CurrentBolt.Redirect(position, rotation, timer);
+            CurrentBolt.Redirect(exitObject, position, rotation, timer);
         }
 
         public bool PrepareToWarp()
