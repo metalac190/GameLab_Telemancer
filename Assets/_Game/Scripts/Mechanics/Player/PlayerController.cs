@@ -119,20 +119,13 @@ public class PlayerController : MonoBehaviour {
 
             // -----
 
-            // TODO - Slide off slopes
-            if(!grounded && moveVelocity.y <= 0.1f) {
-                moveVelocity = SlideOffSurface(moveVelocity, collisionHitNormal);
-            }
-
-            // -----
-
             // Is Walking
             walking = grounded && moveVelocity.magnitude > 0.5f;
 
             // Apply
             playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
             if (controller.enabled) {
-                controller.Move(moveVelocity * Time.fixedDeltaTime);
+                controller.Move((moveVelocity + (!grounded && moveVelocity.y <= 0f ? SlideOffSurface(moveVelocity, collisionHitNormal) : Vector3.zero)) * Time.fixedDeltaTime);
             }
         }
     }
@@ -283,13 +276,16 @@ public class PlayerController : MonoBehaviour {
     /// <returns></returns>
     private Vector3 SlideOffSurface(Vector3 moveVelocity, Vector3 hitNormal) {
         float angle = Vector3.Angle(Vector3.up, hitNormal);
-        if(55f <= angle && angle <= 90f) {
-            moveVelocity.x = (1 - hitNormal.y) * hitNormal.x * (1f - 0.2f);
-            moveVelocity.z = (1 - hitNormal.y) * hitNormal.z * (1f - 0.2f);
-            Debug.Log(string.Format("Sliding off surface with normal {0} and angle {1}", hitNormal, Vector3.Angle(Vector3.up, hitNormal)));
-            return moveVelocity;
+        if(controller.slopeLimit < angle && angle < 89.5f) {
+            Vector3 slideVelocity = Vector3.zero;
+            slideVelocity.x = (1 - hitNormal.y) * hitNormal.x * (1f - PlayerState.Settings.SlopeFriction);
+            slideVelocity.z = (1 - hitNormal.y) * hitNormal.z * (1f - PlayerState.Settings.SlopeFriction);
+            slideVelocity *= moveVelocity.magnitude;
+
+            //Debug.Log(string.Format("Sliding off surface with normal {0} and angle {1}, applying slide velocity of {2}", hitNormal, Vector3.Angle(Vector3.up, hitNormal), slideVelocity));
+            return slideVelocity;
         }
-        return moveVelocity;
+        return Vector3.zero;
     }
 
     private IEnumerator CoyoteTime() {
