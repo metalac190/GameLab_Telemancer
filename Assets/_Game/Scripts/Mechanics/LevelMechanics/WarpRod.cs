@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mechanics.Bolt;
 using UnityEngine;
+using AudioSystem;
 
 public class WarpRod : WarpResidueInteractable
 {
@@ -24,6 +25,9 @@ public class WarpRod : WarpResidueInteractable
     private Color _crystalColor;
 
     private bool _isWispOnCooldown = false;
+
+    [Header("SFX")]
+    [SerializeField] SFXOneShot _warpRodActivationSFX = null;
 
     private void Start()
     {
@@ -63,6 +67,7 @@ public class WarpRod : WarpResidueInteractable
         //Debug.Log("rodrodrodrodrod");
         if (_warpPad != null)
         {
+            _warpRodActivationSFX.PlayOneShot(transform.position);
             data.PlayerController.TeleportToPosition(_warpPad.transform.position, _teleportOffset);
         }
 
