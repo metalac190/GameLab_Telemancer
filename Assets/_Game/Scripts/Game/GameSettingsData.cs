@@ -8,6 +8,8 @@ public class GameSettingsData : ScriptableObject
     private float _moveSpeed = 6.375f;
     [SerializeField] [Range(0, 50)] [Tooltip("The movement acceleration of the player when in the air")]
     private float _airAcceleration = 28f;
+    [SerializeField] [Range(0, 1)] [Tooltip("The strength of friction when sliding down a slope")]
+    private float _slopeFriction = 0.05f;
 
     [Header("Vertical Movement")]
     [SerializeField] [Range(0, 10)] [Tooltip("The amount of physics frames (default: 1/50 sec) the game will buffer a jump input")]
@@ -108,6 +110,7 @@ public class GameSettingsData : ScriptableObject
 
     public float MoveSpeed => _moveSpeed;
     public float AirAcceleration => _airAcceleration;
+    public float SlopeFriction => _slopeFriction;
     public int JumpBuffer => _jumpBuffer;
     public float JumpForce => _jumpForce;
     public float CoyoteJumpTime => _coyoteJumpTime;
