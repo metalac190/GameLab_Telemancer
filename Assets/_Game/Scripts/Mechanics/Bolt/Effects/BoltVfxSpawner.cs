@@ -9,29 +9,45 @@ namespace Mechanics.Bolt.Effects
     public class BoltVfxSpawner : MonoBehaviour
     {
         [SerializeField] private BoltVfxController _boltPrefab = null;
+        [SerializeField] private BoltLowQualityEffect _boltLowQuality = null;
         [SerializeField] private Transform _transformOverride = null;
         [SerializeField] private Light _lightToDim = null;
 
         private BoltVfxController _instantiatedObject;
+        private BoltLowQualityEffect _lowQualityObject;
+
         private float _lightIntensity = -1;
+        private bool _useVfx;
+        private bool _missingVfx;
 
         private void OnEnable()
         {
-            if (_instantiatedObject == null) {
-                InstantiateVisualEffect();
+            _useVfx = PlayerPrefs.GetFloat("SimplifiedVisuals") == 0;
+            if (_useVfx) {
+                if (_instantiatedObject == null && _boltPrefab != null) {
+                    InstantiateVisualEffect();
+                }
+                _missingVfx = _instantiatedObject == null;
+            } else {
+                if (_lowQualityObject == null && _boltLowQuality != null) {
+                    InstantiateParticles();
+                }
+                _missingVfx = _lowQualityObject == null;
             }
         }
 
         public void OnReset()
         {
-            if (_instantiatedObject != null) {
+            if (_useVfx) {
                 _instantiatedObject.OnReset();
-                if (_lightToDim != null) {
-                    if (_lightIntensity < 0) {
-                        _lightIntensity = _lightToDim.intensity;
-                    }
-                    _lightToDim.intensity = _lightIntensity;
+            } else {
+                _lowQualityObject.OnReset();
+            }
+            if (_lightToDim != null) {
+                if (_lightIntensity < 0) {
+                    _lightIntensity = _lightToDim.intensity;
                 }
+                _lightToDim.intensity = _lightIntensity;
             }
         }
 
@@ -43,14 +59,20 @@ namespace Mechanics.Bolt.Effects
 
         public void SetBoltLifetime(float timeAlive, float lifeSpan)
         {
-            if (_instantiatedObject == null) return;
-            _instantiatedObject.SetLifetime(timeAlive, lifeSpan);
+            if (_useVfx) {
+                _instantiatedObject.SetLifetime(timeAlive, lifeSpan);
+            } else {
+                _lowQualityObject.SetLifetime(timeAlive, lifeSpan);
+            }
         }
 
         public void Dissipate(float dissipateTime)
         {
-            if (_instantiatedObject == null) return;
-            _instantiatedObject.Dissipate(dissipateTime);
+            if (_useVfx) {
+                _instantiatedObject.Dissipate(dissipateTime);
+            } else {
+                _lowQualityObject.Dissipate(dissipateTime);
+            }
         }
 
         public void DimLight(float dimLightTime)
@@ -72,13 +94,24 @@ namespace Mechanics.Bolt.Effects
 
         private void InstantiateVisualEffect()
         {
-            if (_boltPrefab == null) return;
+            _useVfx = true;
             if (_boltPrefab.gameObject.activeInHierarchy) {
                 _instantiatedObject = _boltPrefab;
                 return;
             }
             Transform location = _transformOverride != null ? _transformOverride : transform;
             _instantiatedObject = Instantiate(_boltPrefab, location);
+        }
+
+        private void InstantiateParticles()
+        {
+            _useVfx = false;
+            if (_boltLowQuality.gameObject.activeInHierarchy) {
+                _lowQualityObject = _boltLowQuality;
+                return;
+            }
+            Transform location = _transformOverride != null ? _transformOverride : transform;
+            _lowQualityObject = Instantiate(_boltLowQuality, location);
         }
     }
 }
