@@ -108,7 +108,7 @@ namespace Mechanics.Player
 
             Ray ray = new Ray(start.position, start.forward);
 
-            Physics.Raycast(ray, out var hit, dist, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
+            Physics.Raycast(ray, out var hit, dist, PlayerState.Settings.LookAtMask);
             return hit;
         }
 

@@ -113,17 +113,17 @@ namespace Mechanics.Player
         public void OnRespawn()
         {
             _isAlive = true;
-            Debug.Log(_isAlive + " " + FlagCantAct());
             _onPlayerRespawn.Invoke();
 
             if (CheckpointManager.current == null) {
                 _playerController.TeleportToPosition(_defaultCheckpoint);
-            } else {
-                _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
-                // TODO: This might need to be moved to the player controller script?
-                // Also set the player rotation on respawn
-                _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
+                return;
             }
+
+            _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
+            // TODO: This might need to be moved to the player controller script?
+            // Also set the player rotation on respawn
+            _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
 
             _playerController.flag_cantAct = FlagCantAct();
             _castingController.FlagCantAct = FlagCantAct();
