@@ -1,5 +1,4 @@
-﻿using Mechanics.WarpBolt;
-using Mechanics.WarpResidue;
+﻿using Mechanics.Bolt;
 using UnityEngine;
 
 /// Summary:
@@ -53,5 +52,10 @@ public class WarpResidueInteractable : MonoBehaviour, IWarpInteractable
     {
         // Disables the residue shader effects
         _residueEffect.enabled = false;
+    }
+
+    public virtual bool DoesResidueReturnToHoldAnimation()
+    {
+        return false;
     }
 }

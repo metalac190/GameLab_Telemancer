@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Mechanics.Player
 {
@@ -7,20 +8,17 @@ namespace Mechanics.Player
     /// Should be on the camera transform or camera parent transform
     public class PlayerInteractions : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] private float _maxLookDistance = 20;
-        [SerializeField] private float _maxInteractDistance = 5;
-        [SerializeField] private LayerMask _interactionMask = 1;
         [Header("References")]
-        [SerializeField] private PlayerAnimator _playerAnimator;
+        [SerializeField] private Transform _cameraTransform = null;
         [SerializeField] private PlayerFeedback _playerFeedback;
+        private bool _isHovering = false;
+        private IHoverInteractable _hoverObj;
 
         #region Unity Fucntions
 
         private void OnEnable()
         {
-            AnimatorNullCheck();
-            FeedbackNullCheck();
+            NullChecks();
         }
 
         private void Update()
@@ -34,10 +32,14 @@ namespace Mechanics.Player
 
         #region Public Functions
 
-        public void Interact()
+        public void Interact(InputAction.CallbackContext value)
         {
-            var hit = GetRaycast(_maxInteractDistance);
+            if (!value.performed) return;
+
+            var hit = GetRaycast(PlayerState.Settings.MaxInteractDistance);
             if (hit.collider == null) return;
+
+            hit.collider.gameObject.GetComponent<IPlayerInteractable>()?.OnInteract();
 
             // Find interactable and interact
             // Play Animations on player
@@ -45,7 +47,7 @@ namespace Mechanics.Player
 
         public void LookAtInteractables()
         {
-            var hit = GetRaycast(_maxLookDistance);
+            var hit = GetRaycast(PlayerState.Settings.MaxLookDistance);
             if (hit.collider == null) {
                 SetInteractable(InteractableEnums.Null);
                 return;
@@ -61,10 +63,29 @@ namespace Mechanics.Player
                 return;
             }
 
-            if (hit.distance < _maxInteractDistance) {
-                // Find interactable
-
-                //SetInteractable(InteractableEnums.PlayerInteractable);
+            if (hit.distance < PlayerState.Settings.MaxInteractDistance) {
+                var playerInteractable = interactionObject.GetComponent<IPlayerInteractable>();
+                if (playerInteractable != null) {
+                    SetInteractable(InteractableEnums.PlayerInteractable);
+                    // If object is type Hover, save reference and call function
+                    if(interactionObject.GetComponent<IHoverInteractable>() != null && !_isHovering)
+                    {
+                        _isHovering = true;
+                        _hoverObj = interactionObject.GetComponent<IHoverInteractable>();
+                        _hoverObj.OnBeginHover();
+                    }
+                    return;
+                }
+                else if(_isHovering)
+                {
+                    _isHovering = false;
+                    _hoverObj.OnEndHover();
+                }
+            }
+            else if(_isHovering)
+            {
+                _isHovering = false;
+                _hoverObj.OnEndHover();
             }
         }
 
@@ -83,9 +104,11 @@ namespace Mechanics.Player
 
         private RaycastHit GetRaycast(float dist)
         {
-            Ray ray = new Ray(transform.position, transform.forward);
+            Transform start = _cameraTransform != null ? _cameraTransform : transform;
 
-            Physics.Raycast(ray, out var hit, dist, _interactionMask);
+            Ray ray = new Ray(start.position, start.forward);
+
+            Physics.Raycast(ray, out var hit, dist, PlayerState.Settings.LookAtMask, QueryTriggerInteraction.Ignore);
             return hit;
         }
 
@@ -95,19 +118,10 @@ namespace Mechanics.Player
 
         #region NullCheck
 
-        //private bool _missingAnimator;
-
-        private void AnimatorNullCheck()
+        private void NullChecks()
         {
-            if (_playerAnimator == null) {
-                _playerAnimator = transform.parent != null ? transform.parent.GetComponentInChildren<PlayerAnimator>() : GetComponent<PlayerAnimator>();
-                if (_playerAnimator == null) {
-                    //_missingAnimator = true;
-                    Debug.LogWarning("Cannot find the Player Animator for the Player Interactions Script", gameObject);
-                }
-            }
+            FeedbackNullCheck();
         }
-
 
         private bool _missingFeedback;
 

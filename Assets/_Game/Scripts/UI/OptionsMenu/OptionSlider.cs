@@ -17,11 +17,11 @@ public abstract class OptionSlider : MonoBehaviour
     }
 
     // Have PlayerPrefKey selected via dropdown menu in the inspector
-    [SerializeField] private PlayerPrefKey prefKey;
+    [SerializeField] private PlayerPrefKey prefKey = PlayerPrefKey.MasterVolume;
     
     [SerializeField] private int _value;
-    [SerializeField] private Slider _slider;
-    [SerializeField] private Text _text;
+    [SerializeField] private Slider _slider = null;
+    [SerializeField] private Text _text = null;
     
     public void Start()
     {
@@ -40,6 +40,11 @@ public abstract class OptionSlider : MonoBehaviour
     {
         PlayerPrefs.SetFloat(prefKey.ToString(), n);
     }
+    
+    protected virtual void SaveValue(float n)
+    {
+        PlayerPrefs.SetFloat(prefKey.ToString(), n);
+    }
 
     protected virtual void LoadValue()
     {
@@ -48,11 +53,17 @@ public abstract class OptionSlider : MonoBehaviour
         _slider.value = val;
     }
 
+    protected virtual void SetSlider(int n)
+    {
+        _slider.value = n;
+    }
+
     protected virtual void SetValue(int n)
     {
         SetText(n + "");
         SaveValue(n);
     }
+    
 
     protected virtual void SetText(string s)
     {
