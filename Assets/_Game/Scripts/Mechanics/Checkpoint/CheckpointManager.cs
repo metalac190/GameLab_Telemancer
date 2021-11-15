@@ -39,7 +39,7 @@ public class CheckpointManager : MonoBehaviour
         }
 
         // Set the level SpawnPoint to the player prefab's position
-        GameObject go = new GameObject("Current Spawn Point");
+        GameObject go = new GameObject();
         Transform player_tf = GameObject.FindGameObjectWithTag("Player").transform;
         go.transform.position = player_tf.position;
         go.transform.rotation = player_tf.rotation;

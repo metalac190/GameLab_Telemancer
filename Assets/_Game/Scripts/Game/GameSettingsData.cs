@@ -8,8 +8,6 @@ public class GameSettingsData : ScriptableObject
     private float _moveSpeed = 6.375f;
     [SerializeField] [Range(0, 50)] [Tooltip("The movement acceleration of the player when in the air")]
     private float _airAcceleration = 28f;
-    [SerializeField] [Range(0, 1)] [Tooltip("The strength of friction when sliding down a slope")]
-    private float _slopeFriction = 0.05f;
 
     [Header("Vertical Movement")]
     [SerializeField] [Range(0, 10)] [Tooltip("The amount of physics frames (default: 1/50 sec) the game will buffer a jump input")]
@@ -40,14 +38,10 @@ public class GameSettingsData : ScriptableObject
     private float _maxLookUp = 90f;
     [SerializeField] [Tooltip("Whether or not view bobbing is enabled")]
     private bool _viewBobbingEnabled = false;
-    [SerializeField] [Range(0, 10f)] [Tooltip("The speed at which view bobbing occurs")]
-    private float _viewBobbingFrequency = 5f;
-    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount view bobbing sways horizontally")]
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
     private float _viewBobbingHorizontal = 0.1f;
-    [SerializeField] [Range(0, 0.5f)] [Tooltip("The amount view bobbing sways vertically")]
-    private float _viewBobbingVertical = 0.1f;
-    [SerializeField] [Range(0, 1f)] [Tooltip("The amount of smoothing applied to view bobbing (1 = no smoothing, 0 = no movement)")]
-    private float _viewBobbingSmoothing = 0.1f;
+    [SerializeField] [Range(0, 0.25f)] [Tooltip("The amount view bobbing sways side to side")]
+    private float _viewBobbingVertical = 0.05f;
 
     [Header("Distance Settings")]
     [SerializeField] [Tooltip("The maximum distance that the UI Indicator can see")]
@@ -114,7 +108,6 @@ public class GameSettingsData : ScriptableObject
 
     public float MoveSpeed => _moveSpeed;
     public float AirAcceleration => _airAcceleration;
-    public float SlopeFriction => _slopeFriction;
     public int JumpBuffer => _jumpBuffer;
     public float JumpForce => _jumpForce;
     public float CoyoteJumpTime => _coyoteJumpTime;
@@ -127,10 +120,8 @@ public class GameSettingsData : ScriptableObject
     public float MaxLookDown => _maxLookDown;
     public float MaxLookUp => _maxLookUp;
     public bool ViewBobbingEnabled => _viewBobbingEnabled;
-    public float ViewBobbingFrequency => _viewBobbingFrequency;
     public float ViewBobbingHorizontal => _viewBobbingHorizontal;
     public float ViewBobbingVertical => _viewBobbingVertical;
-    public float ViewBobbingSmoothing => _viewBobbingSmoothing;
     public float MaxLookDistance => _maxLookDistance;
     public float MaxInteractDistance => _maxInteractDistance;
     public LayerMask LookAtMask => _lookAtMask;

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Mechanics.Player;
 using UnityEngine;
-using AudioSystem;
 
 public class Watcher : MonoBehaviour
 {
@@ -19,7 +18,6 @@ public class Watcher : MonoBehaviour
     [SerializeField] SphereCollider _trigger = null;
     [SerializeField] LayerMask targetMask = 0;
     [SerializeField] LayerMask obstacleMask = 1;
-    [SerializeField] SFXOneShot _watcherVisionEntered = null;
 
     private bool _isPlayerInRange = false;
     private bool _isPlayerInView = false;
@@ -104,7 +102,6 @@ public class Watcher : MonoBehaviour
     private void OnPlayerEnteredView()
     {
         //Debug.Log("Player in view");
-        _watcherVisionEntered.PlayOneShot(transform.position);
         _playerState.SetWatcherLocks(_DeactivateBolt, _DeactivateWarp, _DeactivateResidue);
     }
 
