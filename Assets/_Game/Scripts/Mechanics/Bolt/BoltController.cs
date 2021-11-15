@@ -13,6 +13,7 @@ namespace Mechanics.Bolt
     {
         [Header("Warp Settings")]
         [SerializeField] private Vector3 _playerRadius = new Vector3(0.45f, 0.9f, 0.45f);
+        [SerializeField] private float _collisionCheckDistance = 1;
         [SerializeField] [Range(0, 1)] private float _overCorrection = 0.15f;
         [SerializeField] private LayerMask _collisionMask = 1;
         [SerializeField] private bool _debugWarpBox = false;
@@ -27,7 +28,6 @@ namespace Mechanics.Bolt
 
         private Vector3 _teleportOffset;
         private Vector3 _prevPosition;
-        private GameObject _ignoreCollisionObject;
 
         private bool _checkAlive = true;
         private float _timeAlive;
@@ -66,7 +66,6 @@ namespace Mechanics.Bolt
 
         private void OnEnable()
         {
-            _prevPosition = Vector3.zero;
             NullChecks();
         }
 
@@ -91,10 +90,9 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving) return;
 
-            bool checkThisFrame = _prevPosition != Vector3.zero;
             _prevPosition = transform.position;
             MoveBolt();
-            if (checkThisFrame) CollisionCheck();
+            CollisionCheck();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -125,9 +123,8 @@ namespace Mechanics.Bolt
             Manager = manager;
         }
 
-        public void Redirect(GameObject exitObj, Vector3 position, Quaternion rotation, float timer)
+        public void Redirect(Vector3 position, Quaternion rotation, float timer)
         {
-            _ignoreCollisionObject = exitObj;
             if (timer == 0 || !_isResidue) {
                 FinishRedirect(position, rotation);
             } else {
@@ -303,16 +300,16 @@ namespace Mechanics.Bolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
+
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
         }
 
         private void CollisionCheck()
         {
-            Vector3 direction = (_prevPosition - _rb.position);
+            Vector3 direction = (_prevPosition - _rb.position).normalized * _collisionCheckDistance;
             Ray ray = new Ray(transform.position - direction, direction);
-            Physics.Raycast(ray, out var hit, direction.magnitude, _collisionMask, QueryTriggerInteraction.Ignore);
+            Physics.Raycast(ray, out var hit, _collisionCheckDistance, _collisionMask, QueryTriggerInteraction.Ignore);
             if (hit.collider == null) return;
-            if (hit.collider.gameObject == _ignoreCollisionObject) return;
             Collide(hit.collider.gameObject, hit.point, hit.normal);
         }
 
@@ -376,9 +373,8 @@ namespace Mechanics.Bolt
 
         private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
-            _manager.PlayImpact(position, normal, hitInteractable);
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position);
+                _feedback.OnBoltImpact(position, normal, hitInteractable);
             }
         }
 

@@ -15,7 +15,7 @@ public class DelayStone : MonoBehaviour, IWarpInteractable
     {
         // Redirect the warp bolt
         // adding some value to transform.position so that the bolt doesn't spawn inside the other relay stone and immediately collide
-        data.BoltManager.RedirectBolt(gameObject, transform.position + (transform.forward * 2), transform.rotation, _delayTime);
+        data.BoltManager.RedirectBolt(transform.position + (transform.forward * 2), transform.rotation, _delayTime);
         Debug.Log("bolt redirected");
 
         // Don't dissipate the warp bolt!

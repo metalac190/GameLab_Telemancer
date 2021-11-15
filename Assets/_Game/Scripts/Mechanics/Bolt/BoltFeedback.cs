@@ -17,7 +17,10 @@ namespace Mechanics.Bolt
         [SerializeField] private SFXOneShot _warpInteractSound = null;
         [SerializeField] private SFXOneShot _objectImpactSound = null;
 
-        private bool _overrideBoltLife;
+        [Header("VFX on Impact")]
+        [SerializeField] private VfxController _boltImpactVfx = null;
+
+        private bool _overrideBoltLife = false;
 
         public void SetBoltCastDelta(float delta)
         {
@@ -54,11 +57,24 @@ namespace Mechanics.Bolt
             _boltVfxSpawner.DimLight(dimLightTime);
         }
 
-        public void OnBoltImpact(Vector3 position)
+        public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)
         {
+            // TODO: Remove nasty instantiation -- reuse objects in some way
+
+            if (_boltImpactVfx != null) {
+                VfxController controller = Instantiate(_boltImpactVfx);
+                // Play particles at collision normal
+                controller.transform.position = position;
+                controller.transform.forward = normal;
+
+                controller.Play(interactable);
+
+                controller.AutoKill(2);
+            }
+
             if (_objectImpactSound != null) {
                 // Play Object Impact Sound
-                _objectImpactSound.PlayOneShot(position);
+                _objectImpactSound.PlayOneShot(transform.position);
             }
         }
 

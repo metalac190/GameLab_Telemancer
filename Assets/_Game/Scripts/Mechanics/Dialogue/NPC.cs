@@ -2,7 +2,6 @@
 using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
-using AudioSystem;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
@@ -19,11 +18,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public GameObject interactablePopup, storyPopup, currentPopup;
     private bool hasStory = false, storyFinished = false, firstInteract = true;
     public bool dialogueFinished = true, currentSpeaker = false;
-
-    [Header("SFX Hookup")]
-    [SerializeField] SFXLoop voiceOfTed = null;
-    private AudioSource sfxTedAudioSource;
-    private bool sfxTedExhaustedCue = false;
 
     void Start()
     {
@@ -69,17 +63,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
         }
         else
         {
-            if (talkLimit >= 5 && sfxTedExhaustedCue == false)
-            {
-                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
-                sfxTedExhaustedCue = true;
-            }
-
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
-            }
-
             currentSpeaker = false;
             _animator.SetTalking(false);
         }
@@ -89,8 +72,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
     {
         if (!runner.IsDialogueRunning)
         {
-            if (voiceOfTed) sfxTedAudioSource = voiceOfTed.Play(transform.position);
-
             if (firstInteract)
             {
                 firstInteract = false;
@@ -132,7 +113,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
         }
         else
         {
-            sfxTedExhaustedCue = false;
             nodeString = "Exhausted";
             runner.onDialogueComplete.RemoveListener(DialogueCompleted);
         }
@@ -141,7 +121,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     public void DialogueCompleted()
     {
-        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
         _animator.SetTalking(false);
         if (hasStory && !storyFinished)
         {
