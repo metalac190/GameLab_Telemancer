@@ -9,12 +9,10 @@ public class FpsCounterSelector : OptionSelector
             case 0:
                 // Hidden
                 Debug.Log("FPS Counter: Hidden");
-                UIEvents.current.HideDebugHud();
                 break;
             case 1: 
                 // Visible
                 Debug.Log("FPS Counter: Visible");
-                UIEvents.current.ShowDebugHud();
                 break;
             default:
                 return;

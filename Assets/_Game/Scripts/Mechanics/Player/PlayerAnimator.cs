@@ -27,7 +27,6 @@ namespace Mechanics.Player
 
         private bool _missingAnimator;
         private float _jumpTime;
-        private bool _ignoreNextAction = false;
 
         private void Awake()
         {
@@ -126,7 +125,6 @@ namespace Mechanics.Player
             if (_missingAnimator) return;
             ResetCastingTriggers();
             _animator.SetTrigger(_relayInteract);
-            _ignoreNextAction = true;
         }
 
         // Player was holding magic, but the bolt dissipated. Return to Idle

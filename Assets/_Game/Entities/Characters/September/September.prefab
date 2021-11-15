@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 985717781950470748}
   - component: {fileID: 1675223931}
   m_Layer: 10
-  m_Name: Camera Holder
+  m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,37 +341,10 @@ MonoBehaviour:
   _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1
-  _defaultCheckpoint: {x: 0, y: 0, z: 0}
-  _onPlayerDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4779669104828246104}
-        m_MethodName: OnKill
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onPlayerRespawn:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4779669104828246104}
-        m_MethodName: ResetToIdle
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _playerController: {fileID: 6641156212706824223}
   _castingController: {fileID: 7147435355514325571}
+  _interactionsController: {fileID: 1675223931}
+  _animationController: {fileID: 4779669104828246104}
   _playerFeedback: {fileID: 6895264153618991445}
 --- !u!114 &6641156212706824223
 MonoBehaviour:
@@ -412,8 +385,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensitivity: 10
   cameraHolder: {fileID: 4055171006002021106}
-  viewBobber: {fileID: 5101975067679104924}
   mainCamera: {fileID: 1022407838}
+  viewBobber: {fileID: 5101975067679104924}
 --- !u!114 &2122996553035913799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,7 +626,7 @@ Transform:
   m_GameObject: {fileID: 2981235107098766273}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.41, z: 0}
-  m_LocalScale: {x: 0.98, y: 0.295, z: 0.98}
+  m_LocalScale: {x: 0.9, y: 0.295, z: 0.9}
   m_Children: []
   m_Father: {fileID: 2122996551494413924}
   m_RootOrder: 2

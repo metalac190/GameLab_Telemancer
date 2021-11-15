@@ -12,7 +12,7 @@ public class YarnManager : MonoBehaviour
     public DialogueRunner tipRunner;
     [SerializeField] private PlayerState player;
     [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
-    [SerializeField] private CanvasGroup tipGroup;
+    [SerializeField] private CanvasGroup tipGroup = null;
     private int numTalks = 20;
     private int temp;
 
