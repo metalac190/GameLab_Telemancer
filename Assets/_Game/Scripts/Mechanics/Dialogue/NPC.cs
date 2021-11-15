@@ -1,4 +1,5 @@
-﻿using Mechanics.Dialogue;
+﻿using System.Collections;
+using Mechanics.Dialogue;
 using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
@@ -24,6 +25,10 @@ public class NPC : MonoBehaviour, IHoverInteractable
     [SerializeField] SFXLoop voiceOfTed = null;
     private AudioSource sfxTedAudioSource;
     private bool sfxTedExhaustedCue = false;
+
+    private bool isTalking;
+    private static bool inConversation;
+    private static bool allowGamePausing;
 
     void Start()
     {
@@ -53,18 +58,18 @@ public class NPC : MonoBehaviour, IHoverInteractable
             if (dialogueUI.currentSpeaker == "Ted")
             {
                 currentSpeaker = true;
-                _animator.SetTalking(true);
+                UpdateIsTalking(true, true);
             }
             else
             {
                 currentSpeaker = false;
-                _animator.SetTalking(false);
+                UpdateIsTalking(true, false);
             }
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 dialogueFinished = false;
-                _animator.SetTalking(false);
+                UpdateIsTalking(false, false);
             }
         }
         else
@@ -81,8 +86,32 @@ public class NPC : MonoBehaviour, IHoverInteractable
             }
 
             currentSpeaker = false;
-            _animator.SetTalking(false);
+            UpdateIsTalking(false, false);
         }
+        if (allowGamePausing) {
+            if (Keyboard.current.escapeKey.wasReleasedThisFrame || !Keyboard.current.escapeKey.isPressed) {
+                UIEvents.current.EnableGamePausing();
+                allowGamePausing = false;
+                //Debug.Log("Allow Pausing");
+            }
+        }
+    }
+
+    private void UpdateIsTalking(bool conversation, bool talking)
+    {
+        if (conversation != inConversation) {
+            //Debug.Log("Start Conversation");
+            inConversation = conversation;
+            if (conversation) {
+                UIEvents.current.DisableGamePausing();
+            } else {
+                allowGamePausing = true;
+                //Debug.Log("End Conversation");
+            }
+        }
+        if (talking == isTalking) return;
+        isTalking = talking;
+        _animator.SetTalking(talking);
     }
 
     public void OnInteract()
@@ -142,7 +171,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public void DialogueCompleted()
     {
         if (sfxTedAudioSource) sfxTedAudioSource.Stop();
-        _animator.SetTalking(false);
+        UpdateIsTalking(false, false);
         if (hasStory && !storyFinished)
         {
             storyFinished = true;
