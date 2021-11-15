@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mechanics.Bolt;
 using UnityEngine;
+using AudioSystem;
 
 public class WarpRod : WarpResidueInteractable
 {
@@ -14,16 +15,25 @@ public class WarpRod : WarpResidueInteractable
     [SerializeField] GameObject _wispPrefab = null;
     private GameObject _wispReciever = null;
 
+    [Header("New VFX")]
+    [SerializeField] GameObject _vfxEndPoint = null;
+
     [Header("Emission")]
     [SerializeField] private bool _useEmission = true;
     [SerializeField] private GameObject _crystal = null;
+    [Tooltip("Darkest part of the emission intensity")]
     [SerializeField] private float _baseIntensity = 100f;
+    [Tooltip("Brightest part of emission intensity = BaseIntensity * IntensityMultiplier")]
     [SerializeField] private float _intensityMultiplier = 5f;
+    [Tooltip("Emission is controlled by sin(Time.time * EmissionFrequency)")]
     [SerializeField] private float _emisionFrequency = 2f;
     private Material _crystalMat = null;
     private Color _crystalColor;
 
     private bool _isWispOnCooldown = false;
+
+    [Header("SFX")]
+    [SerializeField] SFXOneShot _warpRodActivationSFX = null;
 
     private void Start()
     {
@@ -35,6 +45,7 @@ public class WarpRod : WarpResidueInteractable
         if(_warpPad != null)
         {
             _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
         }
     }
 
@@ -63,6 +74,7 @@ public class WarpRod : WarpResidueInteractable
         //Debug.Log("rodrodrodrodrod");
         if (_warpPad != null)
         {
+            _warpRodActivationSFX.PlayOneShot(transform.position);
             data.PlayerController.TeleportToPosition(_warpPad.transform.position, _teleportOffset);
         }
 

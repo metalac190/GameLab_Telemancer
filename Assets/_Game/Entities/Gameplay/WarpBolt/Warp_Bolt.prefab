@@ -77,8 +77,6 @@ MonoBehaviour:
   _boltVfxSpawner: {fileID: 5429313811853431199}
   _warpInteractSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5, type: 2}
   _objectImpactSound: {fileID: 11400000, guid: 2fc304d03b3392a48a71a6fd197a8e29, type: 2}
-  _boltImpactVfx: {fileID: 7133037124337845470, guid: e0aaac28d24401b43a763f24ee4cb7b9,
-    type: 3}
 --- !u!1 &3230216783236303939
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boltPrefab: {fileID: 6789601401774915477, guid: 421b2f40e466dd045bbe3b7c7351b307,
+    type: 3}
+  _boltLowQuality: {fileID: 4165880572459716108, guid: 29d31c0fe59fbe349a31333579bac139,
     type: 3}
   _transformOverride: {fileID: 0}
   _lightToDim: {fileID: 6343820483715469477}
@@ -221,11 +221,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerRadius: {x: 0.48, y: 0.96, z: 0.48}
+  _collisionCheckDistance: 0.02
+  _collisionCheckTime: 0.04
   _overCorrection: 0.05
   _collisionMask:
     serializedVersion: 2
     m_Bits: 1
   _debugWarpBox: 1
+  _forceDontDestroy: 0
   _rb: {fileID: 5710772301339603659}
   _collider: {fileID: 3230216783552704632}
   _visuals: {fileID: 3230216783236303938}
