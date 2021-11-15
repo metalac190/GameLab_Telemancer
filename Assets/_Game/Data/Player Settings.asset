@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 6.375
   _airAcceleration: 28
+  _slopeFriction: 0.1
   _jumpBuffer: 3
   _jumpForce: 6.2
   _coyoteJumpTime: 0.3
@@ -26,8 +27,10 @@ MonoBehaviour:
   _maxLookDown: 90
   _maxLookUp: 90
   _viewBobbingEnabled: 0
+  _viewBobbingFrequency: 5
   _viewBobbingHorizontal: 0.1
-  _viewBobbingVertical: 0.05
+  _viewBobbingVertical: 0.1
+  _viewBobbingSmoothing: 0.1
   _maxLookDistance: 20
   _maxInteractDistance: 5
   _lookAtMask:
