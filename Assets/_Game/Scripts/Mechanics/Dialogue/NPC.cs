@@ -7,7 +7,7 @@ using AudioSystem;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
-    [SerializeField] private TedAnimator _animator;
+    [SerializeField] private TedAnimator _animator = null;
 
     public string characterName = "";
     public string talkToNode = "";

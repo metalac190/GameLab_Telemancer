@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class RestartLevelPrompt : MonoBehaviour
 {
-    [SerializeField] private Button _yesBtn, _noBtn;
+    [SerializeField] private Button _yesBtn, _noBtn = null;
 
     private void OnEnable()
     {

@@ -36,11 +36,6 @@ namespace Mechanics.Player
 
         #region Unity Functions
 
-        private void OnValidate()
-        {
-            UpdateUnlocks();
-        }
-
         private void Awake()
         {
             NullChecks();
