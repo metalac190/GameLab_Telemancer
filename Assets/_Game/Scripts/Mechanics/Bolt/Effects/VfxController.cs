@@ -8,30 +8,30 @@ namespace Mechanics.Bolt.Effects
     {
         [SerializeField] private VisualEffect _effectToPlay = null;
 
+        private bool _missingVfx;
+
+        private void OnValidate()
+        {
+            _missingVfx = _effectToPlay == null;
+        }
+
         public void Play()
         {
-            if (_effectToPlay != null) {
-                _effectToPlay.Play();
-            }
+            if (_missingVfx) return;
+            _effectToPlay.Play();
         }
 
         public void Play(bool successful)
         {
-            if (_effectToPlay != null) {
-                _effectToPlay.SetBool("isSuccessful", successful);
-                _effectToPlay.Play();
-            }
+            if (_missingVfx) return;
+            _effectToPlay.SetBool("isSuccessful", successful);
+            _effectToPlay.Play();
         }
 
-        public void AutoKill(float timer)
+        public void Stop()
         {
-            StartCoroutine(Kill(timer));
-        }
-
-        private IEnumerator Kill(float timer)
-        {
-            yield return new WaitForSecondsRealtime(timer);
-            Destroy(gameObject);
+            if (_missingVfx) return;
+            _effectToPlay.Stop();
         }
     }
 }
