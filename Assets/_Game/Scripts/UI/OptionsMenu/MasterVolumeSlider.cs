@@ -2,8 +2,8 @@
 
 public class MasterVolumeSlider : OptionSlider
 {
-    protected override void SaveValue(int n)
+    protected override void SaveValue(float n)
     {
-        PlayerPrefs.SetInt("MasterVolume", n);
+        PlayerPrefs.SetFloat("MasterVolume", n);
     }
 }

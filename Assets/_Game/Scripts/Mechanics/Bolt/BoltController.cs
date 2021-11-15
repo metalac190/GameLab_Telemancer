@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Mechanics.Player;
+using UnityEditor;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -25,6 +26,8 @@ namespace Mechanics.Bolt
         private BoltManager _manager;
 
         private Vector3 _teleportOffset;
+        private Vector3 _prevPosition;
+        private GameObject _ignoreCollisionObject;
 
         private bool _checkAlive = true;
         private float _timeAlive;
@@ -63,6 +66,7 @@ namespace Mechanics.Bolt
 
         private void OnEnable()
         {
+            _prevPosition = Vector3.zero;
             NullChecks();
         }
 
@@ -87,7 +91,10 @@ namespace Mechanics.Bolt
         {
             if (_stopMoving) return;
 
+            bool checkThisFrame = _prevPosition != Vector3.zero;
+            _prevPosition = transform.position;
             MoveBolt();
+            if (checkThisFrame) CollisionCheck();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -96,17 +103,7 @@ namespace Mechanics.Bolt
 
             var contact = other.GetContact(0);
 
-            IWarpInteractable interactable = other.gameObject.GetComponent<IWarpInteractable>();
-            if (interactable != null) {
-                if (_isResidue) {
-                    SetResidue(interactable, contact.point, contact.normal);
-                } else {
-                    WarpInteract(interactable, contact.point, contact.normal);
-                }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(contact.point, contact.normal, false);
-            }
+            Collide(other.gameObject, contact.point, contact.normal);
         }
 
         private void OnDrawGizmos()
@@ -128,8 +125,9 @@ namespace Mechanics.Bolt
             Manager = manager;
         }
 
-        public void Redirect(Vector3 position, Quaternion rotation, float timer)
+        public void Redirect(GameObject exitObj, Vector3 position, Quaternion rotation, float timer)
         {
+            _ignoreCollisionObject = exitObj;
             if (timer == 0 || !_isResidue) {
                 FinishRedirect(position, rotation);
             } else {
@@ -199,6 +197,21 @@ namespace Mechanics.Bolt
         #endregion
 
         #region Private Functions
+
+        private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
+        {
+            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
+            if (interactable != null) {
+                if (_isResidue) {
+                    SetResidue(interactable, collisionPoint, collisionNormal);
+                } else {
+                    WarpInteract(interactable, collisionPoint, collisionNormal);
+                }
+            } else {
+                Dissipate(true);
+                PlayCollisionParticles(collisionPoint, collisionNormal, false);
+            }
+        }
 
         private bool WarpCollisionTesting()
         {
@@ -290,8 +303,17 @@ namespace Mechanics.Bolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
-
             _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
+        }
+
+        private void CollisionCheck()
+        {
+            Vector3 direction = (_prevPosition - _rb.position);
+            Ray ray = new Ray(transform.position - direction, direction);
+            Physics.Raycast(ray, out var hit, direction.magnitude, _collisionMask, QueryTriggerInteraction.Ignore);
+            if (hit.collider == null) return;
+            if (hit.collider.gameObject == _ignoreCollisionObject) return;
+            Collide(hit.collider.gameObject, hit.point, hit.normal);
         }
 
         private void CheckLifetime()
@@ -354,8 +376,9 @@ namespace Mechanics.Bolt
 
         private void PlayCollisionParticles(Vector3 position, Vector3 normal, bool hitInteractable)
         {
+            _manager.PlayImpact(position, normal, hitInteractable);
             if (!_missingFeedback) {
-                _feedback.OnBoltImpact(position, normal, hitInteractable);
+                _feedback.OnBoltImpact(position);
             }
         }
 

@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 985717781950470748}
   - component: {fileID: 1675223931}
   m_Layer: 10
-  m_Name: Camera Holder
+  m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -412,8 +412,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensitivity: 10
   cameraHolder: {fileID: 4055171006002021106}
-  viewBobber: {fileID: 5101975067679104924}
   mainCamera: {fileID: 1022407838}
+  viewBobber: {fileID: 5101975067679104924}
 --- !u!114 &2122996553035913799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -568,7 +568,7 @@ GameObject:
   - component: {fileID: 962497564779104962}
   m_Layer: 13
   m_Name: Trigger Detection
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -653,7 +653,7 @@ Transform:
   m_GameObject: {fileID: 2981235107098766273}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.41, z: 0}
-  m_LocalScale: {x: 0.98, y: 0.295, z: 0.98}
+  m_LocalScale: {x: 0.9, y: 0.295, z: 0.9}
   m_Children: []
   m_Father: {fileID: 2122996551494413924}
   m_RootOrder: 2
@@ -758,7 +758,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxDistFromGround: 200
-  _delayCastStartDist: 5
+  _delayCastAirDist: 5
+  _delayCastAirTime: 1.25
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 4073664730457268207}
@@ -965,8 +966,8 @@ MonoBehaviour:
   _boltCastSound: {fileID: 11400000, guid: eb76b887fe828f342a4fb830d2d99740, type: 2}
   _activateResidueSound: {fileID: 11400000, guid: 86468f6c9cebdbf4aa8ae0f120ad2df5,
     type: 2}
-  _playerJumpSound: {fileID: 11400000, guid: b81738ced4e38c341b15011fc4be621f, type: 2}
-  _playerLandSound: {fileID: 11400000, guid: 283f1637d84f6ad479996d4a31c4a7a1, type: 2}
+  _playerJumpSound: {fileID: 11400000, guid: bf7fa1cd843f5ce418100f0ddd9d1ef8, type: 2}
+  _playerLandSound: {fileID: 11400000, guid: e388aa0f3ff757c46a7fe3a5695ca10e, type: 2}
   _playerDeathSound: {fileID: 11400000, guid: 5b7f436c9d0b15547af701c48715d5d6, type: 2}
   _playerSnapSound: {fileID: 11400000, guid: e8b7d380162035341993be3ec5b65a6d, type: 2}
   _playerWalkingSound: {fileID: 11400000, guid: 7b61c8d6861c44a47ab9523cc9355a2e,

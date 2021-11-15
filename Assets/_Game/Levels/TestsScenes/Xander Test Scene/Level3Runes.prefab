@@ -367,7 +367,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -4114942804275392612, guid: b752fe1122eff2341a1019984a1fd504, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -411,8 +411,9 @@ MonoBehaviour:
 
     September''s Story'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b752fe1122eff2341a1019984a1fd504, type: 2}
+  m_sharedMaterial: {fileID: -4114942804275392612, guid: b752fe1122eff2341a1019984a1fd504,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -526,10 +527,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5426694216786609042}
-  - component: {fileID: 5426694216786609040}
   - component: {fileID: 5426694216786609041}
+  - component: {fileID: 6370029334418395590}
   m_Layer: 0
-  m_Name: Level3
+  m_Name: Level3Runes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -551,19 +552,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 118.23801, z: 0}
---- !u!135 &5426694216786609040
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5426694216786609043}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 3.93
-  m_Center: {x: 0.11, y: -0.39, z: 1.55}
 --- !u!114 &5426694216786609041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,7 +567,20 @@ MonoBehaviour:
   untranslatedTxt: {fileID: 5426694215410463584}
   translatedTxt: {fileID: 5426694216673849009}
   untranslatedMat: {fileID: 2100000, guid: 778fe1cba902c52478a4cd2fe2d9495d, type: 2}
-  translatedMat: {fileID: 2100000, guid: fbf5dc4b9ba994b4fb7128d9ff981715, type: 2}
+  translatedMat: {fileID: 2100000, guid: 6e0b0983c38165f49910a0e32ef02102, type: 2}
   color: {r: 9.690453, g: 2.8503447, b: 15.49418, a: 1}
   fadeTime: 2
   waitTime: 0.5
+--- !u!65 &6370029334418395590
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5426694216786609043}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.08, y: 2.82, z: 0.28}
+  m_Center: {x: 0, y: 0.21, z: 0.57}
