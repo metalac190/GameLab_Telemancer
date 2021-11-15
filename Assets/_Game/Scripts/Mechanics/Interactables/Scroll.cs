@@ -47,6 +47,9 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     public void OnInteract()
     {
         if (_used) return;
+
+        // player can no longer pause
+        UIEvents.current.DisableGamePausing();
         
         // play VFX
         _disintigrateVFX.Play();

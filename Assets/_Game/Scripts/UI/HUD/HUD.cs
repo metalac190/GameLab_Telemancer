@@ -53,7 +53,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private float _FadeOut = 1.2f;
 
     [Header("Debug HUD")]
-    [SerializeField] private GameObject _debugSpellsPnl = null;
+    [SerializeField] private GameObject _debugSpellsPnl;
     [SerializeField] private GameObject _debugStatsPnl = null;
 
     [Header("Debug HUD Ability Colors")]

@@ -341,37 +341,10 @@ MonoBehaviour:
   _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1
-  _defaultCheckpoint: {x: 0, y: 0, z: 0}
-  _onPlayerDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4779669104828246104}
-        m_MethodName: OnKill
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onPlayerRespawn:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4779669104828246104}
-        m_MethodName: ResetToIdle
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _playerController: {fileID: 6641156212706824223}
   _castingController: {fileID: 7147435355514325571}
+  _interactionsController: {fileID: 1675223931}
+  _animationController: {fileID: 4779669104828246104}
   _playerFeedback: {fileID: 6895264153618991445}
 --- !u!114 &6641156212706824223
 MonoBehaviour:
