@@ -36,7 +36,6 @@ namespace Mechanics.Bolt
                 _groundReference.position = transform.position + _currentOffset;
                 return;
             }
-
             _currentOffset = Vector3.Lerp(_currentOffset, Vector3.down * hit.distance, _smoothStep * Time.deltaTime);
             _groundReference.position = transform.position + _currentOffset;
         }
