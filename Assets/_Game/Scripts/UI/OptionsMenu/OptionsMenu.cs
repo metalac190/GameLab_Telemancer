@@ -27,6 +27,7 @@ public class OptionsMenu : MonoBehaviour
         _prefs.Add("AntiAliasing", 0f);
         _prefs.Add("Resolution", -1f);
         _prefs.Add("SimplifiedVisuals", 0f);
+        _prefs.Add("ViewBobbing", 0f);
     }
 
     private void Start()
