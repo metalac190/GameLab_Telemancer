@@ -46,5 +46,16 @@ namespace Mechanics.Player.Feedback.Options
                 gameObject.SetActive(false);
             }
         }
+
+        public void SetData(PlayerOptionsData data)
+        {
+            _invincibility.SetCurrentItem(data.Invincibility);
+            _infiniteJumps.SetCurrentItem(data.InfiniteJumps);
+            _noBoltCooldown.SetCurrentItem(data.NoBoltCooldown);
+            _noWarpCooldown.SetCurrentItem(data.NoWarpCooldown);
+            _noResidueCooldown.SetCurrentItem(data.NoResidueCooldown);
+            _infiniteBoltDistance.SetCurrentItem(data.InfiniteBoltDistance);
+            _boltMoveSpeed.SetCurrentValue(data.BoltMoveSpeed);
+        }
     }
 }

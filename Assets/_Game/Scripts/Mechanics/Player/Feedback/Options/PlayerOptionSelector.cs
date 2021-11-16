@@ -25,5 +25,11 @@ namespace Mechanics.Player.Feedback.Options
             _onButton.interactable = !on;
             OnSelect?.Invoke(on);
         }
+
+        public void SetCurrentItem(bool on)
+        {
+            _offButton.interactable = on;
+            _onButton.interactable = !on;
+        }
     }
 }

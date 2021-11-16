@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Mechanics.Player.Feedback.Options
@@ -13,9 +14,11 @@ namespace Mechanics.Player.Feedback.Options
 
         private void Start()
         {
+            int index = SceneManager.GetActiveScene().buildIndex - _levelStartOffset;
             for (int x = 0; x < _buttons.Length; x++) {
                 var x1 = x;
-                _buttons[x].onClick.AddListener(delegate { SelectItem(x1); });
+                _buttons[x1].onClick.AddListener(delegate { SelectItem(x1); });
+                _buttons[x1].interactable = x1 != index;
             }
         }
 
