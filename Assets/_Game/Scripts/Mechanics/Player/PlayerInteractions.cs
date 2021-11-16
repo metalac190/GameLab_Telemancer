@@ -17,7 +17,7 @@ namespace Mechanics.Player
         private bool _isHovering = false;
         private IHoverInteractable _hoverObj;
 
-        #region Unity Fucntions
+        #region Unity Functions
 
         private void OnEnable()
         {
