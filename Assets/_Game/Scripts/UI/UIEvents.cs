@@ -173,12 +173,33 @@ public class UIEvents : MonoBehaviour
     {
         OnOpenScrollMenu?.Invoke(open);
     }
+    
+    public event Action<bool> OnOpenLevelSelectMenu;
+
+    public void OpenLevelSelectMenu(bool open)
+    {
+        OnOpenLevelSelectMenu?.Invoke(open);
+    }
 
     public event Action<bool> OnPlayerWatched;
 
     public void PlayerWatched(bool watched)
     {
         OnPlayerWatched?.Invoke(watched);
+    }
+
+    public event Action OnShowTutorials;
+
+    public void ShowTutorials()
+    {
+        OnShowTutorials?.Invoke();
+    }
+
+    public event Action OnHideTutorials;
+
+    public void HideTutorials()
+    {
+        OnHideTutorials?.Invoke();
     }
     
     #endregion
