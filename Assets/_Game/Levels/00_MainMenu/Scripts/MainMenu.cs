@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _continueButton = null;
+    [SerializeField] private GameObject _submenu = null;
     private bool hasSave;
 
     public void Awake()
@@ -27,6 +28,9 @@ public class MainMenu : MonoBehaviour
 
     private void Update()
     {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && _submenu.activeSelf)
+            _submenu.SetActive(false);
+        
         if (Keyboard.current.f5Key.wasPressedThisFrame) {
             PlayerPrefs.DeleteKey("Level");
             PlayerPrefs.DeleteKey("Checkpoint");
