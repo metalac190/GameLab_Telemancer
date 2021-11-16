@@ -1,62 +1,155 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Mechanics.Dialogue;
+using UnityEngine;
 using Yarn.Unity;
-using System.Linq;
-using System.Collections.Generic;
+using UnityEngine.InputSystem;
+using AudioSystem;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
+    [SerializeField] private TedAnimator _animator = null;
 
     public string characterName = "";
     public string talkToNode = "";
     private DialogueRunner runner;
+    private CustomDialogueUI dialogueUI;
     private int offset, randNum, talk;
     private string[] talks;
     private int talkLimit;
 
-    [Header("Optional")]
-    public YarnProgram scriptToLoad;
-    public GameObject interactablePopup;
+    public GameObject interactablePopup, storyPopup, currentPopup;
+    private bool hasStory = false, storyFinished = false, firstInteract = true;
+    public bool dialogueFinished = true, currentSpeaker = false;
+
+    [Header("SFX Hookup")]
+    [SerializeField] SFXLoop voiceOfTed = null;
+    private AudioSource sfxTedAudioSource;
+    private bool sfxTedExhaustedCue = false;
+
+    private bool isTalking;
+    private static bool inConversation;
+    private static bool allowGamePausing;
 
     void Start()
     {
         talkLimit = 0;
 
-        if (runner == null)
-            runner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
-
-        if (scriptToLoad != null)
-            runner.Add(scriptToLoad);
+        runner = FindObjectOfType<YarnManager>().dialogueRunner;
+        dialogueUI = runner.GetComponent<CustomDialogueUI>();
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
+
+        if (characterName == "Ted")
+            hasStory = true;
+
+        if (hasStory)
+            currentPopup = storyPopup;
+        else
+            currentPopup = interactablePopup;
+
+        currentPopup.SetActive(true);
+    }
+
+    void Update()
+    {
+        if (runner.IsDialogueRunning)
+        {
+            if (dialogueUI.currentSpeaker == "Ted")
+            {
+                currentSpeaker = true;
+                UpdateIsTalking(true, true);
+            }
+            else
+            {
+                currentSpeaker = false;
+                UpdateIsTalking(true, false);
+            }
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                dialogueFinished = false;
+                UpdateIsTalking(false, false);
+            }
+        }
+        else
+        {
+            if (talkLimit >= 5 && sfxTedExhaustedCue == false)
+            {
+                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+                sfxTedExhaustedCue = true;
+            }
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+            }
+
+            currentSpeaker = false;
+            UpdateIsTalking(false, false);
+        }
+        if (allowGamePausing) {
+            if (Keyboard.current.escapeKey.wasReleasedThisFrame || !Keyboard.current.escapeKey.isPressed) {
+                UIEvents.current.EnableGamePausing();
+                allowGamePausing = false;
+                //Debug.Log("Allow Pausing");
+            }
+        }
+    }
+
+    private void UpdateIsTalking(bool conversation, bool talking)
+    {
+        if (conversation != inConversation) {
+            //Debug.Log("Start Conversation");
+            inConversation = conversation;
+            if (conversation) {
+                UIEvents.current.DisableGamePausing();
+            } else {
+                allowGamePausing = true;
+                //Debug.Log("End Conversation");
+            }
+        }
+        if (talking == isTalking) return;
+        isTalking = talking;
+        _animator.SetTalking(talking);
     }
 
     public void OnInteract()
     {
         if (!runner.IsDialogueRunning)
         {
-            interactablePopup.SetActive(false);
+            if (voiceOfTed) sfxTedAudioSource = voiceOfTed.Play(transform.position);
+
+            if (firstInteract)
+            {
+                firstInteract = false;
+                runner.onDialogueComplete.AddListener(DialogueCompleted);
+            }
+
+            currentPopup.SetActive(false);
+
             // If story beat, run dialogue at specified node
-            if (characterName == "Ted")
+            if (characterName == "Ted" && !storyFinished)
+            {
+                hasStory = true;
                 runner.StartDialogue(talkToNode);
+            }
             // Else kick off dialogue at random Ted Talk
-            else
+            else if (!hasStory || storyFinished)
                 runner.StartDialogue(RandomTedTalk());
+
         }
 
-        // TODO: Find way to hide popup during conversation and reenable after
-        // OnEndHover();
     }
     public void OnBeginHover()
     {
-        // Debug.Log("Begin Hover");
-        interactablePopup.SetActive(true);
+        currentPopup.SetActive(true);
     }
 
     public void OnEndHover()
     {
-        // Debug.Log("End Hover");
-        interactablePopup.SetActive(false);
+        if (!hasStory)
+            currentPopup.SetActive(false);
     }
 
     public string RandomTedTalk()
@@ -65,11 +158,29 @@ public class NPC : MonoBehaviour, IHoverInteractable
         if (talkLimit < 5)
         {
             nodeString += GetNextTalk();
-            talkLimit++;
         }
         else
+        {
+            sfxTedExhaustedCue = false;
             nodeString = "Exhausted";
+            runner.onDialogueComplete.RemoveListener(DialogueCompleted);
+        }
         return nodeString;
+    }
+
+    public void DialogueCompleted()
+    {
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+        UpdateIsTalking(false, false);
+        if (hasStory && !storyFinished)
+        {
+            storyFinished = true;
+            currentPopup.SetActive(false);
+            currentPopup = interactablePopup;
+        }
+        else { talkLimit++; }
+        dialogueFinished = true;
+        OnBeginHover();
     }
 
     public int GetNextTalk()
@@ -79,6 +190,12 @@ public class NPC : MonoBehaviour, IHoverInteractable
             PlayerPrefs.SetInt("TedTalkIndex", 0);
         else
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
+        return int.Parse(talks[index]);
+    }
+
+    public int GetCurrentTalk()
+    {
+        int index = PlayerPrefs.GetInt("TedTalkIndex");
         return int.Parse(talks[index]);
     }
 

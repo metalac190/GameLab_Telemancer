@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8443435860192179992}
-  - component: {fileID: 1540629933756863055}
-  - component: {fileID: 2202069615227626452}
   - component: {fileID: 2975142287832652034}
   - component: {fileID: 8443435860192179991}
   - component: {fileID: 1523662782532092088}
@@ -36,53 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1540629933756863055
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8443435860192179993}
-  m_Mesh: {fileID: 0}
---- !u!23 &2202069615227626452
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8443435860192179993}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 613ce14f4dccb5f43b5d5d48abce7b3d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
 --- !u!65 &2975142287832652034
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -110,6 +61,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _warpPad: {fileID: 0}
   _teleportOffset: {x: 0, y: 1, z: 0}
+  _shootWisps: 1
+  _wispPrefab: {fileID: 7720600474328687289, guid: 30bccee45c2317b4794f654885c45675,
+    type: 3}
+  _useEmission: 1
+  _crystal: {fileID: 1021954595512844256}
+  _baseIntensity: 100
+  _intensityMultiplier: 5
+  _emisionFrequency: 2
+  _warpRodActivationSFX: {fileID: 11400000, guid: f94a42b6288359c40ba1435f1be07e91,
+    type: 2}
 --- !u!114 &1523662782532092088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,6 +173,12 @@ PrefabInstance:
 --- !u!4 &1761781353936386261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a1e040f5435abdc46ab6e0b7a96b6f52,
+    type: 3}
+  m_PrefabInstance: {fileID: 2304052677395717950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1021954595512844256 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1285520380545163486, guid: a1e040f5435abdc46ab6e0b7a96b6f52,
     type: 3}
   m_PrefabInstance: {fileID: 2304052677395717950}
   m_PrefabAsset: {fileID: 0}

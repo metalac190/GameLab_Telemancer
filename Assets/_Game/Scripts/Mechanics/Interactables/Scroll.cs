@@ -15,11 +15,13 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     [SerializeField] private GameObject _chainsGroup = null;
     [SerializeField] private GameObject _scroll = null;
     [SerializeField] private float _pauseLength = 1;
-    [SerializeField] private SFXOneShot scrollOpenSFX = null;
+    [SerializeField] private SFXOneShot _scrollOpenSFX = null;
+    [SerializeField] private SFXOneShot _discoveryJingleSFX = null;
+    [SerializeField] private SFXOneShot _upgradeSFX = null;
     [SerializeField] private int loadingScreenID = 1;
     private int nextlevelID;
 
-    enum unlockEnum { WarpBolt, Residue }
+    enum unlockEnum { WarpBolt, Residue, GameEnd, None }
 
     [SerializeField] private unlockEnum _scrollUnlock = unlockEnum.WarpBolt;
 
@@ -45,10 +47,16 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     public void OnInteract()
     {
         if (_used) return;
+
+        // player can no longer pause
+        UIEvents.current.DisableGamePausing();
         
         // play VFX
         _disintigrateVFX.Play();
-        
+
+        // play SFX
+        _scrollOpenSFX.PlayOneShot(transform.position);
+
         // hide chains
         _chainsGroup.SetActive(false);
         
@@ -70,25 +78,35 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
     {
         yield return new WaitForSecondsRealtime(_pauseLength);
 
-        //Play sound
-        scrollOpenSFX.PlayOneShot(transform.position);
-        
         // HUD - Show ability unlocked 
-        if (_scrollUnlock == unlockEnum.WarpBolt)
+        switch (_scrollUnlock)
         {
-            UIEvents.current.UnlockWarpAbility(true);
-            UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
+            case unlockEnum.WarpBolt:
+                _upgradeSFX.PlayOneShot(transform.position);
+                UIEvents.current.UnlockWarpAbility(true);
+                UIEvents.current.AcquireWarpScroll(); // PauseMenu.cs has the game pause on this event
+                break;
+            case unlockEnum.Residue:
+                _upgradeSFX.PlayOneShot(transform.position);
+                UIEvents.current.UnlockResidueAbility(true);
+                UIEvents.current.AcquireResidueScroll();
+                break;
+            case unlockEnum.GameEnd:
+                _upgradeSFX.PlayOneShot(transform.position);
+                UIEvents.current.AcquireGameEndScroll();
+                break;
         }
-        else
+
+        if (_scrollUnlock != unlockEnum.None)
         {
-            UIEvents.current.UnlockResidueAbility(true);
-            UIEvents.current.AcquireResidueScroll();
+            // Hack fraud way of waiting for player input
+            while (!Keyboard.current.eKey.wasPressedThisFrame)
+                yield return null;
         }
-        
-        // Hack fraud way of waiting for player input
-        while (!Keyboard.current.eKey.wasPressedThisFrame)
-            yield return null;
-        
+
+        //Play sound
+        _discoveryJingleSFX.PlayOneShot(transform.position);
+
         // load next level
         UIEvents.current.CloseScrollAcquiredScreen();
         UIEvents.current.PauseGame(false);

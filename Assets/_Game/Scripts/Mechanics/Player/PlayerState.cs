@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Mechanics.Player
 {
@@ -15,13 +14,11 @@ namespace Mechanics.Player
         [SerializeField] private bool _unlockedBolt = true;
         [SerializeField] private bool _unlockedWarp = false;
         [SerializeField] private bool _unlockedResidue = false;
-        [Header("Death and Respawn")]
-        [SerializeField] private Vector3 _defaultCheckpoint = Vector3.zero;
-        [SerializeField] private UnityEvent _onPlayerDeath = new UnityEvent();
-        [SerializeField] private UnityEvent _onPlayerRespawn = new UnityEvent();
         [Header("References")]
         [SerializeField] private PlayerController _playerController;
         [SerializeField] private PlayerCasting _castingController;
+        [SerializeField] private PlayerInteractions _interactionsController;
+        [SerializeField] private PlayerAnimator _animationController;
         [SerializeField] private PlayerFeedback _playerFeedback;
 
         public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };
@@ -30,32 +27,32 @@ namespace Mechanics.Player
         private bool _warpAbility;
         private bool _residueAbility;
 
-        private bool _locked = false;
+        private Vector3 _defaultCheckpoint;
+        private bool _locked;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
         private bool FlagCantAct() => _locked || _isAlive && !_isPaused;
 
-        private void OnValidate()
-        {
-            UpdateUnlocks();
-        }
+        #region Unity Functions
 
         private void Awake()
         {
-            NullCheck();
+            NullChecks();
         }
 
         private void Start()
         {
             _defaultCheckpoint = transform.position;
             UIEvents.current.OnPlayerRespawn += OnRespawn;
-            UIEvents.current.OnPauseGame += GamePaused;
+            UIEvents.current.OnPauseGame += OnGamePaused;
             _boltAbility = _unlockedBolt;
             _warpAbility = _unlockedWarp;
             _residueAbility = _unlockedResidue;
             UpdateUnlocks();
         }
+
+        #endregion
 
         public void SetWatcherLocks(bool boltLocked, bool warpLocked, bool residueLocked)
         {
@@ -84,23 +81,26 @@ namespace Mechanics.Player
         public void LockPlayer(bool locked)
         {
             _locked = locked;
-            _castingController.FlagCantAct = FlagCantAct();
-            _playerController.flag_cantAct = FlagCantAct();
+            bool flagCantAct = FlagCantAct();
+            _castingController.FlagCantAct = flagCantAct;
+            _playerController.flag_cantAct = flagCantAct;
+            _interactionsController.FlagCantAct = flagCantAct;
         }
 
-        public void GamePaused(bool paused)
+        public void OnGamePaused(bool paused)
         {
-            // TODO: (It works) But why is it !paused?
             _isPaused = !paused;
-            _castingController.FlagCantAct = FlagCantAct();
-            _playerController.flag_cantAct = FlagCantAct();
+            bool flagCantAct = FlagCantAct();
+            _castingController.FlagCantAct = flagCantAct;
+            _playerController.flag_cantAct = flagCantAct;
+            _interactionsController.FlagCantAct = flagCantAct;
         }
 
         public void OnKill()
         {
             if (!_isAlive) return;
             _isAlive = false;
-            _onPlayerDeath.Invoke();
+            _animationController.OnKill();
             UIEvents.current.PlayerDied();
 
             _playerController.flag_cantAct = true;
@@ -110,20 +110,22 @@ namespace Mechanics.Player
         public void OnRespawn()
         {
             _isAlive = true;
-            _onPlayerRespawn.Invoke();
+            _animationController.ResetToIdle();
 
             if (CheckpointManager.current == null) {
                 _playerController.TeleportToPosition(_defaultCheckpoint);
-                return;
+            } else {
+                _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
+                // TODO: This might need to be moved to the player controller script?
+                // Also set the player rotation on respawn
+                _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
             }
 
-            _playerController.TeleportToPosition(CheckpointManager.current.RespawnPoint.position);
-            // TODO: This might need to be moved to the player controller script?
-            // Also set the player rotation on respawn
-            _playerController.gameObject.transform.rotation = CheckpointManager.current.RespawnPoint.rotation;
-
-            _playerController.flag_cantAct = FlagCantAct();
-            _castingController.FlagCantAct = FlagCantAct();
+            bool flagCantAct = FlagCantAct();
+            _castingController.FlagCantAct = flagCantAct;
+            _playerController.flag_cantAct = flagCantAct;
+            _interactionsController.FlagCantAct = flagCantAct;
+            _castingController.HardResetBoltAndAnimator();
         }
 
         private void UpdateUnlocks()
@@ -131,7 +133,19 @@ namespace Mechanics.Player
             OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
         }
 
-        private void NullCheck()
+        #region Null Checks
+
+        private void NullChecks()
+        {
+            NullCheckPlayerSettings();
+            NullCheckPlayerController();
+            NullCheckCastingController();
+            NullCheckInteractionsController();
+            NullCheckAnimationController();
+            NullCheckFeedbackController();
+        }
+
+        private void NullCheckPlayerSettings()
         {
             if (Settings != null) _playerSettings = Settings;
             if (_playerSettings == null) {
@@ -141,34 +155,73 @@ namespace Mechanics.Player
                 }
             }
             Settings = _playerSettings;
-            _playerController = GetComponent<PlayerController>();
+        }
+
+        private void NullCheckPlayerController()
+        {
             if (_playerController == null) {
                 _playerController = GetComponent<PlayerController>();
                 if (_playerController == null) {
                     _playerController = FindObjectOfType<PlayerController>();
                     if (_playerController == null) {
-                        _playerController = gameObject.AddComponent<PlayerController>();
+                        Debug.LogError("No Player Controller component found on player", gameObject);
                     }
                 }
             }
+        }
+
+        private void NullCheckCastingController()
+        {
             if (_castingController == null) {
                 _castingController = GetComponentInChildren<PlayerCasting>();
                 if (_castingController == null) {
                     _castingController = GetComponent<PlayerCasting>();
                     if (_castingController == null) {
-                        Debug.LogError("No Player Casting component found on player");
+                        Debug.LogError("No Player Casting component found on player", gameObject);
                     }
                 }
             }
+        }
+
+        private void NullCheckInteractionsController()
+        {
+            if (_interactionsController == null) {
+                _interactionsController = GetComponentInChildren<PlayerInteractions>();
+                if (_interactionsController == null) {
+                    _interactionsController = GetComponent<PlayerInteractions>();
+                    if (_interactionsController == null) {
+                        Debug.LogError("No Player Interactions component found on player", gameObject);
+                    }
+                }
+            }
+        }
+
+        private void NullCheckAnimationController()
+        {
+            if (_animationController == null) {
+                _animationController = GetComponentInChildren<PlayerAnimator>();
+                if (_animationController == null) {
+                    _animationController = GetComponent<PlayerAnimator>();
+                    if (_animationController == null) {
+                        Debug.LogError("No Player Animator component found on player", gameObject);
+                    }
+                }
+            }
+        }
+
+        private void NullCheckFeedbackController()
+        {
             if (_playerFeedback == null) {
                 _playerFeedback = GetComponentInChildren<PlayerFeedback>();
                 if (_playerFeedback == null) {
                     _playerFeedback = GetComponent<PlayerFeedback>();
                     if (_playerFeedback == null) {
-                        Debug.LogError("No Player Feedback component found on player");
+                        Debug.LogError("No Player Feedback component found on player", gameObject);
                     }
                 }
             }
         }
+
+        #endregion
     }
 }

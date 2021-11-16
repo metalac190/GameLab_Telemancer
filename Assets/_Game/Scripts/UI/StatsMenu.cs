@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class StatsMenu : MonoBehaviour
 {
@@ -15,16 +17,31 @@ public class StatsMenu : MonoBehaviour
 
     private int _framesPerSecond;
     private float _playerSpeed;
+    private Vector3 _playerVelocity;
     private float _currentTime;
     private Vector3 _playerPosition;
     private int _boltsFired;
 
-    private bool _timerRunning = true;
+
+    private int frameCount = 0;
+    private double dt = 0.0;
+    private double fps = 0.0;
+    private double updateRate = 4.0;
+    
+
+    private bool _timerRunning = false;
+    private bool _playerMoved = false;
+    private bool _gamePaused = false;
 
     private void Start()
     {
         // add listeners
-        UIEvents.current.OnCastBolt += UpdateBoltCounter;
+        //UIEvents.current.OnCastBolt += UpdatePlayerMoved;
+        UIEvents.current.OnRestartLevel += ResetTimer;
+        UIEvents.current.OnAcquireWarpScroll += () => _timerRunning = false;
+        UIEvents.current.OnAcquireResidueScroll += () => _timerRunning = false;
+        UIEvents.current.OnAcquireGameEndScroll += () => _timerRunning = false;
+        UIEvents.current.OnPauseGame += b => _gamePaused = b;
         
         // reset colors
         _fpsValue.color = Color.white;
@@ -40,30 +57,45 @@ public class StatsMenu : MonoBehaviour
     private void Awake()
     {
         // call GetFPS once per second
-        InvokeRepeating(nameof(GetFPS), 1, 1); 
+        //InvokeRepeating(nameof(GetFPS), 1, 1); 
         
         // update elements
         DisplayTimer();
-        UpdateBoltCounter(false);
+        //UpdateBoltCounter(false);
     }
 
     private void Update()
     {
+        GetFPS();
+        
         // update timer
-        if (_timerRunning)
+        if (_timerRunning || _gamePaused)
         {
             _currentTime += Time.deltaTime;
             DisplayTimer();
         }
-        
+
         // update speedometer
-        _speedometerValue.text = _player.velocity.magnitude.ToString("F2") + " ups";
+        _playerVelocity = _player.velocity;
+        _playerVelocity.y = 0;
+        _speedometerValue.text = _playerVelocity.magnitude.ToString("F2") + " ups";
         
         // update position
         _playerPosition = _player.transform.position;
         _positionValue.text = "X:" + _playerPosition.x.ToString("F3") 
-                                   + "  Y:" + _playerPosition.y.ToString("F3") 
-                                   + "  Z:" + _playerPosition.z.ToString("F3");
+                                   + "\nY:" + _playerPosition.y.ToString("F3") 
+                                   + "\nZ:" + _playerPosition.z.ToString("F3");
+        
+        // Start the timer if the player has pressed any button
+        if (!_playerMoved) 
+        {
+            InputSystem.onAnyButtonPress.CallOnce(ctrl =>
+            {
+                _playerMoved = true;
+                _timerRunning = true;
+                //Debug.Log($"Button {ctrl} was pressed");
+            });
+        }
 
     }
 
@@ -71,6 +103,8 @@ public class StatsMenu : MonoBehaviour
     public void ResetTimer()
     {
         _currentTime = 0;
+        _timerRunning = false;
+        _playerMoved = false;
     }
 
     private void UpdateBoltCounter(bool boltSucceeded)
@@ -86,20 +120,29 @@ public class StatsMenu : MonoBehaviour
         float min = Mathf.FloorToInt(_currentTime / 60);
         float sec = Mathf.FloorToInt(_currentTime % 60);
         float ms = (_currentTime % 1) * 1000;
-        _timerValue.text = $"{min:00}:{sec:00}:{ms:000}";
+        _timerValue.text = $"{min:00}:{sec:00}.{ms:000}";
     }
 
     private void GetFPS()
     {
-        _framesPerSecond = (int)(1f / Time.unscaledDeltaTime);
-        _fpsValue.text = _framesPerSecond + "";
+        frameCount++;
+        dt += Time.deltaTime;
+        if (dt > 1.0/updateRate)
+        {
+            fps = frameCount / dt ;
+            frameCount = 0;
+            dt -= 1.0/updateRate;
+            
+            _fpsValue.text = Math.Floor(fps) + "";
+            
+            // This could be optimized
+            if (fps < 60)
+                _fpsValue.color = Color.red;
+            else if (fps >= 120)
+                _fpsValue.color = Color.green;
+            else
+                _fpsValue.color = Color.white;
+        }
         
-        // This could be optimized
-        if (_framesPerSecond < 60)
-            _fpsValue.color = Color.red;
-        else if (_framesPerSecond >= 120)
-            _fpsValue.color = Color.green;
-        else
-            _fpsValue.color = Color.white;
     }
 }

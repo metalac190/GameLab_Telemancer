@@ -7,7 +7,13 @@ public abstract class OptionSelector : MonoBehaviour
     public enum PlayerPrefKey
     {
         FpsCounter,
-        GraphicsQuality
+        Tutorials,
+        GraphicsQuality,
+        VSync,
+        Fullscreen,
+        AntiAliasing,
+        SimplifiedVisuals,
+        ViewBobbing
     }
     
     // Have PlayerPrefKey selected via dropdown menu in the inspector

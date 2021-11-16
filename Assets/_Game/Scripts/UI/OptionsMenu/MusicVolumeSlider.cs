@@ -2,8 +2,8 @@
 
 public class MusicVolumeSlider : OptionSlider
 {
-    protected override void SaveValue(int n)
+    protected override void SaveValue(float n)
     {
-        PlayerPrefs.SetInt("MusicVolume", n);
+        PlayerPrefs.SetFloat("MusicVolume", n);
     }
 }

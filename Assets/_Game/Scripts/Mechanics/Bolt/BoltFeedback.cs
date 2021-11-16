@@ -1,4 +1,6 @@
-﻿using AudioSystem;
+﻿using System.Collections;
+using AudioSystem;
+using Mechanics.Bolt.Effects;
 using UnityEngine;
 
 namespace Mechanics.Bolt
@@ -15,8 +17,7 @@ namespace Mechanics.Bolt
         [SerializeField] private SFXOneShot _warpInteractSound = null;
         [SerializeField] private SFXOneShot _objectImpactSound = null;
 
-        [Header("VFX on Impact")]
-        [SerializeField] private VfxController _boltImpactVfx = null;
+        private bool _overrideBoltLife;
 
         public void SetBoltCastDelta(float delta)
         {
@@ -24,31 +25,40 @@ namespace Mechanics.Bolt
             _boltVfxSpawner.SetBoltCastDelta(delta);
         }
 
-        public void OnBoltDissipate(Vector3 position, Vector3 forward, float dissipateTime)
+        public void SetBoltLifetime(float timeAlive, float lifeSpan)
         {
-            if (_boltVfxSpawner != null) {
-                _boltVfxSpawner.Dissipate(dissipateTime);
+            if (_overrideBoltLife || _boltVfxSpawner == null) return;
+            _boltVfxSpawner.SetBoltLifetime(timeAlive, lifeSpan);
+        }
+
+        public void OverrideBoltLifetime(float timeAlive, float lifeSpan, float extraLifeSpan, float timeLeftAlive)
+        {
+            _overrideBoltLife = true;
+            StartCoroutine(BoltLifetime(timeAlive, lifeSpan, extraLifeSpan, timeLeftAlive));
+        }
+
+        private IEnumerator BoltLifetime(float startTime, float lifeSpan, float extraLifeSpan, float timeLeftAlive)
+        {
+            for (float t = 0; t < timeLeftAlive; t += Time.deltaTime) {
+                float delta = t / timeLeftAlive;
+                float timeAlive = Mathf.Lerp(startTime, lifeSpan + extraLifeSpan, delta);
+                _boltVfxSpawner.SetBoltLifetime(timeAlive, lifeSpan);
+                yield return null;
             }
         }
 
-        public void OnBoltImpact(Vector3 position, Vector3 normal, bool interactable = true)
+        public void OnBoltDissipate(Vector3 position, Vector3 forward, float dissipateTime, float dimLightTime)
         {
-            // TODO: Remove nasty instantiation -- reuse objects in some way
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.Dissipate(dissipateTime);
+            _boltVfxSpawner.DimLight(dimLightTime);
+        }
 
-            if (_boltImpactVfx != null) {
-                VfxController controller = Instantiate(_boltImpactVfx);
-                // Play particles at collision normal
-                controller.transform.position = position;
-                controller.transform.forward = normal;
-
-                controller.Play(interactable);
-
-                controller.AutoKill(2);
-            }
-
+        public void OnBoltImpact(Vector3 position)
+        {
             if (_objectImpactSound != null) {
                 // Play Object Impact Sound
-                _objectImpactSound.PlayOneShot(transform.position);
+                _objectImpactSound.PlayOneShot(position);
             }
         }
 
@@ -59,6 +69,13 @@ namespace Mechanics.Bolt
                 // Used in place of manual residue for big rocks in lvl 1 and 2
                 _warpInteractSound.PlayOneShot(transform.position);
             }
+        }
+
+        public void OnReset()
+        {
+            _overrideBoltLife = false;
+            if (_boltVfxSpawner == null) return;
+            _boltVfxSpawner.OnReset();
         }
     }
 }

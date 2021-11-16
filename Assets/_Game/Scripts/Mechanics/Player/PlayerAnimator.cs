@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Mechanics.Player
 {
@@ -23,6 +22,7 @@ namespace Mechanics.Player
         [SerializeField] private string _warpTrigger = "snap_teleport";
         [SerializeField] private string _interactableTrigger = "interact_hitInteractable";
         [SerializeField] private string _residueIdleTrigger = "residue_idle";
+        [SerializeField] private string _relayInteract = "relay_interact";
         [SerializeField] private string _boltDissipateTrigger = "dissipate";
 
         private bool _missingAnimator;
@@ -100,6 +100,7 @@ namespace Mechanics.Player
         {
             if (_missingAnimator) return;
             ResetActionTriggers();
+            ResetCastingTriggers();
             _animator.SetTrigger(_warpTrigger);
         }
 
@@ -108,6 +109,7 @@ namespace Mechanics.Player
         {
             if (_missingAnimator) return;
             ResetActionTriggers();
+            ResetCastingTriggers();
             _animator.SetTrigger(_interactableTrigger);
         }
 
@@ -116,6 +118,13 @@ namespace Mechanics.Player
         public void OnUseResidue()
         {
             OnInteractableWarp();
+        }
+
+        public void ReturnToHold()
+        {
+            if (_missingAnimator) return;
+            ResetCastingTriggers();
+            _animator.SetTrigger(_relayInteract);
         }
 
         // Player was holding magic, but the bolt dissipated. Return to Idle
@@ -162,6 +171,7 @@ namespace Mechanics.Player
             _animator.ResetTrigger(_warpTrigger);
             _animator.ResetTrigger(_interactableTrigger);
             _animator.ResetTrigger(_boltDissipateTrigger);
+            _animator.ResetTrigger(_relayInteract);
         }
 
         #endregion

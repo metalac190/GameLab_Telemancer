@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Handles all menu-related events.
@@ -152,6 +153,13 @@ public class UIEvents : MonoBehaviour
         OnAcquireResidueScroll?.Invoke();
     }
 
+    public event Action OnAcquireGameEndScroll;
+
+    public void AcquireGameEndScroll()
+    {
+        OnAcquireGameEndScroll?.Invoke();
+    }
+
     public event Action OnCloseScrollAcquiredScreen;
 
     public void CloseScrollAcquiredScreen()
@@ -165,12 +173,33 @@ public class UIEvents : MonoBehaviour
     {
         OnOpenScrollMenu?.Invoke(open);
     }
+    
+    public event Action<bool> OnOpenLevelSelectMenu;
+
+    public void OpenLevelSelectMenu(bool open)
+    {
+        OnOpenLevelSelectMenu?.Invoke(open);
+    }
 
     public event Action<bool> OnPlayerWatched;
 
     public void PlayerWatched(bool watched)
     {
         OnPlayerWatched?.Invoke(watched);
+    }
+
+    public event Action OnShowTutorials;
+
+    public void ShowTutorials()
+    {
+        OnShowTutorials?.Invoke();
+    }
+
+    public event Action OnHideTutorials;
+
+    public void HideTutorials()
+    {
+        OnHideTutorials?.Invoke();
     }
     
     #endregion
@@ -239,6 +268,28 @@ public class UIEvents : MonoBehaviour
     {
         //OnQuitGame?.Invoke();
         Application.Quit();
+    }
+
+    public event Action OnQuitToMenu;
+
+    public void QuitToMenu()
+    {
+        OnQuitToMenu?.Invoke();
+        SceneManager.LoadScene(0);
+    }
+
+    public event Action OnDisableGamePausing;
+
+    public void DisableGamePausing()
+    {
+        OnDisableGamePausing?.Invoke();
+    }
+
+    public event Action OnAllowGamePausing;
+
+    public void EnableGamePausing()
+    {
+        OnAllowGamePausing?.Invoke();
     }
 
     #endregion
