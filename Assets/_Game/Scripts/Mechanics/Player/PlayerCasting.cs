@@ -69,6 +69,19 @@ namespace Mechanics.Player
             }
         }
 
+        public void SetBoltInfiniteDistance(bool active)
+        {
+            _boltManager.SetBoltInfiniteDistance(active);
+        }
+
+        public void SetBoltMoveSpeed(float value)
+        {
+            _boltManager.SetBoltMoveSpeed(value);
+        }
+        public bool BoltIgnoreCooldown { get; set; }
+        public bool WarpIgnoreCooldown { get; set; }
+        public bool ResidueIgnoreCooldown { get; set; }
+
         #endregion
 
         #region Unity Functions
@@ -211,6 +224,10 @@ namespace Mechanics.Player
 
         private void AddBoltDelay(float delay)
         {
+            if (BoltIgnoreCooldown) {
+                _boltLock = false;
+                return;
+            }
             if (_boltDelayRoutine != null) {
                 // Bolt delay exists. Add to current bolt delay
                 _boltDelay += delay;
@@ -302,6 +319,10 @@ namespace Mechanics.Player
 
         private void AddWarpDelay(float delay)
         {
+            if (WarpIgnoreCooldown) {
+                _boltLock = false;
+                return;
+            }
             if (_warpDelayRoutine != null) {
                 // Bolt delay exists. Add to current bolt delay
                 _warpDelay += delay;
@@ -388,6 +409,10 @@ namespace Mechanics.Player
 
         private void AddResidueDelay(float delay)
         {
+            if (ResidueIgnoreCooldown) {
+                _boltLock = false;
+                return;
+            }
             if (_residueDelayRoutine != null) {
                 // Bolt delay exists. Add to current bolt delay
                 _residueDelay += delay;
