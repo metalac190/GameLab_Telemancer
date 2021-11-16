@@ -18,8 +18,8 @@ public class OptionsMenu : MonoBehaviour
         _prefs.Add("MasterVolume", 1000f);
         _prefs.Add("SfxVolume", 1000f);
         _prefs.Add("MusicVolume", 1000f);
-        _prefs.Add("Fov", 90f);
-        _prefs.Add("Sensitivity", 20f);
+        _prefs.Add("Fov", 59f);
+        _prefs.Add("Sensitivity", 10f);
         _prefs.Add("FpsCounter", 0f);
         _prefs.Add("GraphicsQuality", 3f);
         _prefs.Add("VSync", 0f);
