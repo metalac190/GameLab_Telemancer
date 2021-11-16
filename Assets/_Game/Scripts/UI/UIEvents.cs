@@ -180,6 +180,20 @@ public class UIEvents : MonoBehaviour
     {
         OnPlayerWatched?.Invoke(watched);
     }
+
+    public event Action OnShowTutorials;
+
+    public void ShowTutorials()
+    {
+        OnShowTutorials?.Invoke();
+    }
+
+    public event Action OnHideTutorials;
+
+    public void HideTutorials()
+    {
+        OnHideTutorials?.Invoke();
+    }
     
     #endregion
 

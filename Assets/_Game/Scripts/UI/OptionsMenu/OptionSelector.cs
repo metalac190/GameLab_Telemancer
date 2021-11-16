@@ -7,6 +7,7 @@ public abstract class OptionSelector : MonoBehaviour
     public enum PlayerPrefKey
     {
         FpsCounter,
+        Tutorials,
         GraphicsQuality,
         VSync,
         Fullscreen,
