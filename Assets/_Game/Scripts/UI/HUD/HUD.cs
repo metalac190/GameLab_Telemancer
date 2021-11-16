@@ -39,7 +39,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject _scrollAcquiredScreen = null;
     [SerializeField] private Text _spellNameTxt = null;
     [SerializeField] private Text _spellDescTxt = null;
-    [SerializeField] private Image _spellIcon = null;
+    [SerializeField] private Image _warpIcon = null, _residueIcon = null;
 
     [Header("Area Notification")]
     [SerializeField] private Text _chapterNumber = null;
@@ -54,7 +54,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private float _FadeOut = 1.2f;
 
     [Header("Debug HUD")]
-    [SerializeField] private GameObject _debugSpellsPnl = null;
+    [SerializeField] private GameObject _debugSpellsPnl;
     [SerializeField] private GameObject _debugStatsPnl = null;
 
     [Header("Debug HUD Ability Colors")]
@@ -345,7 +345,8 @@ public class HUD : MonoBehaviour
                 _spellNameTxt.text = "WARP";
                 _spellDescTxt.text =
                     "Press <b>[RMB]</b> when bolt is traveling to teleport to its location.";
-                _spellIcon.gameObject.SetActive(true);
+                _warpIcon.gameObject.SetActive(true);
+                _residueIcon.gameObject.SetActive(false);
                 //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
@@ -354,7 +355,8 @@ public class HUD : MonoBehaviour
                 _spellDescTxt.text = 
                     "Now when bolt hits certain objects, it covers that object in magical residue. " + 
                     "Press <b>[RMB]</b> to activate the properties of the object that’s been covered in residue.";
-                _spellIcon.gameObject.SetActive(true);
+                _warpIcon.gameObject.SetActive(false);
+                _residueIcon.gameObject.SetActive(true);
                 //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;
@@ -367,7 +369,8 @@ public class HUD : MonoBehaviour
                     "Of teleportation and displacement.\n" +
                     "Our hidden words go out with you,\n" +
                     "Speak of our magic, teach it true.";
-                _spellIcon.gameObject.SetActive(false);
+                _warpIcon.gameObject.SetActive(false);
+                _residueIcon.gameObject.SetActive(false);
                 //_debugSpellsPnl.SetActive(false);
                 _scrollAcquiredScreen.SetActive(true);
                 break;

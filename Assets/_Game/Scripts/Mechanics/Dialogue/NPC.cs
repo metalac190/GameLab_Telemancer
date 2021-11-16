@@ -1,11 +1,13 @@
-﻿using Mechanics.Dialogue;
+﻿using System.Collections;
+using Mechanics.Dialogue;
 using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
+using AudioSystem;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
-    [SerializeField] private TedAnimator _animator;
+    [SerializeField] private TedAnimator _animator = null;
 
     public string characterName = "";
     public string talkToNode = "";
@@ -18,6 +20,15 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public GameObject interactablePopup, storyPopup, currentPopup;
     private bool hasStory = false, storyFinished = false, firstInteract = true;
     public bool dialogueFinished = true, currentSpeaker = false;
+
+    [Header("SFX Hookup")]
+    [SerializeField] SFXLoop voiceOfTed = null;
+    private AudioSource sfxTedAudioSource;
+    private bool sfxTedExhaustedCue = false;
+
+    private bool isTalking;
+    private static bool inConversation;
+    private static bool allowGamePausing;
 
     void Start()
     {
@@ -47,31 +58,68 @@ public class NPC : MonoBehaviour, IHoverInteractable
             if (dialogueUI.currentSpeaker == "Ted")
             {
                 currentSpeaker = true;
-                _animator.SetTalking(true);
+                UpdateIsTalking(true, true);
             }
             else
             {
                 currentSpeaker = false;
-                _animator.SetTalking(false);
+                UpdateIsTalking(true, false);
             }
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 dialogueFinished = false;
-                _animator.SetTalking(false);
+                UpdateIsTalking(false, false);
             }
         }
         else
         {
+            if (talkLimit >= 5 && sfxTedExhaustedCue == false)
+            {
+                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+                sfxTedExhaustedCue = true;
+            }
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+            }
+
             currentSpeaker = false;
-            _animator.SetTalking(false);
+            UpdateIsTalking(false, false);
         }
+        if (allowGamePausing) {
+            if (Keyboard.current.escapeKey.wasReleasedThisFrame || !Keyboard.current.escapeKey.isPressed) {
+                UIEvents.current.EnableGamePausing();
+                allowGamePausing = false;
+                //Debug.Log("Allow Pausing");
+            }
+        }
+    }
+
+    private void UpdateIsTalking(bool conversation, bool talking)
+    {
+        if (conversation != inConversation) {
+            //Debug.Log("Start Conversation");
+            inConversation = conversation;
+            if (conversation) {
+                UIEvents.current.DisableGamePausing();
+            } else {
+                allowGamePausing = true;
+                //Debug.Log("End Conversation");
+            }
+        }
+        if (talking == isTalking) return;
+        isTalking = talking;
+        _animator.SetTalking(talking);
     }
 
     public void OnInteract()
     {
         if (!runner.IsDialogueRunning)
         {
+            if (voiceOfTed) sfxTedAudioSource = voiceOfTed.Play(transform.position);
+
             if (firstInteract)
             {
                 firstInteract = false;
@@ -113,6 +161,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
         }
         else
         {
+            sfxTedExhaustedCue = false;
             nodeString = "Exhausted";
             runner.onDialogueComplete.RemoveListener(DialogueCompleted);
         }
@@ -121,7 +170,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     public void DialogueCompleted()
     {
-        _animator.SetTalking(false);
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+        UpdateIsTalking(false, false);
         if (hasStory && !storyFinished)
         {
             storyFinished = true;

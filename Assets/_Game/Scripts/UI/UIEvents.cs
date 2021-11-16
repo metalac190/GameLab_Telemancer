@@ -173,6 +173,13 @@ public class UIEvents : MonoBehaviour
     {
         OnOpenScrollMenu?.Invoke(open);
     }
+    
+    public event Action<bool> OnOpenLevelSelectMenu;
+
+    public void OpenLevelSelectMenu(bool open)
+    {
+        OnOpenLevelSelectMenu?.Invoke(open);
+    }
 
     public event Action<bool> OnPlayerWatched;
 
@@ -255,6 +262,20 @@ public class UIEvents : MonoBehaviour
     {
         OnQuitToMenu?.Invoke();
         SceneManager.LoadScene(0);
+    }
+
+    public event Action OnDisableGamePausing;
+
+    public void DisableGamePausing()
+    {
+        OnDisableGamePausing?.Invoke();
+    }
+
+    public event Action OnAllowGamePausing;
+
+    public void EnableGamePausing()
+    {
+        OnAllowGamePausing?.Invoke();
     }
 
     #endregion

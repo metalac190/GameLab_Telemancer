@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 6.375
   _airAcceleration: 28
+  _slopeFriction: 0.1
   _jumpBuffer: 3
   _jumpForce: 6.2
   _coyoteJumpTime: 0.3
@@ -26,13 +27,15 @@ MonoBehaviour:
   _maxLookDown: 90
   _maxLookUp: 90
   _viewBobbingEnabled: 0
+  _viewBobbingFrequency: 5
   _viewBobbingHorizontal: 0.1
-  _viewBobbingVertical: 0.05
+  _viewBobbingVertical: 0.1
+  _viewBobbingSmoothing: 0.1
   _maxLookDistance: 20
   _maxInteractDistance: 5
   _lookAtMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 32769
   _delayBolt: 0.05
   _delayWarp: 0.05
   _delayResidue: 0.05
@@ -41,15 +44,15 @@ MonoBehaviour:
   _timeToNextWarp: 1
   _timeToNextResidue: 1.5
   _boltCooldownOnWarp: 1
-  _warpTimeToNextBolt: 1
-  _extraWarpDelay: 2
+  _boltTimeAfterWarp: 0.5
+  _extraWarpTimeInAir: 2
   _clearResidueOnFire: 1
   _boltMoveSpeed: 0.32
   _boltLifeSpan: 1.25
   _boltAirFizzleTime: 0.45
   _boltAirExtraParticlesTime: 0.6
   _boltHitFizzleTime: 0.4
-  _boltLightDownDist: 8
+  _boltLightDownDist: 10
   _boltLightDimTime: 0.4
   _lightningSizeOverLife:
     serializedVersion: 2
