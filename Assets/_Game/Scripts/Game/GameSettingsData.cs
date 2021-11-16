@@ -126,7 +126,12 @@ public class GameSettingsData : ScriptableObject
     public float TeleportFovMaxPoint => _teleportFovMaxPoint;
     public float MaxLookDown => _maxLookDown;
     public float MaxLookUp => _maxLookUp;
-    public bool ViewBobbingEnabled => _viewBobbingEnabled;
+
+    public bool ViewBobbingEnabled
+    {
+        get => _viewBobbingEnabled;
+        set => _viewBobbingEnabled = value;
+    }
     public float ViewBobbingFrequency => _viewBobbingFrequency;
     public float ViewBobbingHorizontal => _viewBobbingHorizontal;
     public float ViewBobbingVertical => _viewBobbingVertical;
