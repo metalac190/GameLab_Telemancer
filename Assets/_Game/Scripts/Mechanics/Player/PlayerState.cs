@@ -1,5 +1,8 @@
 ﻿using System;
+using Mechanics.Player.Feedback.Options;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Mechanics.Player
 {
@@ -20,6 +23,7 @@ namespace Mechanics.Player
         [SerializeField] private PlayerInteractions _interactionsController;
         [SerializeField] private PlayerAnimator _animationController;
         [SerializeField] private PlayerFeedback _playerFeedback;
+        [SerializeField] private PlayerOptionsController _optionController;
 
         public event Action<bool, bool, bool> OnChangeUnlocks = delegate { };
 
@@ -50,6 +54,13 @@ namespace Mechanics.Player
             _warpAbility = _unlockedWarp;
             _residueAbility = _unlockedResidue;
             UpdateUnlocks();
+        }
+
+        private int _stage;
+
+        private void Update()
+        {
+            CheckCode();
         }
 
         #endregion
@@ -143,6 +154,7 @@ namespace Mechanics.Player
             NullCheckInteractionsController();
             NullCheckAnimationController();
             NullCheckFeedbackController();
+            CheckExistingCode();
         }
 
         private void NullCheckPlayerSettings()
@@ -221,6 +233,144 @@ namespace Mechanics.Player
                 }
             }
         }
+
+        #region Konami Code
+
+        private bool _codeActive;
+        private PlayerOptionsController _codeController;
+
+        private void CheckCode()
+        {
+            if (_codeActive) {
+                if (Keyboard.current.cKey.wasPressedThisFrame) {
+                    _codeController.gameObject.SetActive(!_codeController.isActiveAndEnabled);
+                }
+                return;
+            }
+            bool success = false;
+            switch (_stage) {
+                case 0:
+                case 1:
+                    if (Keyboard.current.wKey.wasPressedThisFrame) success = true;
+                    break;
+                case 2:
+                case 3:
+                    if (Keyboard.current.sKey.wasPressedThisFrame) success = true;
+                    break;
+                case 4:
+                case 6:
+                    if (Keyboard.current.aKey.wasPressedThisFrame) success = true;
+                    break;
+                case 5:
+                case 7:
+                    if (Keyboard.current.dKey.wasPressedThisFrame) success = true;
+                    break;
+                case 8:
+                    if (Keyboard.current.qKey.wasPressedThisFrame) success = true;
+                    break;
+                case 9:
+                    if (Keyboard.current.eKey.wasPressedThisFrame) success = true;
+                    break;
+                case 10:
+                    if (Keyboard.current.enterKey.wasPressedThisFrame) success = true;
+                    break;
+            }
+            if (success) {
+                _stage++;
+                if (_stage > 10) ActivateCode();
+            } else if (Keyboard.current.anyKey.wasPressedThisFrame) {
+                _stage = Keyboard.current.wKey.wasPressedThisFrame ? 1 : 0;
+            }
+        }
+
+        private void CheckExistingCode()
+        {
+            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
+            if (data != null) {
+                _codeActive = data.IsCodeActive;
+                if (_codeActive) {
+                    CreateNewCodeController();
+                    _codeController.gameObject.SetActive(false);
+                }
+            }
+        }
+
+        private void ActivateCode()
+        {
+            _codeActive = true;
+            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
+            if (data == null) {
+                data = ScriptableObject.CreateInstance<PlayerOptionsData>();
+            }
+            data.IsCodeActive = true;
+            CreateNewCodeController();
+        }
+
+        private void CreateNewCodeController()
+        {
+            _codeController = Instantiate(_optionController).GetComponent<PlayerOptionsController>();
+            _codeController.LevelSelector.OnChangeLevel += ChangeLevel;
+            _codeController.Invincibility.OnSelect += SetInvincibility;
+            _codeController.InfiniteJumps.OnSelect += SetInfiniteJumps;
+            _codeController.NoBoltCooldown.OnSelect += SetNoBoltCooldown;
+            _codeController.NoWarpCooldown.OnSelect += SetNoWarpCooldown;
+            _codeController.NoResidueCooldown.OnSelect += SetNoResidueCooldown;
+            _codeController.InfiniteBoltDistance.OnSelect += SetInfiniteBoltDistance;
+            _codeController.BoltMoveSpeed.OnSetValue += SetBoltMoveSpeed;
+        }
+
+        private void ChangeLevel(int levelId)
+        {
+            SceneManager.LoadScene(levelId);
+
+            UIEvents.current.EnableGamePausing();
+            Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        private void SetInvincibility(bool active)
+        {
+            Debug.Log("Invincibility " + (active ? "Active" : "Disabled"));
+        }
+
+        private void SetInfiniteJumps(bool active)
+        {
+            Debug.Log("Infinite Jumps " + (active ? "Active" : "Disabled"));
+            _playerController.SetInfiniteJumps(active);
+        }
+
+        private void SetNoBoltCooldown(bool active)
+        {
+            Debug.Log("Bolt Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            _castingController.BoltIgnoreCooldown = active;
+        }
+
+        private void SetNoWarpCooldown(bool active)
+        {
+            Debug.Log("Warp Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            _castingController.WarpIgnoreCooldown = active;
+        }
+
+        private void SetNoResidueCooldown(bool active)
+        {
+            Debug.Log("Residue Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            _castingController.ResidueIgnoreCooldown = active;
+        }
+
+        private void SetInfiniteBoltDistance(bool active)
+        {
+            Debug.Log("Bolt Infinite Distance " + (active ? "Enabled" : "Disabled"));
+            _castingController.SetBoltInfiniteDistance(active);
+        }
+
+        private void SetBoltMoveSpeed(float value)
+        {
+            Debug.Log("Bolt Move Speed Set To " + Mathf.FloorToInt(value * 100) + "%");
+            _castingController.SetBoltMoveSpeed(value);
+        }
+
+        #endregion
 
         #endregion
     }
