@@ -21,6 +21,7 @@ public class OptionsMenu : MonoBehaviour
         _prefs.Add("Fov", 59f);
         _prefs.Add("Sensitivity", 10f);
         _prefs.Add("FpsCounter", 0f);
+        _prefs.Add("Tutorials", 1f);
         _prefs.Add("GraphicsQuality", 3f);
         _prefs.Add("VSync", 0f);
         _prefs.Add("Fullscreen", 1f);
