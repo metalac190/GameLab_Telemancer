@@ -257,5 +257,19 @@ public class UIEvents : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public event Action OnDisableGamePausing;
+
+    public void DisableGamePausing()
+    {
+        OnDisableGamePausing?.Invoke();
+    }
+
+    public event Action OnAllowGamePausing;
+
+    public void EnableGamePausing()
+    {
+        OnAllowGamePausing?.Invoke();
+    }
+
     #endregion
 }
