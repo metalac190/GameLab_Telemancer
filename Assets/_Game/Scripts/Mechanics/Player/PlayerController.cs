@@ -339,6 +339,11 @@ public class PlayerController : MonoBehaviour {
     }
 #endif
 
+    public void SetInfiniteJumps(bool active)
+    {
+        infiniteJumps = active;
+    }
+
     #endregion
 
 }

@@ -124,6 +124,8 @@ namespace Mechanics.Bolt
             _boltControllers.Remove(controller);
             CurrentBolt = controller;
             controller.gameObject.SetActive(true);
+            controller.SetDistance(_boltInfiniteDistance);
+            controller.SetMoveSpeed(_boltMoveSpeedMultiplier);
         }
 
         private void CreateNewBolt()
@@ -298,6 +300,20 @@ namespace Mechanics.Bolt
         {
             _residueInteractable?.OnDisableWarpResidue();
             _residueInteractable = null;
+        }
+
+        private bool _boltInfiniteDistance;
+
+        public void SetBoltInfiniteDistance(bool active)
+        {
+            _boltInfiniteDistance = active;
+        }
+
+        private float _boltMoveSpeedMultiplier = 1;
+
+        public void SetBoltMoveSpeed(float value)
+        {
+            _boltMoveSpeedMultiplier = value;
         }
 
         #endregion
