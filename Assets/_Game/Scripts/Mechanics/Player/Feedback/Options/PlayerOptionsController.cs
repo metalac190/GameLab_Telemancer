@@ -24,29 +24,6 @@ namespace Mechanics.Player.Feedback.Options
         public PlayerOptionSelector InfiniteBoltDistance => _infiniteBoltDistance;
         public PlayerOptionsSlider BoltMoveSpeed => _boltMoveSpeed;
 
-        private void OnEnable()
-        {
-            UIEvents.current.DisableGamePausing();
-            Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        private void OnDisable()
-        {
-            UIEvents.current.EnableGamePausing();
-            Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        private void Update()
-        {
-            if (Keyboard.current.escapeKey.wasPressedThisFrame) {
-                gameObject.SetActive(false);
-            }
-        }
-
         public void SetData(PlayerOptionsData data)
         {
             _invincibility.SetCurrentItem(data.Invincibility);

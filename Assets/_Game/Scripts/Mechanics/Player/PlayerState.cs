@@ -243,8 +243,10 @@ namespace Mechanics.Player
         private void CheckCode()
         {
             if (_codeActive) {
-                if (Keyboard.current.cKey.wasPressedThisFrame) {
-                    _codeController.gameObject.SetActive(!_codeController.isActiveAndEnabled);
+                if (Keyboard.current.cKey.wasPressedThisFrame ) {
+                    EnableCodeMenu(!_codeController.isActiveAndEnabled);
+                } else if (_codeController.isActiveAndEnabled && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                    EnableCodeMenu(false);
                 }
             }
             bool success = false;
@@ -289,7 +291,7 @@ namespace Mechanics.Player
             if (_codeData == null) return;
             _codeActive = _codeData.IsCodeActive;
             CreateNewCodeController();
-            _codeController.gameObject.SetActive(false);
+            EnableCodeMenu(false);
             _codeController.SetData(_codeData);
         }
 
@@ -306,10 +308,23 @@ namespace Mechanics.Player
             CreateNewCodeController();
         }
 
+        private void EnableCodeMenu(bool enable)
+        {
+            _codeController.gameObject.SetActive(enable);
+            if (enable) {
+                UIEvents.current.DisableGamePausing();
+            } else {
+                UIEvents.current.EnableGamePausing();
+            }
+            Time.timeScale = enable ? 0 : 1;
+            Cursor.lockState = enable ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = enable;
+        }
+
         private void CreateNewCodeController()
         {
             if (_codeController != null) {
-                _codeController.gameObject.SetActive(true);
+                EnableCodeMenu(true);
                 return;
             }
             _codeController = Instantiate(_optionController).GetComponent<PlayerOptionsController>();
