@@ -11,7 +11,9 @@ public abstract class OptionSelector : MonoBehaviour
         GraphicsQuality,
         VSync,
         Fullscreen,
-        AntiAliasing
+        AntiAliasing,
+        SimplifiedVisuals,
+        ViewBobbing
     }
     
     // Have PlayerPrefKey selected via dropdown menu in the inspector
