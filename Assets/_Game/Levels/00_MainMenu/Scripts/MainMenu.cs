@@ -18,12 +18,14 @@ public class MainMenu : MonoBehaviour
         // If no existing save, then hide the continue button
         // ContinueButton.SetEffectActive(false);
 
+        /*
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
 
         hasSave = (savedLevel != 0 && savedCkpt != 0);
         _continueButton.interactable = hasSave;
         _continueButton.GetComponentInChildren<TextMeshProUGUI>().alpha = hasSave ? 1f : 0.4f;
+        */
     }
 
     private void Update()
