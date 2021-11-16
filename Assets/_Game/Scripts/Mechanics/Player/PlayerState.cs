@@ -238,14 +238,16 @@ namespace Mechanics.Player
 
         private bool _codeActive;
         private PlayerOptionsController _codeController;
+        private PlayerOptionsData _codeData;
 
         private void CheckCode()
         {
             if (_codeActive) {
-                if (Keyboard.current.cKey.wasPressedThisFrame) {
-                    _codeController.gameObject.SetActive(!_codeController.isActiveAndEnabled);
+                if (Keyboard.current.cKey.wasPressedThisFrame ) {
+                    EnableCodeMenu(!_codeController.isActiveAndEnabled);
+                } else if (_codeController.isActiveAndEnabled && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                    EnableCodeMenu(false);
                 }
-                return;
             }
             bool success = false;
             switch (_stage) {
@@ -285,29 +287,46 @@ namespace Mechanics.Player
 
         private void CheckExistingCode()
         {
-            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
-            if (data != null) {
-                _codeActive = data.IsCodeActive;
-                if (_codeActive) {
-                    CreateNewCodeController();
-                    _codeController.gameObject.SetActive(false);
-                }
-            }
+            _codeData = FindObjectOfType<PlayerOptionsData>();
+            if (_codeData == null) return;
+            _codeActive = _codeData.IsCodeActive;
+            CreateNewCodeController();
+            EnableCodeMenu(false);
+            _codeController.SetData(_codeData);
         }
 
         private void ActivateCode()
         {
             _codeActive = true;
-            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
-            if (data == null) {
-                data = ScriptableObject.CreateInstance<PlayerOptionsData>();
+            if (_codeData == null) {
+                _codeData = FindObjectOfType<PlayerOptionsData>();
+                if (_codeData == null) {
+                    _codeData = ScriptableObject.CreateInstance<PlayerOptionsData>();
+                }
             }
-            data.IsCodeActive = true;
+            _codeData.IsCodeActive = true;
             CreateNewCodeController();
+        }
+
+        private void EnableCodeMenu(bool enable)
+        {
+            _codeController.gameObject.SetActive(enable);
+            if (enable) {
+                UIEvents.current.DisableGamePausing();
+            } else {
+                UIEvents.current.EnableGamePausing();
+            }
+            Time.timeScale = enable ? 0 : 1;
+            Cursor.lockState = enable ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = enable;
         }
 
         private void CreateNewCodeController()
         {
+            if (_codeController != null) {
+                EnableCodeMenu(true);
+                return;
+            }
             _codeController = Instantiate(_optionController).GetComponent<PlayerOptionsController>();
             _codeController.LevelSelector.OnChangeLevel += ChangeLevel;
             _codeController.Invincibility.OnSelect += SetInvincibility;
@@ -332,42 +351,49 @@ namespace Mechanics.Player
         private void SetInvincibility(bool active)
         {
             Debug.Log("Invincibility " + (active ? "Active" : "Disabled"));
+            _codeData.Invincibility = active;
         }
 
         private void SetInfiniteJumps(bool active)
         {
             Debug.Log("Infinite Jumps " + (active ? "Active" : "Disabled"));
             _playerController.SetInfiniteJumps(active);
+            _codeData.InfiniteJumps = active;
         }
 
         private void SetNoBoltCooldown(bool active)
         {
             Debug.Log("Bolt Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.BoltIgnoreCooldown = active;
+            _codeData.NoBoltCooldown = active;
         }
 
         private void SetNoWarpCooldown(bool active)
         {
             Debug.Log("Warp Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.WarpIgnoreCooldown = active;
+            _codeData.NoWarpCooldown = active;
         }
 
         private void SetNoResidueCooldown(bool active)
         {
             Debug.Log("Residue Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.ResidueIgnoreCooldown = active;
+            _codeData.NoResidueCooldown = active;
         }
 
         private void SetInfiniteBoltDistance(bool active)
         {
             Debug.Log("Bolt Infinite Distance " + (active ? "Enabled" : "Disabled"));
             _castingController.SetBoltInfiniteDistance(active);
+            _codeData.InfiniteBoltDistance = active;
         }
 
         private void SetBoltMoveSpeed(float value)
         {
             Debug.Log("Bolt Move Speed Set To " + Mathf.FloorToInt(value * 100) + "%");
             _castingController.SetBoltMoveSpeed(value);
+            _codeData.BoltMoveSpeed = value;
         }
 
         #endregion

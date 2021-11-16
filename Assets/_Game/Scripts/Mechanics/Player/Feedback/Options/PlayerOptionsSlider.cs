@@ -21,5 +21,11 @@ namespace Mechanics.Player.Feedback.Options
             OnSetValue.Invoke(value);
             _valueText.text = Mathf.FloorToInt(value * 100) + "%";
         }
+
+        public void SetCurrentValue(float value)
+        {
+            _slider.value = value;
+            _valueText.text = Mathf.FloorToInt(value * 100) + "%";
+        }
     }
 }
