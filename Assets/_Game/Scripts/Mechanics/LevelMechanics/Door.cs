@@ -43,13 +43,13 @@ public class Door : LevelActivatable
 
     IEnumerator MoveDoor(float target, bool opening)
     {
-        //Debug.Log("Opening Door");
+        Debug.Log("Opening Door");
         while(opening == IsCurrentlyActive && _door.transform.localPosition.y != target)
         {
             float newPos = Mathf.Lerp(_door.transform.localPosition.y, target, Time.fixedDeltaTime * _moveSpeed);
             _door.transform.localPosition = new Vector3(_door.transform.localPosition.x, newPos, _door.transform.localPosition.z);
             yield return new WaitForEndOfFrame();
         }
-        //Debug.Log("Door open");
+        Debug.Log("Door open");
     }
 }
