@@ -12,13 +12,23 @@ namespace Mechanics.Player.Feedback.Options
 
         public event Action<int> OnChangeLevel = delegate { };
 
+        private int _currentActive = -1;
+
         private void Start()
         {
-            int index = SceneManager.GetActiveScene().buildIndex - _levelStartOffset;
-            for (int x = 0; x < _buttons.Length; x++) {
-                var x1 = x;
-                _buttons[x1].onClick.AddListener(delegate { SelectItem(x1); });
-                _buttons[x1].interactable = x1 != index;
+            for (int i = 0; i < _buttons.Length; i++) {
+                var temp = i;
+                _buttons[temp].onClick.AddListener(delegate { SelectItem(temp); });
+            }
+        }
+
+        private void OnEnable()
+        {
+            int current = SceneManager.GetActiveScene().buildIndex - _levelStartOffset;
+            if (current == _currentActive) return;
+            _currentActive = current;
+            for (int i = 0; i < _buttons.Length; i++) {
+                _buttons[i].interactable = i != _currentActive;
             }
         }
 
