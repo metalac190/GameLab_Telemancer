@@ -65,7 +65,7 @@ public class LoadingManager : MonoBehaviour
 
         // Init new vars
         float hold = 0, time = 0, switchPoint = 0;
-        float holdDuration = 2;
+        float holdDuration = _holdDuration;
         
         // Wait for hold to skip
         while (hold < 1)

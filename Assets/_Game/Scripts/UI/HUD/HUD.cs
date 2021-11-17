@@ -27,6 +27,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Color _xhairColorWarp = new Color(0.6352941f, 0.7490196f, 0.9411765f, 1f);
     [SerializeField] private Color _xhairColorInteract = Color.green;
     private Color _xhairColorNormal = Color.white;
+    [SerializeField] private float _spottedXhairOpacity = 0.1f;
 
     [Header("Respawn Menu")]
     [SerializeField] private GameObject _respawnMenu = null;
@@ -53,7 +54,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private float _FadeOut = 1.2f;
 
     [Header("Debug HUD")]
-    [SerializeField] private GameObject _debugSpellsPnl = null;
+    [SerializeField] private GameObject _debugSpellsPnl;
     [SerializeField] private GameObject _debugStatsPnl = null;
 
     [Header("Debug HUD Ability Colors")]
@@ -97,12 +98,20 @@ public class HUD : MonoBehaviour
         
         // watched listener
         UIEvents.current.OnPlayerWatched += DisplayWatcherIndicator;
+        UIEvents.current.OnPlayerWatched += b =>
+        {
+            //ChangeXhairColor(InteractableEnums.Null);
+            UIEvents.current.ChangeXhairColor(InteractableEnums.Null);
+        };
     }
 
     private void Start()
     {
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
+
+        int showDebugHud = (int)PlayerPrefs.GetFloat("FpsCounter", 0f);
+        _debugMode = showDebugHud == 1;
 
         DisplayDebugHUD(_debugMode);
         _respawnMenu.SetActive(false);
@@ -285,14 +294,26 @@ public class HUD : MonoBehaviour
         // Looking at Interactable is either -1, 0, or 1, for Null, Object, and Interactable, respectfully
         switch (target) {
             case InteractableEnums.WarpInteractable:
-                _xhair.color = _xhairColorWarp;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorWarp.r, _xhairColorWarp.g, _xhairColorWarp.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorWarp;
                 break;
             case InteractableEnums.PlayerInteractable:
-                _xhair.color = _xhairColorInteract;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorInteract.r, _xhairColorInteract.g, _xhairColorInteract.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorInteract;
                 break;
             case InteractableEnums.Object:
             case InteractableEnums.Null:
-                _xhair.color = _xhairColorNormal;
+                if (_spottedIndicatorPnl.activeInHierarchy)
+                    _xhair.color = new Color(_xhairColorNormal.r, _xhairColorNormal.g, _xhairColorNormal.b,
+                        _spottedXhairOpacity);
+                else
+                    _xhair.color = _xhairColorNormal;
                 break;
         }
     }
