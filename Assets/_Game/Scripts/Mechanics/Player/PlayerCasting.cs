@@ -78,6 +78,12 @@ namespace Mechanics.Player
         {
             _boltManager.SetBoltMoveSpeed(value);
         }
+
+        public void SetTedMortal(bool active)
+        {
+            _boltManager.SetTedMortal(active);
+        }
+
         public bool BoltIgnoreCooldown { get; set; }
         public bool WarpIgnoreCooldown { get; set; }
         public bool ResidueIgnoreCooldown { get; set; }
