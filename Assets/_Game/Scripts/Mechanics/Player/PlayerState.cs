@@ -354,6 +354,7 @@ namespace Mechanics.Player
             _codeController.NoResidueCooldown.OnSelect += SetNoResidueCooldown;
             _codeController.InfiniteBoltDistance.OnSelect += SetInfiniteBoltDistance;
             _codeController.BoltMoveSpeed.OnSetValue += SetBoltMoveSpeed;
+            _codeController.MortalTed.OnSelect += SetTedMortal;
             _codeController.OnDisable += DisableMenu;
             _codeController.Refresh();
         }
@@ -367,7 +368,7 @@ namespace Mechanics.Player
         private void SetInvincibility(bool active)
         {
             //Debug.Log("Invincibility " + (active ? "Active" : "Disabled"));
-            _invincible = true;
+            _invincible = active;
         }
 
         private void SetInfiniteJumps(bool active)
@@ -425,6 +426,12 @@ namespace Mechanics.Player
         {
             //Debug.Log("Bolt Move Speed Set To " + Mathf.FloorToInt(value * 100) + "%");
             _castingController.SetBoltMoveSpeed(value);
+        }
+
+        private void SetTedMortal(bool active)
+        {
+            //Debug.Log("Ted is " + (active ? "Now Mortal" : "Still Immortal"));
+            _castingController.SetTedMortal(active);
         }
 
         private void DisableMenu()

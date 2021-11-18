@@ -33,6 +33,7 @@ namespace Mechanics.Bolt
         private float _timeAlive;
         private bool _infiniteDistance;
         private float _moveSpeedMultiplier;
+        private bool _mortalTed;
         private bool _stopMoving;
         private bool _isResidue;
 
@@ -206,23 +207,36 @@ namespace Mechanics.Bolt
             _moveSpeedMultiplier = value;
         }
 
+        public void SetTedMortal(bool active)
+        {
+            _mortalTed = active;
+        }
+
         #endregion
 
         #region Private Functions
 
         private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
         {
-            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
+            var interactable = collisionObj.GetComponent<IWarpInteractable>();
             if (interactable != null) {
                 if (_isResidue) {
                     SetResidue(interactable, collisionPoint, collisionNormal);
                 } else {
                     WarpInteract(interactable, collisionPoint, collisionNormal);
                 }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(collisionPoint, collisionNormal, false);
+                return;
             }
+            if (_mortalTed) {
+                var ted = collisionObj.GetComponent<NPC>();
+                if (ted != null) {
+                    ted.gameObject.SetActive(false);
+                    PlayCollisionParticles(collisionPoint, collisionNormal, true);
+                    return;
+                }
+            }
+            Dissipate(true);
+            PlayCollisionParticles(collisionPoint, collisionNormal, false);
         }
 
         private bool WarpCollisionTesting()

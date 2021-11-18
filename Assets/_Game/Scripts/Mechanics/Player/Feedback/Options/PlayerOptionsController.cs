@@ -19,6 +19,7 @@ namespace Mechanics.Player.Feedback.Options
         [SerializeField] private PlayerOptionSelector _noResidueCooldown = null;
         [SerializeField] private PlayerOptionSelector _infiniteBoltDistance = null;
         [SerializeField] private PlayerOptionsSlider _boltMoveSpeed = null;
+        [SerializeField] private PlayerOptionSelector _mortalTed = null;
 
         public PlayerLevelSelector LevelSelector => _levelSelector;
         public PlayerOptionSelector Invincibility => _invincibility;
@@ -31,6 +32,7 @@ namespace Mechanics.Player.Feedback.Options
         public PlayerOptionSelector NoResidueCooldown => _noResidueCooldown;
         public PlayerOptionSelector InfiniteBoltDistance => _infiniteBoltDistance;
         public PlayerOptionsSlider BoltMoveSpeed => _boltMoveSpeed;
+        public PlayerOptionSelector MortalTed => _mortalTed;
 
         public event Action OnDisable = delegate { };
 
