@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour {
     private bool floating;
     private bool flag_jump, flag_canFloat;
 
+    private Vector3 collisionHitNormal;
+
     // ---
 
     [Header("General Control")]
@@ -123,9 +125,14 @@ public class PlayerController : MonoBehaviour {
             // Apply
             playerFeedback.SetPlayerVelocity(moveVelocity, grounded, walking);
             if (controller.enabled) {
-                controller.Move(moveVelocity * Time.fixedDeltaTime);
+                controller.Move((moveVelocity + (!grounded && moveVelocity.y <= 0f ? SlideOffSurface(moveVelocity, collisionHitNormal) : Vector3.zero)) * Time.fixedDeltaTime);
             }
         }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        collisionHitNormal = hit.normal;
+        //Debug.Log(hit.normal);
     }
 
     #endregion
@@ -261,6 +268,26 @@ public class PlayerController : MonoBehaviour {
         return moveVelocity;*/
     }
 
+    /// <summary>
+    /// Returns a velocity that accounts for sliding the player down a slope
+    /// </summary>
+    /// <param name="moveVelocity">The players intended movement vector</param>
+    /// <param name="hitNormal">The hit normal of the player's collision</param>
+    /// <returns></returns>
+    private Vector3 SlideOffSurface(Vector3 moveVelocity, Vector3 hitNormal) {
+        float angle = Vector3.Angle(Vector3.up, hitNormal);
+        if(controller.slopeLimit < angle && angle < 89.5f) {
+            Vector3 slideVelocity = Vector3.zero;
+            slideVelocity.x = (1 - hitNormal.y) * hitNormal.x * (1f - PlayerState.Settings.SlopeFriction);
+            slideVelocity.z = (1 - hitNormal.y) * hitNormal.z * (1f - PlayerState.Settings.SlopeFriction);
+            slideVelocity *= moveVelocity.magnitude;
+
+            //Debug.Log(string.Format("Sliding off surface with normal {0} and angle {1}, applying slide velocity of {2}", hitNormal, Vector3.Angle(Vector3.up, hitNormal), slideVelocity));
+            return slideVelocity;
+        }
+        return Vector3.zero;
+    }
+
     private IEnumerator CoyoteTime() {
         coyoteTimeActive = true;
         for(float i = 0; i <= PlayerState.Settings.CoyoteJumpTime; i += Time.deltaTime) {
@@ -311,6 +338,11 @@ public class PlayerController : MonoBehaviour {
         TeleportToPosition(playerDebug.targetPosition, playerDebug.offset);
     }
 #endif
+
+    public void SetInfiniteJumps(bool active)
+    {
+        infiniteJumps = active;
+    }
 
     #endregion
 

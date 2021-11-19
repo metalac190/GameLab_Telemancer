@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using AudioSystem;
 using UnityEngine;
 
 namespace Mechanics.Player
@@ -9,6 +9,8 @@ namespace Mechanics.Player
     {
         [Header("Animator")]
         [SerializeField] private Animator _animator;
+        [SerializeField] private float _idleFlairMinDelay = 5f;
+        [SerializeField] private float _idleFlairMaxDelay = 20f;
         [Header("Idle Parameters")]
         [SerializeField] private string _petToadTrigger = "pet_toad";
         [SerializeField] private string _startledTrigger = "startled";
@@ -28,7 +30,10 @@ namespace Mechanics.Player
 
         private bool _missingAnimator;
         private float _jumpTime;
-        private bool _ignoreNextAction = false;
+        
+        private float _idleTime;
+        private float _idleFlairTime;
+        private bool _wasIdleFlairBefore;
 
         private void Awake()
         {
@@ -38,6 +43,7 @@ namespace Mechanics.Player
                     _missingAnimator = true;
                 }
             }
+            _idleTime = 0;
         }
 
         private void OnEnable()
@@ -45,33 +51,65 @@ namespace Mechanics.Player
             ResetToIdle();
         }
 
+        private void Update()
+        {
+            // TODO: Better way of doing idle flair timer
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")) {
+                if (_idleTime == 0) {
+                    _idleFlairTime = Random.Range(_idleFlairMinDelay, _idleFlairMaxDelay);
+                    if (_wasIdleFlairBefore) {
+                        _idleFlairTime *= 2;
+                    }
+                }
+                _idleTime += Time.deltaTime;
+                if (_idleTime >= _idleFlairTime) {
+                    OnIdleFlair();
+                }
+            } else {
+                _idleTime = 0;
+            }
+        }
+
+        public void TriggerAnim(string anim)
+        {
+            _animator.SetTrigger(anim);
+        }
+
         #region Basic Actions
 
         public void OnPetToad()
         {
             if (_missingAnimator) return;
-            _animator.SetTrigger(_petToadTrigger);
+            TriggerAnim(_petToadTrigger);
         }
 
         public void OnStartle()
         {
             if (_missingAnimator) return;
-            _animator.SetTrigger(_startledTrigger);
+            TriggerAnim(_startledTrigger);
+        }
+
+        public void OnIdleFlair()
+        {
+            if (_missingAnimator) return;
+            _wasIdleFlairBefore = true;
+            _idleTime = 0;
+            TriggerAnim(_idleTwitchTrigger);
         }
 
         public void OnJump()
         {
             if (_missingAnimator) return;
-            ResetActionTriggers();
-            _animator.SetTrigger(_jumpTrigger);
             _jumpTime = Time.time;
+            ResetActionTriggers();
+            TriggerAnim(_jumpTrigger);
         }
 
         public void OnFall()
         {
             if (_missingAnimator) return;
-            _animator.SetTrigger(_fallTrigger);
             _jumpTime = Time.time;
+            TriggerAnim(_fallTrigger);
         }
 
         public void OnLand()
@@ -79,7 +117,7 @@ namespace Mechanics.Player
             if (_missingAnimator) return;
             ResetActionTriggers();
             _animator.SetFloat(_airTimeFloat, Time.time - _jumpTime);
-            _animator.SetTrigger(_landTrigger);
+            TriggerAnim(_landTrigger);
         }
 
         public void OnKill()
@@ -94,7 +132,7 @@ namespace Mechanics.Player
         {
             if (_missingAnimator) return;
             ResetCastingTriggers();
-            _animator.SetTrigger(_castBoltTrigger);
+            TriggerAnim(_castBoltTrigger);
         }
 
         // Player warped (right click) with warp unlocked. Play anim and return to idle.
@@ -103,7 +141,7 @@ namespace Mechanics.Player
             if (_missingAnimator) return;
             ResetActionTriggers();
             ResetCastingTriggers();
-            _animator.SetTrigger(_warpTrigger);
+            TriggerAnim(_warpTrigger);
         }
 
         // Player hit interactable with bolt. Play anim and return to idle.
@@ -112,7 +150,7 @@ namespace Mechanics.Player
             if (_missingAnimator) return;
             ResetActionTriggers();
             ResetCastingTriggers();
-            _animator.SetTrigger(_interactableTrigger);
+            TriggerAnim(_interactableTrigger);
         }
 
         // Player used residue. Play hit interactable and return to idle.
@@ -126,8 +164,7 @@ namespace Mechanics.Player
         {
             if (_missingAnimator) return;
             ResetCastingTriggers();
-            _animator.SetTrigger(_relayInteract);
-            _ignoreNextAction = true;
+            TriggerAnim(_relayInteract);
         }
 
         // Player was holding magic, but the bolt dissipated. Return to Idle
@@ -135,11 +172,11 @@ namespace Mechanics.Player
         {
             if (_missingAnimator) return;
             if (residueReady) {
-                _animator.SetTrigger(_residueIdleTrigger);
+                TriggerAnim(_residueIdleTrigger);
             } else {
                 ResetActionTriggers();
                 ResetCastingTriggers();
-                _animator.SetTrigger(_boltDissipateTrigger);
+                TriggerAnim(_boltDissipateTrigger);
             }
         }
 
