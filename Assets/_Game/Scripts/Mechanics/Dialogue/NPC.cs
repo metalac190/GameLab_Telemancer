@@ -63,13 +63,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
             currentPopup = interactablePopup;
 
         currentPopup.SetActive(true);
-
-        if (voiceOfTed)
-        {
-            sfxTedAudioSource = voiceOfTed?.Play(transform.position);
-            sfxTedAudioSource.Stop();
-            sfxTedAudioSource.loop = true;
-        }
         dialogueUI.onSpeakerChanged?.AddListener(TedSounds);
     }
 
@@ -147,7 +140,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     {
         if (dialogueUI.currentSpeaker == characterName)
         {
-            sfxTedAudioSource.Play();
+            // sfxTedAudioSource.Play();
         }
         else { if (sfxTedAudioSource) sfxTedAudioSource.Stop(); }
     }
