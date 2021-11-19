@@ -31,6 +31,9 @@ namespace Mechanics.Bolt
 
         private bool _checkAlive = true;
         private float _timeAlive;
+        private bool _infiniteDistance;
+        private float _moveSpeedMultiplier;
+        private bool _mortalTed;
         private bool _stopMoving;
         private bool _isResidue;
 
@@ -194,23 +197,46 @@ namespace Mechanics.Bolt
             Disable();
         }
 
+        public void SetDistance(bool infinite)
+        {
+            _infiniteDistance = infinite;
+        }
+
+        public void SetMoveSpeed(float value)
+        {
+            _moveSpeedMultiplier = value;
+        }
+
+        public void SetTedMortal(bool active)
+        {
+            _mortalTed = active;
+        }
+
         #endregion
 
         #region Private Functions
 
         private void Collide(GameObject collisionObj, Vector3 collisionPoint, Vector3 collisionNormal)
         {
-            IWarpInteractable interactable = collisionObj.GetComponent<IWarpInteractable>();
+            var interactable = collisionObj.GetComponent<IWarpInteractable>();
             if (interactable != null) {
                 if (_isResidue) {
                     SetResidue(interactable, collisionPoint, collisionNormal);
                 } else {
                     WarpInteract(interactable, collisionPoint, collisionNormal);
                 }
-            } else {
-                Dissipate(true);
-                PlayCollisionParticles(collisionPoint, collisionNormal, false);
+                return;
             }
+            if (_mortalTed) {
+                var ted = collisionObj.GetComponent<NPC>();
+                if (ted != null) {
+                    ted.gameObject.SetActive(false);
+                    PlayCollisionParticles(collisionPoint, collisionNormal, true);
+                    return;
+                }
+            }
+            Dissipate(true);
+            PlayCollisionParticles(collisionPoint, collisionNormal, false);
         }
 
         private bool WarpCollisionTesting()
@@ -303,7 +329,7 @@ namespace Mechanics.Bolt
         private void MoveBolt()
         {
             if (_missingRigidbody) return;
-            _rb.MovePosition(transform.position + _visuals.forward * PlayerState.Settings.BoltMoveSpeed);
+            _rb.MovePosition(transform.position + (_visuals.forward * PlayerState.Settings.BoltMoveSpeed * _moveSpeedMultiplier));
         }
 
         private void CollisionCheck()
@@ -318,6 +344,7 @@ namespace Mechanics.Bolt
 
         private void CheckLifetime()
         {
+            if (_infiniteDistance) return;
             _timeAlive += Time.deltaTime;
             _feedback.SetBoltLifetime(_timeAlive, PlayerState.Settings.BoltLifeSpan);
             if (!_checkAlive) return;

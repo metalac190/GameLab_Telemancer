@@ -10,10 +10,11 @@ public class YarnManager : MonoBehaviour
 {
     public DialogueRunner dialogueRunner;
     public DialogueRunner tipRunner;
+    [SerializeField] private GameObject tipContainer;
     [SerializeField] private PlayerState player;
     [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
-    [SerializeField] private CanvasGroup tipGroup;
-    private int numTalks = 20;
+    [SerializeField] private CanvasGroup tipGroup = null;
+    private int numTalks = 30;
     private int temp;
 
     void Start()
@@ -37,6 +38,18 @@ public class YarnManager : MonoBehaviour
         // Randomize Ted talks once
         if (PlayerPrefs.GetString("TedTalks") == "")
             RandomizeTedTalks();
+    }
+
+    private void Awake()
+    {
+        UIEvents.current.OnShowTutorials += () => DisplayTutorials(true);
+        UIEvents.current.OnHideTutorials += () => DisplayTutorials(false);
+    }
+
+    private void DisplayTutorials(bool isEnabled)
+    {
+        Debug.Log("Changed");
+        tipContainer.SetActive(isEnabled);
     }
 
     public void DialogueStart()

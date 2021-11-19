@@ -8,7 +8,7 @@ public class TedTip : MonoBehaviour
     public bool showCollidersInGame = false;
     private Collider triggerArea;
     private DialogueRunner runner;
-    [SerializeField] string tipNode;
+    [SerializeField] string tipNode = null;
     [SerializeField] private float fadeTime = 1;
 
     private void Start()
