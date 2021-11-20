@@ -3,17 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager current;
     private List<string> _achievementList;
     private List<string[]> _achievementDetails;
-    private Queue<int> _achievementQueue;
 
     [Header("Achievement UI")] 
     [SerializeField] private GameObject _achvContainer;
     [SerializeField] private TMP_Text _achvName, _achvDesc;
+
+    [Header("Animation Timing")] 
+    [SerializeField] private float moveUpDuration = 1f;
+    [SerializeField] private float holdDuration = 2.5f;
+    [SerializeField] private float moveDownDuration = 0.8f;
 
     public enum Achievements
     {
@@ -30,44 +35,58 @@ public class AchievementManager : MonoBehaviour
         ParTimeLvl3 = 10,
         KonamiCode = 11
     }
-    
+
+    public void Update()
+    {
+        if (Keyboard.current.lKey.wasPressedThisFrame)
+        {
+            unlockAchievement(Achievements.Reach16Speed);
+        }
+    }
+
     public void Awake()
     {
         current = this;
-
+        _achievementList = new List<string>();
+        _achievementDetails = new List<string[]>();
+        
         _achievementList.Add("achv_Die15Times");
         _achievementDetails.Add(new string[]
         {
             "Mind The Gap",
-            "Have Ted save you from falling 15 times"
+            "Have Ted save you from falling 15 times",
+            "Hidden"
         });
         
         _achievementList.Add("achv_KillAllTeds");
         _achievementDetails.Add(new string[]
         {
             "Bad Ending",
-            "Kill every Ted in every level"
+            "Kill every Ted in every level",
+            "Hidden"
         });
         
         _achievementList.Add("achv_AllDialogue");
         _achievementDetails.Add(new string[]
         {
             "Lore Master",
-            "Read all 75 Ted interactions"
+            "Read all Ted interactions"
         });
         
         _achievementList.Add("achv_GoFast");
         _achievementDetails.Add(new string[]
         {
             "It's Not A Movement Shooter...",
-            "Reach a velocity of 16 units per second"
+            "Reach a velocity of 16 units per second",
+            "Hidden"
         });
         
         _achievementList.Add("achv_RockOOB");
         _achievementDetails.Add(new string[]
         {
             "Working As Intended",
-            "Have a rock fall out of the playable area"
+            "Have a rock fall out of the playable area",
+            "Hidden"
         });
         
         _achievementList.Add("achv_EasterEggsL1");
@@ -115,59 +134,117 @@ public class AchievementManager : MonoBehaviour
         _achievementList.Add("achv_KonamiCode");
         _achievementDetails.Add(new string[]
         {
-            "Up Up Down Down...",
-            "Unlock the cheats menu"
+            "Up Up Down Down Left Right...",
+            "Unlock the cheats menu",
+            "Hidden"
         });
     }
-    
-    
+
+    public void Start()
+    {
+        _achvContainer.SetActive(false);
+    }
 
     public bool isUnlocked(Achievements achv)
     {
         int a = PlayerPrefs.GetInt(_achievementList[(int)achv], 0);
         return a == 1;
     }
-
-    public void unlockAchevement(Achievements achv)
+    
+    public bool isUnlocked(int x)
     {
-        PlayerPrefs.SetInt(_achievementList[(int)achv], 1);
-        PlayerPrefs.Save();
-        _achievementQueue.Enqueue((int)achv);
+        int a = PlayerPrefs.GetInt(_achievementList[x], 0);
+        return a == 1;
     }
 
-    private IEnumerator playAnimation()
+    public void unlockAchievement(Achievements achv)
     {
-        while (_achievementQueue.Count != 0)
+        if (isUnlocked(achv)) return;
+        
+        PlayerPrefs.SetInt(_achievementList[(int)achv], 1);
+        PlayerPrefs.Save();
+        StartCoroutine(playAnimation(achv));
+    }
+
+    private IEnumerator playAnimation(Achievements achv)
+    {
+        // init values
+        float time = 0;
+        
+        _achvContainer.SetActive(true);
+        _achvContainer.transform.localPosition = new Vector3(0, -400, 0);
+            
+        // change text
+        _achvName.text = _achievementDetails[(int)achv][0];
+        _achvDesc.text = _achievementDetails[(int)achv][1];
+
+        // move up from offscreen
+        Vector3 startPosition = transform.localPosition;
+        Vector3 targetPosition = new Vector3(0, 0, 0);
+
+        while (time < moveUpDuration)
         {
-            int x = _achievementQueue.Dequeue();
+            float t = time / moveUpDuration;
+            t = t * t * (3f - 2f * t);
             
-            _achvContainer.SetActive(true);
-            _achvContainer.transform.localPosition
-            
-            // change text
-            _achvName.text = _achievementDetails[x][0];
-            _achvDesc.text = _achievementDetails[x][1];
-
-            // move up from offscreen
-            
-            
-            // hold
-
-            // move down to offscreen
-            
-            _achvContainer.SetActive(false);
+            transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            time += Time.deltaTime;
+            yield return null;
         }
+        transform.localPosition = targetPosition;
+            
+        // hold
+        yield return new WaitForSecondsRealtime(holdDuration);
+
+        // move down to offscreen
+        startPosition = transform.localPosition;
+        targetPosition = new Vector3(0, -400, 0);
+        time = 0;
+
+        while (time < moveDownDuration)
+        {
+            float t = time / moveDownDuration;
+            t = t * t * (3f - 2f * t);
+            
+            transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.localPosition = targetPosition;
+            
+        // hide container
+        _achvContainer.SetActive(false);
 
         yield return null;
     }
 
-    public string getAchevementName(Achievements achv)
+    public string getAchievementName(Achievements achv)
     {
         return _achievementDetails[(int)achv][0];
     }
     
-    public string getAchevementDesc(Achievements achv)
+    public string getAchievementName(int a)
+    {
+        return _achievementDetails[a][0];
+    }
+    
+    public string getAchievementDesc(Achievements achv)
     {
         return _achievementDetails[(int)achv][1];
+    }
+    
+    public string getAchievementDesc(int a)
+    {
+        return _achievementDetails[a][1];
+    }
+
+    public int getAchievementCount()
+    {
+        return _achievementList.Count;
+    }
+
+    public bool isDescHidden(int a)
+    {
+        return _achievementDetails[a].Length == 3;
     }
 }
