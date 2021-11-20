@@ -21,9 +21,15 @@ namespace Mechanics.Player.Feedback.Options
 
         public void SelectItem(bool on)
         {
+            _on = on;
             _offButton.interactable = on;
             _onButton.interactable = !on;
             OnSelect?.Invoke(on);
+        }
+
+        public void Refresh()
+        {
+            OnSelect?.Invoke(_on);
         }
     }
 }

@@ -30,9 +30,13 @@ namespace Mechanics.Player
         private bool _boltAbility;
         private bool _warpAbility;
         private bool _residueAbility;
+        private int _boltAbilityState;
+        private int _warpAbilityState;
+        private int _residueAbilityState;
 
         private Vector3 _defaultCheckpoint;
         private bool _locked;
+        private bool _invincible;
         private bool _isAlive = true;
         private bool _isPaused = true;
 
@@ -54,6 +58,7 @@ namespace Mechanics.Player
             _warpAbility = _unlockedWarp;
             _residueAbility = _unlockedResidue;
             UpdateUnlocks();
+            CheckExistingCode();
         }
 
         private int _stage;
@@ -109,7 +114,7 @@ namespace Mechanics.Player
 
         public void OnKill()
         {
-            if (!_isAlive) return;
+            if (!_isAlive || _invincible) return;
             _isAlive = false;
             _animationController.OnKill();
             UIEvents.current.PlayerDied();
@@ -141,7 +146,10 @@ namespace Mechanics.Player
 
         private void UpdateUnlocks()
         {
-            OnChangeUnlocks.Invoke(_boltAbility, _warpAbility, _residueAbility);
+            bool bolt = _boltAbilityState == 0 ? _boltAbility : _boltAbilityState > 0;
+            bool warp = _warpAbilityState == 0 ? _warpAbility : _warpAbilityState > 0;
+            bool residue = _residueAbilityState == 0 ? _residueAbility : _residueAbilityState > 0;
+            OnChangeUnlocks.Invoke(bolt, warp, residue);
         }
 
         #region Null Checks
@@ -154,7 +162,6 @@ namespace Mechanics.Player
             NullCheckInteractionsController();
             NullCheckAnimationController();
             NullCheckFeedbackController();
-            CheckExistingCode();
         }
 
         private void NullCheckPlayerSettings()
@@ -237,42 +244,49 @@ namespace Mechanics.Player
         #region Konami Code
 
         private bool _codeActive;
+        private bool _resetGamePausing;
         private PlayerOptionsController _codeController;
 
         private void CheckCode()
         {
+            if (FlagCantAct()) return;
             if (_codeActive) {
                 if (Keyboard.current.cKey.wasPressedThisFrame) {
-                    _codeController.gameObject.SetActive(!_codeController.isActiveAndEnabled);
+                    EnableCodeMenu(!_codeController.isActiveAndEnabled);
+                } else if (_codeController.isActiveAndEnabled && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                    _resetGamePausing = true;
+                    EnableCodeMenu(false);
+                } else if (_resetGamePausing && Keyboard.current.escapeKey.wasReleasedThisFrame) {
+                    UIEvents.current.EnableGamePausing();
+                    _resetGamePausing = false;
                 }
-                return;
             }
             bool success = false;
             switch (_stage) {
                 case 0:
                 case 1:
-                    if (Keyboard.current.wKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.wKey.wasPressedThisFrame || Keyboard.current.upArrowKey.wasPressedThisFrame) success = true;
                     break;
                 case 2:
                 case 3:
-                    if (Keyboard.current.sKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.sKey.wasPressedThisFrame || Keyboard.current.downArrowKey.wasPressedThisFrame) success = true;
                     break;
                 case 4:
                 case 6:
-                    if (Keyboard.current.aKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.wasPressedThisFrame) success = true;
                     break;
                 case 5:
                 case 7:
-                    if (Keyboard.current.dKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame) success = true;
                     break;
                 case 8:
-                    if (Keyboard.current.qKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.bKey.wasPressedThisFrame) success = true;
                     break;
                 case 9:
-                    if (Keyboard.current.eKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.aKey.wasPressedThisFrame) success = true;
                     break;
                 case 10:
-                    if (Keyboard.current.enterKey.wasPressedThisFrame) success = true;
+                    if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame) success = true;
                     break;
             }
             if (success) {
@@ -285,89 +299,144 @@ namespace Mechanics.Player
 
         private void CheckExistingCode()
         {
-            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
-            if (data != null) {
-                _codeActive = data.IsCodeActive;
-                if (_codeActive) {
-                    CreateNewCodeController();
-                    _codeController.gameObject.SetActive(false);
-                }
-            }
+            _codeController = PlayerOptionsController.Instance;
+            if (_codeController == null) return;
+            _codeActive = true;
+            RefreshCode();
         }
 
         private void ActivateCode()
         {
             _codeActive = true;
-            PlayerOptionsData data = FindObjectOfType<PlayerOptionsData>();
-            if (data == null) {
-                data = ScriptableObject.CreateInstance<PlayerOptionsData>();
-            }
-            data.IsCodeActive = true;
-            CreateNewCodeController();
+            CheckCodeController();
+            RefreshCode();
+            EnableCodeMenu(true);
         }
 
-        private void CreateNewCodeController()
+        private void EnableCodeMenu(bool enable)
         {
-            _codeController = Instantiate(_optionController).GetComponent<PlayerOptionsController>();
+            _codeController.gameObject.SetActive(enable);
+            if (enable) {
+                UIEvents.current.DisableGamePausing();
+            } else if (!_resetGamePausing) {
+                UIEvents.current.EnableGamePausing();
+            }
+            Time.timeScale = enable ? 0 : 1;
+            Cursor.lockState = enable ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = enable;
+            bool flagCantAct = FlagCantAct() || enable;
+            _castingController.FlagCantAct = flagCantAct;
+            _playerController.flag_cantAct = flagCantAct;
+            _interactionsController.FlagCantAct = flagCantAct;
+        }
+
+        private void CheckCodeController()
+        {
+            if (_codeController == null) {
+                _codeController = PlayerOptionsController.Instance;
+                if (_codeController == null) {
+                    _codeController = Instantiate(_optionController);
+                    DontDestroyOnLoad(_codeController);
+                }
+            }
+        }
+
+        private void RefreshCode()
+        {
             _codeController.LevelSelector.OnChangeLevel += ChangeLevel;
             _codeController.Invincibility.OnSelect += SetInvincibility;
             _codeController.InfiniteJumps.OnSelect += SetInfiniteJumps;
+            _codeController.BoltUnlocked.OnSelect += SetBoltUnlocked;
+            _codeController.WarpUnlocked.OnSelect += SetWarpUnlocked;
+            _codeController.ResidueUnlocked.OnSelect += SetResidueUnlocked;
             _codeController.NoBoltCooldown.OnSelect += SetNoBoltCooldown;
             _codeController.NoWarpCooldown.OnSelect += SetNoWarpCooldown;
             _codeController.NoResidueCooldown.OnSelect += SetNoResidueCooldown;
             _codeController.InfiniteBoltDistance.OnSelect += SetInfiniteBoltDistance;
             _codeController.BoltMoveSpeed.OnSetValue += SetBoltMoveSpeed;
+            _codeController.MortalTed.OnSelect += SetTedMortal;
+            _codeController.OnDisable += DisableMenu;
+            _codeController.Refresh();
         }
 
         private void ChangeLevel(int levelId)
         {
+            EnableCodeMenu(false);
             SceneManager.LoadScene(levelId);
-
-            UIEvents.current.EnableGamePausing();
-            Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         private void SetInvincibility(bool active)
         {
-            Debug.Log("Invincibility " + (active ? "Active" : "Disabled"));
+            //Debug.Log("Invincibility " + (active ? "Active" : "Disabled"));
+            _invincible = active;
         }
 
         private void SetInfiniteJumps(bool active)
         {
-            Debug.Log("Infinite Jumps " + (active ? "Active" : "Disabled"));
+            //Debug.Log("Infinite Jumps " + (active ? "Active" : "Disabled"));
             _playerController.SetInfiniteJumps(active);
+        }
+
+        private void SetBoltUnlocked(int state)
+        {
+            //Debug.Log("Warp " + (active ? "Unlocked" : "Locked"));
+            _boltAbilityState = state;
+            UpdateUnlocks();
+        }
+
+        private void SetWarpUnlocked(int state)
+        {
+            //Debug.Log("Warp " + (active ? "Unlocked" : "Locked"));
+            _warpAbilityState = state;
+            UpdateUnlocks();
+        }
+
+        private void SetResidueUnlocked(int state)
+        {
+            //Debug.Log("Residue " + (active ? "Unlocked" : "Locked"));
+            _residueAbilityState = state;
+            UpdateUnlocks();
         }
 
         private void SetNoBoltCooldown(bool active)
         {
-            Debug.Log("Bolt Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            //Debug.Log("Bolt Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.BoltIgnoreCooldown = active;
         }
 
         private void SetNoWarpCooldown(bool active)
         {
-            Debug.Log("Warp Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            //Debug.Log("Warp Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.WarpIgnoreCooldown = active;
         }
 
         private void SetNoResidueCooldown(bool active)
         {
-            Debug.Log("Residue Cooldown " + (active ? "Disabled" : "Re-enabled"));
+            //Debug.Log("Residue Cooldown " + (active ? "Disabled" : "Re-enabled"));
             _castingController.ResidueIgnoreCooldown = active;
         }
 
         private void SetInfiniteBoltDistance(bool active)
         {
-            Debug.Log("Bolt Infinite Distance " + (active ? "Enabled" : "Disabled"));
+            //Debug.Log("Bolt Infinite Distance " + (active ? "Enabled" : "Disabled"));
             _castingController.SetBoltInfiniteDistance(active);
         }
 
         private void SetBoltMoveSpeed(float value)
         {
-            Debug.Log("Bolt Move Speed Set To " + Mathf.FloorToInt(value * 100) + "%");
+            //Debug.Log("Bolt Move Speed Set To " + Mathf.FloorToInt(value * 100) + "%");
             _castingController.SetBoltMoveSpeed(value);
+        }
+
+        private void SetTedMortal(bool active)
+        {
+            //Debug.Log("Ted is " + (active ? "Now Mortal" : "Still Immortal"));
+            _castingController.SetTedMortal(active);
+        }
+
+        private void DisableMenu()
+        {
+            EnableCodeMenu(false);
         }
 
         #endregion
