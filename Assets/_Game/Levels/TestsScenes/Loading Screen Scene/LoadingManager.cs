@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class LoadingManager : MonoBehaviour
 {
     
-    [SerializeField] private float _textFadeIn = 1, _holdDuration = 2;
+    [SerializeField] private float _textFadeIn = 1, _holdDuration = 0.75f;
     [SerializeField] private GameObject _progressBarContainer = null;
     [SerializeField] private Image _progressBar = null;
     [SerializeField] private TextMeshProUGUI _helperText = null;
