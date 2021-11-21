@@ -16,10 +16,24 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private int offset, randNum, talk;
     private string[] talks;
     private int talkLimit;
+    private int maxTalks = 3;
 
     public GameObject interactablePopup, storyPopup, currentPopup;
     private bool hasStory = false, storyFinished = false, firstInteract = true;
-    public bool dialogueFinished = true, currentSpeaker = false;
+    public bool dialogueFinished = true;
+    private bool currentSpeaker = false;
+    private bool test = false;
+    public bool CurrentSpeaker
+    {
+        get { return currentSpeaker; }
+        set
+        {
+            if (value == currentSpeaker) return;
+
+            currentSpeaker = value;
+            UpdateIsTalking(inConversation, currentSpeaker);
+        }
+    }
 
     [Header("SFX Hookup")]
     [SerializeField] SFXLoop voiceOfTed = null;
@@ -49,13 +63,15 @@ public class NPC : MonoBehaviour, IHoverInteractable
             currentPopup = interactablePopup;
 
         currentPopup.SetActive(true);
+        dialogueUI.onSpeakerChanged?.AddListener(TedSounds);
     }
 
     void Update()
     {
         if (runner.IsDialogueRunning)
         {
-            if (dialogueUI.currentSpeaker == "Ted")
+
+            if (dialogueUI.currentSpeaker == characterName)
             {
                 currentSpeaker = true;
                 UpdateIsTalking(true, true);
@@ -74,7 +90,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
         }
         else
         {
-            if (talkLimit >= 5 && sfxTedExhaustedCue == false)
+            if (talkLimit >= maxTalks && sfxTedExhaustedCue == false)
             {
                 if (sfxTedAudioSource) sfxTedAudioSource.Stop();
                 sfxTedExhaustedCue = true;
@@ -88,8 +104,10 @@ public class NPC : MonoBehaviour, IHoverInteractable
             currentSpeaker = false;
             UpdateIsTalking(false, false);
         }
-        if (allowGamePausing) {
-            if (Keyboard.current.escapeKey.wasReleasedThisFrame || !Keyboard.current.escapeKey.isPressed) {
+        if (allowGamePausing)
+        {
+            if (Keyboard.current.escapeKey.wasReleasedThisFrame || !Keyboard.current.escapeKey.isPressed)
+            {
                 UIEvents.current.EnableGamePausing();
                 allowGamePausing = false;
                 //Debug.Log("Allow Pausing");
@@ -99,12 +117,16 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     private void UpdateIsTalking(bool conversation, bool talking)
     {
-        if (conversation != inConversation) {
+        if (conversation != inConversation)
+        {
             //Debug.Log("Start Conversation");
             inConversation = conversation;
-            if (conversation) {
+            if (conversation)
+            {
                 UIEvents.current.DisableGamePausing();
-            } else {
+            }
+            else
+            {
                 allowGamePausing = true;
                 //Debug.Log("End Conversation");
             }
@@ -114,16 +136,25 @@ public class NPC : MonoBehaviour, IHoverInteractable
         _animator.SetTalking(talking);
     }
 
+    private void TedSounds()
+    {
+        if (dialogueUI.currentSpeaker == characterName)
+        {
+            // sfxTedAudioSource.Play();
+        }
+        else { if (sfxTedAudioSource) sfxTedAudioSource.Stop(); }
+    }
+
     public void OnInteract()
     {
         if (!runner.IsDialogueRunning)
         {
-            if (voiceOfTed) sfxTedAudioSource = voiceOfTed.Play(transform.position);
 
             if (firstInteract)
             {
                 firstInteract = false;
                 runner.onDialogueComplete.AddListener(DialogueCompleted);
+
             }
 
             currentPopup.SetActive(false);
@@ -155,7 +186,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string RandomTedTalk()
     {
         string nodeString = "TedTalk";
-        if (talkLimit < 5)
+        if (talkLimit < maxTalks)
         {
             nodeString += GetNextTalk();
         }
@@ -164,13 +195,14 @@ public class NPC : MonoBehaviour, IHoverInteractable
             sfxTedExhaustedCue = false;
             nodeString = "Exhausted";
             runner.onDialogueComplete.RemoveListener(DialogueCompleted);
+            dialogueUI.onSpeakerChanged.RemoveListener(TedSounds);
         }
         return nodeString;
     }
 
     public void DialogueCompleted()
     {
-        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+        sfxTedAudioSource.Stop();
         UpdateIsTalking(false, false);
         if (hasStory && !storyFinished)
         {
