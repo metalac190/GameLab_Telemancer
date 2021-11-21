@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class AchievementManager : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class AchievementManager : MonoBehaviour
         Die15Times = 0,
         KillAllTeds = 1,
         AllDialogue = 2,
-        Reach16Speed = 3,
+        Reach14Speed = 3,
         RockOutOfBounds = 4,
         AllLvl1EasterEggs = 5,
         AllLvl2EasterEggs = 6,
@@ -40,7 +41,7 @@ public class AchievementManager : MonoBehaviour
     {
         if (Keyboard.current.lKey.wasPressedThisFrame)
         {
-            unlockAchievement(Achievements.Reach16Speed);
+            unlockAchievement(Achievements.Reach14Speed);
         }
     }
 
@@ -77,7 +78,7 @@ public class AchievementManager : MonoBehaviour
         _achievementDetails.Add(new string[]
         {
             "It's Not A Movement Shooter...",
-            "Reach a velocity of 16 units per second",
+            "Reach a velocity of 14 units per second",
             "Hidden"
         });
         
@@ -246,5 +247,30 @@ public class AchievementManager : MonoBehaviour
     public bool isDescHidden(int a)
     {
         return _achievementDetails[a].Length == 3;
+    }
+
+    public void CheckSpeedrunTime(float t)
+    {
+        float min = Mathf.FloorToInt(t / 60);
+        float sec = Mathf.FloorToInt(t % 60);
+        var lvl = SceneManager.GetActiveScene().buildIndex;
+        switch (lvl)
+        {
+            case 2:
+                //lvl 1
+                if (sec <= 45)
+                    unlockAchievement(Achievements.ParTimeLvl1);
+                break;
+            case 3:
+                //lvl 2
+                if (min < 1 || (min < 2 && sec < 1))
+                    unlockAchievement(Achievements.ParTimeLvl2);
+                break;
+            case 4:
+                //lvl 3
+                if (min < 1 || (min < 2 && sec <= 10))
+                    unlockAchievement(Achievements.ParTimeLvl3);
+                break;
+        }
     }
 }
