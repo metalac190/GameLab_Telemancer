@@ -14520,6 +14520,8 @@ GameObject:
   - component: {fileID: 7801277640439604066}
   - component: {fileID: 7801277640439604077}
   - component: {fileID: 7801277640439604076}
+  - component: {fileID: 6487008056036340776}
+  - component: {fileID: 8204908941813313249}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -14616,6 +14618,32 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &6487008056036340776
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801277640439604078}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &8204908941813313249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801277640439604078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e59d507c1f03c6442b3db5af1712f769, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hudGroup: {fileID: 6487008056036340776}
+  septemberArms: {fileID: 0}
 --- !u!1 &7841318055852316430
 GameObject:
   m_ObjectHideFlags: 0
