@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using UnityEngine.SceneManagement;
 
 public class StatsMenu : MonoBehaviour
 {
@@ -33,14 +34,16 @@ public class StatsMenu : MonoBehaviour
     private bool _playerMoved = false;
     private bool _gamePaused = false;
 
+    private bool _hasMovementAchievement;
+
     private void Start()
     {
         // add listeners
         //UIEvents.current.OnCastBolt += UpdatePlayerMoved;
         UIEvents.current.OnRestartLevel += ResetTimer;
-        UIEvents.current.OnAcquireWarpScroll += () => _timerRunning = false;
-        UIEvents.current.OnAcquireResidueScroll += () => _timerRunning = false;
-        UIEvents.current.OnAcquireGameEndScroll += () => _timerRunning = false;
+        UIEvents.current.OnAcquireWarpScroll += StopTimer;
+        UIEvents.current.OnAcquireResidueScroll += StopTimer;
+        UIEvents.current.OnAcquireGameEndScroll += StopTimer;
         UIEvents.current.OnPauseGame += b => _gamePaused = b;
         
         // reset colors
@@ -52,6 +55,10 @@ public class StatsMenu : MonoBehaviour
         _player = FindObjectOfType<CharacterController>();
         if (_player == null)
             _positionValue.text = "[Player Not Found]";
+        
+        // check if the player already has the movement achievement
+        _hasMovementAchievement = AchievementManager.current.isUnlocked(
+            AchievementManager.Achievements.Reach14Speed);
     }
 
     private void Awake()
@@ -79,6 +86,8 @@ public class StatsMenu : MonoBehaviour
         _playerVelocity = _player.velocity;
         _playerVelocity.y = 0;
         _speedometerValue.text = _playerVelocity.magnitude.ToString("F2") + " ups";
+        if (!_hasMovementAchievement && _playerVelocity.magnitude >= 14)
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.Reach14Speed);
         
         // update position
         _playerPosition = _player.transform.position;
@@ -105,6 +114,13 @@ public class StatsMenu : MonoBehaviour
         _currentTime = 0;
         _timerRunning = false;
         _playerMoved = false;
+    }
+
+    // Stop the speedrun timer and check for speedrun achievements
+    private void StopTimer()
+    {
+        _timerRunning = false;
+        AchievementManager.current.CheckSpeedrunTime(_currentTime);
     }
 
     private void UpdateBoltCounter(bool boltSucceeded)
