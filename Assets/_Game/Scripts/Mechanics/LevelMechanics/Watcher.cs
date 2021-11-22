@@ -86,6 +86,7 @@ public class Watcher : MonoBehaviour
                         _isPlayerInView = true;
                         OnPlayerEnteredView();
                     }
+                    Debug.DrawLine(_visionSource.transform.position, target.position);
                 }
                 else if(_isPlayerInView)
                 {
