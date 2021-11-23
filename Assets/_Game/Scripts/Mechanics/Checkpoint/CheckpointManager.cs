@@ -73,6 +73,8 @@ public class CheckpointManager : MonoBehaviour
         PlayerPrefs.Save();
         
         Debug.Log("Checkpoint " + ckptNumber + " reached; Respawn point set to " + spawn.position);
+        
+        UIEvents.current.NotifyPlayer("Checkpoint Reached");
     }
 
     private void RestartLevel()
