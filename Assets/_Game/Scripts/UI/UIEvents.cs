@@ -201,7 +201,14 @@ public class UIEvents : MonoBehaviour
     {
         OnHideTutorials?.Invoke();
     }
-    
+
+    public event Action<string> OnNotifyPlayer;
+
+    public void NotifyPlayer(string str)
+    {
+        OnNotifyPlayer?.Invoke(str);
+    }
+
     #endregion
 
     /* ----------------------------------------------------------------------------------------- */

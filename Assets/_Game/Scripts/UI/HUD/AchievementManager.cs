@@ -37,14 +37,6 @@ public class AchievementManager : MonoBehaviour
         KonamiCode = 11
     }
 
-    public void Update()
-    {
-        if (Keyboard.current.lKey.wasPressedThisFrame)
-        {
-            unlockAchievement(Achievements.Reach14Speed);
-        }
-    }
-
     public void Awake()
     {
         current = this;
@@ -62,9 +54,8 @@ public class AchievementManager : MonoBehaviour
         _achievementList.Add("achv_KillAllTeds");
         _achievementDetails.Add(new string[]
         {
-            "Bad Ending",
-            "Kill every Ted in every level",
-            "Hidden"
+            "It's Two O'Clock Somewhere",
+            "In every level, banish every Ted to \"Two O'Clock\""
         });
         
         _achievementList.Add("achv_AllDialogue");
@@ -253,6 +244,7 @@ public class AchievementManager : MonoBehaviour
     {
         float min = Mathf.FloorToInt(t / 60);
         float sec = Mathf.FloorToInt(t % 60);
+        sec += min * 60;
         var lvl = SceneManager.GetActiveScene().buildIndex;
         switch (lvl)
         {
@@ -263,14 +255,46 @@ public class AchievementManager : MonoBehaviour
                 break;
             case 3:
                 //lvl 2
-                if (min < 1 || (min < 2 && sec < 1))
+                if (sec <= 60)
                     unlockAchievement(Achievements.ParTimeLvl2);
                 break;
             case 4:
                 //lvl 3
-                if (min < 1 || (min < 2 && sec <= 10))
+                if (sec <= 70)
                     unlockAchievement(Achievements.ParTimeLvl3);
                 break;
+        }
+    }
+
+    public void SaveTedDeathProgress()
+    {
+        int lvl1Completed = PlayerPrefs.GetInt("TedsDead_Lvl1", 0);
+        int lvl2Completed = PlayerPrefs.GetInt("TedsDead_Lvl2", 0);
+        int lvl3Completed = PlayerPrefs.GetInt("TedsDead_Lvl3", 0);
+        
+        var lvl = SceneManager.GetActiveScene().buildIndex;
+        switch (lvl)
+        {
+            case 2:
+                //lvl 1
+                lvl1Completed = 1;
+                PlayerPrefs.SetInt("TedsDead_Lvl1", 1);
+                break;
+            case 3:
+                //lvl 2
+                lvl2Completed = 1;
+                PlayerPrefs.SetInt("TedsDead_Lvl2", 1);
+                break;
+            case 4:
+                //lvl 3
+                lvl3Completed = 1;
+                PlayerPrefs.SetInt("TedsDead_Lvl3", 1);
+                break;
+        }
+
+        if (lvl1Completed == 1 && lvl2Completed == 1 && lvl3Completed == 1)
+        {
+            unlockAchievement(Achievements.KillAllTeds);
         }
     }
 }
