@@ -7,8 +7,10 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour {
 
     private PlayerController pc;
+    private PlayerInput input;
 
     [SerializeField] private float sensitivity = 10;
+    [SerializeField] [Tooltip("The amount camera movement is multiplied by when using a controller")] private float controllerMultiplier = 10;
     [SerializeField] private Transform cameraHolder = null;
     [SerializeField] private Camera mainCamera = null;
 
@@ -26,6 +28,7 @@ public class CameraController : MonoBehaviour {
 
     private void Awake() {
         pc = GetComponent<PlayerController>();
+        input = GetComponent<PlayerInput>();
         UpdateSettings();
         UIEvents.current.OnSaveCurrentSettings += UpdateSettings;
     }
@@ -39,7 +42,7 @@ public class CameraController : MonoBehaviour {
 
     private void Update() {
         #region Camera Rotation
-        smoothedInput = sensitivity * Time.deltaTime * mouseInput;
+        smoothedInput = sensitivity * Time.deltaTime * (input.currentControlScheme.Equals("Controller") ? controllerMultiplier : 1) * mouseInput;
         transform.Rotate(Vector3.up * smoothedInput.x);
 
         xRotation = Mathf.Clamp(xRotation - smoothedInput.y, -PlayerState.Settings.MaxLookUp, PlayerState.Settings.MaxLookDown);

@@ -92,6 +92,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
+  _idleFlairMinDelay: 5
+  _idleFlairMaxDelay: 20
   _petToadTrigger: pet_toad
   _startledTrigger: startled
   _idleTwitchTrigger: idle_twitch
@@ -103,6 +105,7 @@ MonoBehaviour:
   _warpTrigger: snap_teleport
   _interactableTrigger: interact_hitInteractable
   _residueIdleTrigger: residue_idle
+  _relayInteract: relay_interact
   _boltDissipateTrigger: dissipate
 --- !u!1 &3209979791028676465
 GameObject:
@@ -147,6 +150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fcaf2607b423247adaa734851862fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxDistFromGround: 200
+  _delayCastAirDist: 5
+  _delayCastAirTime: 1.25
   _boltManagerPrefab: {fileID: 2698616413634711478, guid: 1ba1057619a1d7f4cb8a72bdd7b50aed,
     type: 3}
   _playerState: {fileID: 8561128953603784824}
@@ -252,6 +258,12 @@ MonoBehaviour:
   _playerSnapSound: {fileID: 0}
   _playerWalkingSound: {fileID: 11400000, guid: 7b61c8d6861c44a47ab9523cc9355a2e,
     type: 2}
+  _firstFootstepDelay:
+    MinValue: 0.1
+    MaxValue: 0.15
+  _walkingSoundInterval:
+    MinValue: 0.55
+    MaxValue: 0.7
 --- !u!114 &5994795833423906258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +558,7 @@ MonoBehaviour:
       m_Calls: []
   playerFeedback: {fileID: 1294586047155214018}
   grounded: 0
+  coyoteTimeActive: 0
   walking: 0
   flag_cantAct: 0
   infiniteJumps: 0
@@ -565,8 +578,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72fc1c50dcb4e92498f4c8965c60294d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sensitivity: 10
+  controllerMultiplier: 20
   cameraHolder: {fileID: 6728132942592493119}
   mainCamera: {fileID: 5994795831583482223}
+  viewBobber: {fileID: 0}
 --- !u!114 &8561128953603784824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,38 +599,12 @@ MonoBehaviour:
   _unlockedBolt: 1
   _unlockedWarp: 1
   _unlockedResidue: 1
-  _defaultCheckpoint: {x: 0, y: 0, z: 0}
-  _onPlayerDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 870152040626436047}
-        m_MethodName: OnKill
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onPlayerRespawn:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 870152040626436047}
-        m_MethodName: ResetToIdle
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   _playerController: {fileID: 1327872986168430472}
   _castingController: {fileID: 3276201087200335316}
+  _interactionsController: {fileID: 0}
+  _animationController: {fileID: 0}
   _playerFeedback: {fileID: 1294586047155214018}
+  _optionController: {fileID: 0}
 --- !u!114 &5994795833423906256
 MonoBehaviour:
   m_ObjectHideFlags: 0

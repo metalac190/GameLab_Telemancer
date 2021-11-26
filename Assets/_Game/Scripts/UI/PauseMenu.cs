@@ -42,15 +42,11 @@ public class PauseMenu : MonoBehaviour
         _book.SetActive(false);
     }
 
-    private void Update()
-    {
-        // TODO: move this somewhere that makes sense
-        if (!_pauseRestricted && !_pauseLocked &&
-            (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.pKey.wasPressedThisFrame))
-        {
-            if (isPaused && _confirmationPanel.activeSelf)
+    public void OnPauseKeyPressed(InputAction.CallbackContext value) {
+        if(value.performed && !_pauseRestricted && !_pauseLocked) {
+            if(isPaused && _confirmationPanel.activeSelf)
                 _confirmationPanel.SetActive(false);
-            else if (isPaused && _submenu.activeSelf)
+            else if(isPaused && _submenu.activeSelf)
                 _submenu.SetActive(false);
             else
                 UIEvents.current.PauseGame(!isPaused);
