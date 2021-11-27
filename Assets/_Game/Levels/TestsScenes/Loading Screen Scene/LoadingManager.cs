@@ -43,7 +43,7 @@ public class LoadingManager : MonoBehaviour
         
         while (loadingLevel.progress < 0.9f)
         {
-            if (Keyboard.current.eKey.wasPressedThisFrame && !prevStatus)
+            if ((Keyboard.current.eKey.wasPressedThisFrame || Gamepad.current.buttonWest.wasPressedThisFrame) && !prevStatus)
             {
                 StartCoroutine(FadeInHelperText());
                 prevStatus = true;
@@ -71,7 +71,7 @@ public class LoadingManager : MonoBehaviour
         while (hold < 1)
         {
             // Hack fraud way of waiting for player input
-            bool skipPressed = Keyboard.current.eKey.isPressed;
+            bool skipPressed = Keyboard.current.eKey.isPressed || Gamepad.current.buttonWest.isPressed;
 
             if (prevStatus != skipPressed)
             {

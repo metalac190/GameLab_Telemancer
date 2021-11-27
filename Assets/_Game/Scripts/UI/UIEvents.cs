@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Handles all menu-related events.
@@ -28,7 +29,13 @@ public class UIEvents : MonoBehaviour
     private void Awake()
     {
         current = this;
+        _playerInput = FindObjectOfType<PlayerInput>();
     }
+
+    // -----
+
+    private PlayerInput _playerInput;
+    public PlayerInput Inputs => _playerInput;
 
     /* ----------------------------------------------------------------------------------------- */
 

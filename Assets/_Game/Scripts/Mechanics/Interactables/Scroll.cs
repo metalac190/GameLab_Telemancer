@@ -100,7 +100,7 @@ public class Scroll : MonoBehaviour, IPlayerInteractable
         if (_scrollUnlock != unlockEnum.None)
         {
             // Hack fraud way of waiting for player input
-            while (!Keyboard.current.eKey.wasPressedThisFrame)
+            while (!UIEvents.current.Inputs.actions["Interact"].WasPressedThisFrame() /*!Keyboard.current.eKey.wasPressedThisFrame*/)
                 yield return null;
         }
 

@@ -12,9 +12,12 @@ public class DialogueAdvancer : MonoBehaviour
     {
         dialogueUI = GetComponent<CustomDialogueUI>();
         dialogueRunner = GetComponent<DialogueRunner>();
+
+        UIEvents.current.Inputs.actions["Back"].performed += OnBackPressed;
+        UIEvents.current.Inputs.actions["Next Dialogue"].performed += OnNextPressed;
     }
 
-    void Update()
+    /*void Update()
     {
         if (dialogueRunner.IsDialogueRunning)
         {
@@ -28,5 +31,19 @@ public class DialogueAdvancer : MonoBehaviour
                 dialogueUI.MarkLineComplete();
             }
         }
+    }*/
+
+    private void OnBackPressed(InputAction.CallbackContext value) {
+        if(value.performed && dialogueRunner.IsDialogueRunning) {
+            dialogueUI.DialogueComplete();
+            dialogueRunner.IsDialogueRunning = false;
+        }
     }
+
+    private void OnNextPressed(InputAction.CallbackContext value) {
+        if(value.performed && dialogueRunner.IsDialogueRunning) {
+            dialogueUI.MarkLineComplete();
+        }
+    }
+
 }

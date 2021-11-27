@@ -40,9 +40,12 @@ public class PauseMenu : MonoBehaviour
 
         _background.SetActive(false);
         _book.SetActive(false);
+
+        UIEvents.current.Inputs.actions["Pause"].performed += OnPauseKeyPressed;
+        UIEvents.current.Inputs.actions["Back"].performed += OnBackKeyPressed;
     }
 
-    public void OnPauseKeyPressed(InputAction.CallbackContext value) {
+    private void OnPauseKeyPressed(InputAction.CallbackContext value) {
         if(value.performed && !_pauseRestricted && !_pauseLocked) {
             if(isPaused && _confirmationPanel.activeSelf)
                 _confirmationPanel.SetActive(false);
@@ -50,6 +53,15 @@ public class PauseMenu : MonoBehaviour
                 _submenu.SetActive(false);
             else
                 UIEvents.current.PauseGame(!isPaused);
+        }
+    }
+
+    private void OnBackKeyPressed(InputAction.CallbackContext value) {
+        if(value.performed && isPaused && !_pauseRestricted && !_pauseLocked) {
+            if(_confirmationPanel.activeSelf)
+                _confirmationPanel.SetActive(false);
+            else if(_submenu.activeSelf)
+                _submenu.SetActive(false);
         }
     }
 
