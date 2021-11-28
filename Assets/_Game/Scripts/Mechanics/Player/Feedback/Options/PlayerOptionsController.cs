@@ -59,6 +59,8 @@ namespace Mechanics.Player.Feedback.Options
             _noResidueCooldown.Refresh();
             _infiniteBoltDistance.Refresh();
             _boltMoveSpeed.Refresh();
+            _mortalTed.Refresh();
+            _improvedWaterfalls.Refresh();
         }
 
         public void Disable()

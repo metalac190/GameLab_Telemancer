@@ -13,7 +13,7 @@ public class MistModifier : MonoBehaviour
 
     void Start()
     {
-        CheckExistingCode();
+        _codeController = GetCodeController();
         UIEvents.current.OnOpenCodeMenu += UpdateCodeController;
         if(PlayerPrefs.GetInt("ImprovedWaterfalls") == 1)
             SetImprovedWaterfalls(true);
@@ -21,7 +21,9 @@ public class MistModifier : MonoBehaviour
 
     private void UpdateCodeController()
     {
-        CheckExistingCode();
+        if(_codeController == null)
+            _codeController = GetCodeController();
+        Debug.Log(_codeController);
         _codeController.ImprovedWaterfalls.OnSelect += SetImprovedWaterfalls;
         UIEvents.current.OnOpenCodeMenu -= UpdateCodeController;
     }
@@ -39,10 +41,12 @@ public class MistModifier : MonoBehaviour
         PlayerPrefs.SetInt("ImprovedWaterfalls", active ? 1 : 0);
     }
 
-    private void CheckExistingCode()
+    private PlayerOptionsController GetCodeController()
     {
-        _codeController = PlayerOptionsController.Instance;
-        if (_codeController == null)
-            _codeController = FindObjectOfType<PlayerOptionsController>();
+        PlayerOptionsController controller = PlayerOptionsController.Instance;
+        if (controller == null)
+            controller = FindObjectOfType<PlayerOptionsController>();
+        Debug.Log(controller);
+        return controller;
     }
 }
