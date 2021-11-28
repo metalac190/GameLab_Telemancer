@@ -222,6 +222,13 @@ public class UIEvents : MonoBehaviour
         OnOpenOptionsMenu?.Invoke();
     }
 
+    public event Action OnOpenCodeMenu;
+
+    public void OpenCodeMenu()
+    {
+        OnOpenCodeMenu?.Invoke();
+    }
+
     public event Action OnSaveCurrentSettings;
 
     public void SaveCurrentSettings()
