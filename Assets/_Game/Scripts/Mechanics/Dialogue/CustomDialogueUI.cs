@@ -169,6 +169,7 @@ namespace Yarn.Unity {
         /// <seealso cref="onLineFinishDisplaying"/>
         public DialogueRunner.StringUnityEvent onSpeakerChange;
         public string currentSpeaker;
+        public UnityEngine.Events.UnityEvent onSpeakerChanged;
 
         /// <summary>
         /// A <see cref="UnityEngine.Events.UnityEvent"/> that is called
@@ -342,6 +343,7 @@ namespace Yarn.Unity {
                 {
                     currentSpeaker = name;
                     onSpeakerChange?.Invoke(name);
+                    onSpeakerChanged?.Invoke();
                 }
             }
 

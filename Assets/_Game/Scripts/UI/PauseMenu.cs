@@ -11,9 +11,10 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject _submenu = null;
     [SerializeField] private GameObject _confirmationPanel = null;
     public bool isPaused = false;
-    
+
     //TODO: create proper way of preventing the player from locking cursor while dead
-    private bool _pauseRestricted = false; 
+    private bool _pauseRestricted = false;
+    [SerializeField] private bool _pauseLocked = false; // Secondary way of restricting pausing. Separate so they dont conflict
 
     private void Start()
     {
@@ -34,7 +35,9 @@ public class PauseMenu : MonoBehaviour
             _pauseRestricted = true;
         };
         UIEvents.current.OnCloseScrollAcquiredScreen += () => _pauseRestricted = false;
-        
+        UIEvents.current.OnDisableGamePausing += () => _pauseLocked = true;
+        UIEvents.current.OnAllowGamePausing += () => _pauseLocked = false;
+
         _background.SetActive(false);
         _book.SetActive(false);
     }
@@ -42,7 +45,7 @@ public class PauseMenu : MonoBehaviour
     private void Update()
     {
         // TODO: move this somewhere that makes sense
-        if (!_pauseRestricted &&
+        if (!_pauseRestricted && !_pauseLocked &&
             (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.pKey.wasPressedThisFrame))
         {
             if (isPaused && _confirmationPanel.activeSelf)

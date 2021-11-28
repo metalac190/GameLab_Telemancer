@@ -15,11 +15,17 @@ public class WarpRod : WarpResidueInteractable
     [SerializeField] GameObject _wispPrefab = null;
     private GameObject _wispReciever = null;
 
+    [Header("New VFX")]
+    [SerializeField] GameObject _vfxEndPoint = null;
+
     [Header("Emission")]
     [SerializeField] private bool _useEmission = true;
     [SerializeField] private GameObject _crystal = null;
+    [Tooltip("Darkest part of the emission intensity")]
     [SerializeField] private float _baseIntensity = 100f;
+    [Tooltip("Brightest part of emission intensity = BaseIntensity * IntensityMultiplier")]
     [SerializeField] private float _intensityMultiplier = 5f;
+    [Tooltip("Emission is controlled by sin(Time.time * EmissionFrequency)")]
     [SerializeField] private float _emisionFrequency = 2f;
     private Material _crystalMat = null;
     private Color _crystalColor;
@@ -39,6 +45,7 @@ public class WarpRod : WarpResidueInteractable
         if(_warpPad != null)
         {
             _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
         }
     }
 
@@ -58,6 +65,12 @@ public class WarpRod : WarpResidueInteractable
             Quaternion face = Quaternion.LookRotation(heading);
             GameObject wisp = Instantiate(_wispPrefab, _crystal.transform.position, face);
             wisp.GetComponent<ConnectionWisp>()._Target = _wispReciever.transform.position;
+        }
+
+        if (_warpPad != null)
+        {
+            _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
         }
 
     }
@@ -86,6 +99,10 @@ public class WarpRod : WarpResidueInteractable
     {
         Gizmos.color = Color.blue;
         if (_warpPad != null)
+        {
             Gizmos.DrawLine(transform.position, _warpPad.GetComponent<WarpPad>().WispReciever.transform.position);
+            _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
+        }
     }
 }
