@@ -49,7 +49,10 @@ public class LargeRock : WarpResidueInteractable
     {
         Vector3 distance = transform.position - _spawnPos;
         if (Mathf.Abs(distance.x) > MaxX || Mathf.Abs(distance.y) > MaxY || Mathf.Abs(distance.z) > MaxZ)
+        {
             Reset();
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.RockOutOfBounds);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
