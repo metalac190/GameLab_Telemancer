@@ -311,6 +311,7 @@ namespace Mechanics.Player
             CheckCodeController();
             RefreshCode();
             EnableCodeMenu(true);
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.KonamiCode);
         }
 
         private void EnableCodeMenu(bool enable)
