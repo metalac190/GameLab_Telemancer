@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _continueButton = null;
+    [SerializeField] private GameObject _submenu = null;
     private bool hasSave;
 
     public void Awake()
@@ -17,16 +18,21 @@ public class MainMenu : MonoBehaviour
         // If no existing save, then hide the continue button
         // ContinueButton.SetEffectActive(false);
 
+        /*
         int savedLevel = PlayerPrefs.GetInt("Level");
         int savedCkpt = PlayerPrefs.GetInt("Checkpoint");
 
         hasSave = (savedLevel != 0 && savedCkpt != 0);
         _continueButton.interactable = hasSave;
         _continueButton.GetComponentInChildren<TextMeshProUGUI>().alpha = hasSave ? 1f : 0.4f;
+        */
     }
 
     private void Update()
     {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && _submenu.activeSelf)
+            _submenu.SetActive(false);
+        
         if (Keyboard.current.f5Key.wasPressedThisFrame) {
             PlayerPrefs.DeleteKey("Level");
             PlayerPrefs.DeleteKey("Checkpoint");

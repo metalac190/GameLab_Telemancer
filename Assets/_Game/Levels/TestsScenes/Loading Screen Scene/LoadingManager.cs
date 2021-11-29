@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class LoadingManager : MonoBehaviour
 {
     
-    [SerializeField] private float _textFadeIn = 1, _holdDuration = 2;
+    [SerializeField] private float _textFadeIn = 1, _holdDuration = 0.75f;
     [SerializeField] private GameObject _progressBarContainer = null;
     [SerializeField] private Image _progressBar = null;
     [SerializeField] private TextMeshProUGUI _helperText = null;
@@ -65,7 +65,7 @@ public class LoadingManager : MonoBehaviour
 
         // Init new vars
         float hold = 0, time = 0, switchPoint = 0;
-        float holdDuration = 2;
+        float holdDuration = _holdDuration;
         
         // Wait for hold to skip
         while (hold < 1)

@@ -67,6 +67,12 @@ public class WarpRod : WarpResidueInteractable
             wisp.GetComponent<ConnectionWisp>()._Target = _wispReciever.transform.position;
         }
 
+        if (_warpPad != null)
+        {
+            _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
+        }
+
     }
 
     public override bool OnWarpBoltImpact(BoltData data)
@@ -93,6 +99,10 @@ public class WarpRod : WarpResidueInteractable
     {
         Gizmos.color = Color.blue;
         if (_warpPad != null)
+        {
             Gizmos.DrawLine(transform.position, _warpPad.GetComponent<WarpPad>().WispReciever.transform.position);
+            _wispReciever = _warpPad.GetComponent<WarpPad>().WispReciever;
+            if (_vfxEndPoint != null) { _vfxEndPoint.transform.position = _wispReciever.transform.position; }
+        }
     }
 }
