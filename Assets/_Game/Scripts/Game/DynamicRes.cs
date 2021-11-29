@@ -25,15 +25,15 @@ public class DynamicRes : MonoBehaviour
             // Lerp between min and max scale defined in HDRP settings
             // (Current Min is 50%)
             // currentScale = Mathf.InverseLerp(20, 60, frameCount);
-            if(frameCount <= 20)
+            if(frameCount <= 15)
                 currentScale = 0f;
-            else if(frameCount <= 30)
+            else if(frameCount <= 25)
                 currentScale = 0.25f;
-            else if(frameCount <= 40)
+            else if(frameCount <= 35)
                 currentScale = 0.5f;
-            else if(frameCount <= 50)
+            else if(frameCount <= 45)
                 currentScale = 0.75f;
-            else if(frameCount == 1f)
+            else if(frameCount >= 55)
                 currentScale = 1f;
 
             deltaTimeChanged = 0.0f;
@@ -45,19 +45,5 @@ public class DynamicRes : MonoBehaviour
     {
         // Binds the dynamic resolution policy defined above.
         DynamicResolutionHandler.SetDynamicResScaler(SetDynamicResolutionScale, DynamicResScalePolicyType.ReturnsMinMaxLerpFactor);
-    }
-
-    private IEnumerator GetFPS()
-    {
-        while (true)
-        {
-            if (Time.timeScale == 1)
-            {
-                yield return new WaitForSeconds(0.1f);
-                frameCount = (1 / Time.deltaTime);
-                Debug.Log(frameCount);
-            }
-            yield return new WaitForSeconds(0.5f);
-        }
     }
 }

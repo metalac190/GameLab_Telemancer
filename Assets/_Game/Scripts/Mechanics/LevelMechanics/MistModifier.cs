@@ -15,15 +15,20 @@ public class MistModifier : MonoBehaviour
     {
         _codeController = GetCodeController();
         UIEvents.current.OnOpenCodeMenu += UpdateCodeController;
-        if(PlayerPrefs.GetInt("ImprovedWaterfalls") == 1)
+        if (PlayerPrefs.GetInt("ImprovedWaterfalls") == 1)
             SetImprovedWaterfalls(true);
+    }
+
+    private void OnDisable()
+    {
+        if(_codeController != null)
+            _codeController.ImprovedWaterfalls.OnSelect -= SetImprovedWaterfalls;
     }
 
     private void UpdateCodeController()
     {
-        if(_codeController == null)
+        if (_codeController == null)
             _codeController = GetCodeController();
-        Debug.Log(_codeController);
         _codeController.ImprovedWaterfalls.OnSelect += SetImprovedWaterfalls;
         UIEvents.current.OnOpenCodeMenu -= UpdateCodeController;
     }
@@ -31,9 +36,9 @@ public class MistModifier : MonoBehaviour
     private void SetImprovedWaterfalls(bool active)
     {
         //Debug.Log("Waterfalls are " + (active ? "Improved" : "Normal"));
-        foreach(VisualEffect mistVFX in mistObjs)
+        foreach (VisualEffect mistVFX in mistObjs)
         {
-            if(active)
+            if (active)
                 mistVFX.visualEffectAsset = betterMist;
             else
                 mistVFX.visualEffectAsset = mist;
@@ -46,7 +51,8 @@ public class MistModifier : MonoBehaviour
         PlayerOptionsController controller = PlayerOptionsController.Instance;
         if (controller == null)
             controller = FindObjectOfType<PlayerOptionsController>();
-        Debug.Log(controller);
+        if (controller != null)
+            controller.ImprovedWaterfalls.SelectItem(PlayerPrefs.GetInt("ImprovedWaterfalls") == 1 ? true : false);
         return controller;
     }
 }
