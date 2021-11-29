@@ -114,7 +114,8 @@ public class HUD : MonoBehaviour
         _debugMode = showDebugHud == 1;
 
         DisplayDebugHUD(_debugMode);
-        _respawnMenu.SetActive(false);
+        //_respawnMenu.SetActive(false);
+        _respawnMenu.GetComponent<DeathMenu>().IsEnabled(false);
         _scrollAcquiredScreen.SetActive(false);
         _spottedIndicatorPnl.SetActive(false);
     }
@@ -127,7 +128,8 @@ public class HUD : MonoBehaviour
 
     private void DisplayRespawnMenu(bool isEnabled)
     {
-        _respawnMenu.SetActive(isEnabled);
+        //_respawnMenu.SetActive(isEnabled);
+        _respawnMenu.GetComponent<DeathMenu>().IsEnabled(isEnabled);
         _xhair.transform.parent.gameObject.SetActive(!isEnabled);
         //_debugSpellsPnl.SetActive(!isEnabled && _debugMode);
 

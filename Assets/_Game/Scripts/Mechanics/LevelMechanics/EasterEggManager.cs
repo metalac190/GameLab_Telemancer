@@ -22,6 +22,7 @@ public class EasterEggManager : MonoBehaviour
         
         // Show something on the hud
         Debug.Log("easter eggs found: " + _eggsFound + "/" + _EasterEggsInLevel);
+        UIEvents.current.NotifyPlayer("Secrets Found: " + _eggsFound + "/" + _EasterEggsInLevel);
         
         if (_eggsFound == _EasterEggsInLevel)
             allEggsFound();

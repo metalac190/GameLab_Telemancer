@@ -12,5 +12,10 @@ public class TemporalRift : MonoBehaviour
             //Debug.Log("Kill player");
             other.GetComponent<Mechanics.Player.PlayerState>()?.OnKill();
         }
+        else if(other.gameObject.GetComponent<LargeRock>() != null)
+        {
+            other.gameObject.GetComponent<LargeRock>().Reset();
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.RockOutOfBounds);
+        }
     }
 }
