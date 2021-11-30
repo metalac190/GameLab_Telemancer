@@ -45,6 +45,10 @@ public class StatsMenu : MonoBehaviour
         UIEvents.current.OnAcquireResidueScroll += StopTimer;
         UIEvents.current.OnAcquireGameEndScroll += StopTimer;
         UIEvents.current.OnPauseGame += b => _gamePaused = b;
+
+        UIEvents.current.OnShowFpsCounter += ShowFPS;
+        UIEvents.current.OnShowSpeedometer += ShowSpeedometer;
+        UIEvents.current.OnShowTimer += ShowTimer;
         
         // reset colors
         _fpsValue.color = Color.white;
@@ -109,6 +113,21 @@ public class StatsMenu : MonoBehaviour
             });
         }
 
+    }
+
+    public void ShowSpeedometer(bool isShown)
+    {
+        _speedometerValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
+    }
+
+    public void ShowTimer(bool isShown)
+    {
+        _timerValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
+    }
+
+    public void ShowFPS(bool isShown)
+    {
+        _fpsValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
     }
 
     // TODO: Fixme, currently called by Reset Level button. Should reset on reload level but not on respawn
