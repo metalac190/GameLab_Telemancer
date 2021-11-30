@@ -20,6 +20,7 @@ namespace Mechanics.Player.Feedback.Options
         [SerializeField] private PlayerOptionSelector _infiniteBoltDistance = null;
         [SerializeField] private PlayerOptionsSlider _boltMoveSpeed = null;
         [SerializeField] private PlayerOptionSelector _mortalTed = null;
+        [SerializeField] private PlayerOptionSelector _improvedWaterfalls = null;
 
         public PlayerLevelSelector LevelSelector => _levelSelector;
         public PlayerOptionSelector Invincibility => _invincibility;
@@ -33,6 +34,7 @@ namespace Mechanics.Player.Feedback.Options
         public PlayerOptionSelector InfiniteBoltDistance => _infiniteBoltDistance;
         public PlayerOptionsSlider BoltMoveSpeed => _boltMoveSpeed;
         public PlayerOptionSelector MortalTed => _mortalTed;
+        public PlayerOptionSelector ImprovedWaterfalls => _improvedWaterfalls;
 
         public event Action OnDisable = delegate { };
 
@@ -57,6 +59,8 @@ namespace Mechanics.Player.Feedback.Options
             _noResidueCooldown.Refresh();
             _infiniteBoltDistance.Refresh();
             _boltMoveSpeed.Refresh();
+            _mortalTed.Refresh();
+            _improvedWaterfalls.Refresh();
         }
 
         public void Disable()
