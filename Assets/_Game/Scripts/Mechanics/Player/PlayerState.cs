@@ -318,6 +318,7 @@ namespace Mechanics.Player
         {
             _codeController.gameObject.SetActive(enable);
             if (enable) {
+                UIEvents.current.OpenCodeMenu();
                 UIEvents.current.DisableGamePausing();
             } else if (!_resetGamePausing) {
                 UIEvents.current.EnableGamePausing();
