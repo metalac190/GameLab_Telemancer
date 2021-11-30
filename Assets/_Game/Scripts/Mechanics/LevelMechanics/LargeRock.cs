@@ -14,6 +14,10 @@ public class LargeRock : WarpResidueInteractable
     private Vector3 _spawnPos = new Vector3();
     private Quaternion _spawnRot = new Quaternion();
 
+    [Header("Rock is Ted")]
+    [SerializeField] private GameObject _rockModel = null;
+    [SerializeField] private GameObject _tedModel = null;
+
     // if rock is Max distance away from its start in any direction, reset it
     [Header("Position Thresholds")]
     [SerializeField] private float MaxX = 100;
@@ -32,6 +36,7 @@ public class LargeRock : WarpResidueInteractable
         _rb = gameObject.GetComponent<Rigidbody>();
         _spawnPos = transform.position;
         _spawnRot = transform.rotation;
+        _tedModel?.SetActive(false);
     }
 
     private void OnEnable()
@@ -78,5 +83,11 @@ public class LargeRock : WarpResidueInteractable
         _rb.velocity = new Vector3(0, 0, 0);
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
+    }
+
+    private void OnRockIsTed(bool status)
+    {
+        _tedModel?.SetActive(status);
+        _rockModel?.SetActive(!status);
     }
 }
