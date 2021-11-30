@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class FpsCounterSelector : OptionSelector
+public class SpeedometerSelector : OptionSelector
 {
     public override void OnItemSelected(int item)
     {
@@ -8,19 +8,19 @@ public class FpsCounterSelector : OptionSelector
         {
             case 0:
                 // Hidden
-                Debug.Log("FPS Counter: Hidden");
-                UIEvents.current.ShowFpsCounter(false);
+                Debug.Log("Speedometer: Hidden");
+                UIEvents.current.ShowSpeedometer(false);
                 break;
             case 1: 
                 // Visible
-                Debug.Log("FPS Counter: Visible");
-                UIEvents.current.ShowFpsCounter(true);
+                Debug.Log("Speedometer: Visible");
+                UIEvents.current.ShowSpeedometer(true);
                 break;
             default:
                 return;
         }
         
         // Only change the player pref if the base case wasn't hit
-        PlayerPrefs.SetFloat("FpsCounter", item);
+        PlayerPrefs.SetFloat("Speedometer", item);
     }
 }
