@@ -2,6 +2,7 @@
 using System;
 using AudioSystem;
 using Mechanics.Bolt;
+using Mechanics.Player.Feedback.Options;
 
 /// Summary:
 /// Temporary Large / Big Rock Script. Mainly for reference and testing
@@ -13,6 +14,11 @@ public class LargeRock : WarpResidueInteractable
     // the position of the object on start
     private Vector3 _spawnPos = new Vector3();
     private Quaternion _spawnRot = new Quaternion();
+    private PlayerOptionsController _codeController;
+
+    [Header("Rock is Ted")]
+    [SerializeField] private GameObject _rockModel = null;
+    [SerializeField] private GameObject _tedModel = null;
 
     // if rock is Max distance away from its start in any direction, reset it
     [Header("Position Thresholds")]
@@ -32,6 +38,13 @@ public class LargeRock : WarpResidueInteractable
         _rb = gameObject.GetComponent<Rigidbody>();
         _spawnPos = transform.position;
         _spawnRot = transform.rotation;
+        //OnTedRocks(false);
+
+        // Ted Rocks
+        _codeController = GetCodeController();
+        UIEvents.current.OnOpenCodeMenu += UpdateCodeController;
+        if (PlayerPrefs.GetInt("TedRocks") == 1)
+            OnTedRocks(true);
     }
 
     private void OnEnable()
@@ -43,13 +56,19 @@ public class LargeRock : WarpResidueInteractable
     {
         if(UIEvents.current != null)
             UIEvents.current.OnPlayerRespawn -= Reset;
+
+        if (_codeController != null)
+            _codeController.ImprovedWaterfalls.OnSelect -= OnTedRocks;
     }
 
     private void Update()
     {
         Vector3 distance = transform.position - _spawnPos;
         if (Mathf.Abs(distance.x) > MaxX || Mathf.Abs(distance.y) > MaxY || Mathf.Abs(distance.z) > MaxZ)
+        {
             Reset();
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.RockOutOfBounds);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -75,5 +94,32 @@ public class LargeRock : WarpResidueInteractable
         _rb.velocity = new Vector3(0, 0, 0);
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
+    }
+
+    private void OnTedRocks(bool status)
+    {
+        if(_tedModel != null)
+            _tedModel?.SetActive(status);
+        if(_rockModel != null)
+            _rockModel?.SetActive(!status);
+        PlayerPrefs.SetInt("TedRocks", status ? 1 : 0);
+    }
+
+    private PlayerOptionsController GetCodeController()
+    {
+        PlayerOptionsController controller = PlayerOptionsController.Instance;
+        if (controller == null)
+            controller = FindObjectOfType<PlayerOptionsController>();
+        if (controller != null)
+            controller.TedRocks.SelectItem(PlayerPrefs.GetInt("TedRocks") == 1 ? true : false);
+        return controller;
+    }
+
+    private void UpdateCodeController()
+    {
+        if (_codeController == null)
+            _codeController = GetCodeController();
+        _codeController.TedRocks.OnSelect += OnTedRocks;
+        UIEvents.current.OnOpenCodeMenu -= UpdateCodeController;
     }
 }

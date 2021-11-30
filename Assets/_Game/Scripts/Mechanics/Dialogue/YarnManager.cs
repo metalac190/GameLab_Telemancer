@@ -14,7 +14,7 @@ public class YarnManager : MonoBehaviour
     [SerializeField] private PlayerState player;
     [SerializeField] private TextMeshProUGUI dialogueText = null, speaker = null;
     [SerializeField] private CanvasGroup tipGroup = null;
-    private int numTalks = 20;
+    private int numTalks = 30;
     private int temp;
 
     void Start()
@@ -46,9 +46,13 @@ public class YarnManager : MonoBehaviour
         UIEvents.current.OnHideTutorials += () => DisplayTutorials(false);
     }
 
+    private void OnEnable()
+    {
+        DisplayTutorials(PlayerPrefs.GetFloat("Tutorials") == 1 ? true : false);
+    }
+
     private void DisplayTutorials(bool isEnabled)
     {
-        Debug.Log("Changed");
         tipContainer.SetActive(isEnabled);
     }
 

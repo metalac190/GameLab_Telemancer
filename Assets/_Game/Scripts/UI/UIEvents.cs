@@ -48,6 +48,27 @@ public class UIEvents : MonoBehaviour
         OnHideDebugHud?.Invoke();
     }
 
+    public event Action<bool> OnShowFpsCounter;
+
+    public void ShowFpsCounter(bool isShown)
+    {
+        OnShowFpsCounter?.Invoke(isShown);
+    }
+
+    public event Action<bool> OnShowSpeedometer;
+
+    public void ShowSpeedometer(bool isShown)
+    {
+        OnShowSpeedometer?.Invoke(isShown);
+    }
+
+    public event Action<bool> OnShowTimer;
+
+    public void ShowTimer(bool isShown)
+    {
+        OnShowTimer?.Invoke(isShown);
+    }
+
     public event Action<string, string> OnNotifyChapter;
 
     public void NotifyChapter(string chapterNumber, string title)
@@ -201,7 +222,14 @@ public class UIEvents : MonoBehaviour
     {
         OnHideTutorials?.Invoke();
     }
-    
+
+    public event Action<string> OnNotifyPlayer;
+
+    public void NotifyPlayer(string str)
+    {
+        OnNotifyPlayer?.Invoke(str);
+    }
+
     #endregion
 
     /* ----------------------------------------------------------------------------------------- */
@@ -213,6 +241,13 @@ public class UIEvents : MonoBehaviour
     public void OpenOptionsMenu()
     {
         OnOpenOptionsMenu?.Invoke();
+    }
+
+    public event Action OnOpenCodeMenu;
+
+    public void OpenCodeMenu()
+    {
+        OnOpenCodeMenu?.Invoke();
     }
 
     public event Action OnSaveCurrentSettings;

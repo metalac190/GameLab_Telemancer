@@ -5,12 +5,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using UnityEngine.SceneManagement;
 
 public class StatsMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _fpsValue = null;
     [SerializeField] private TextMeshProUGUI _speedometerValue = null;
-    [SerializeField] private TextMeshProUGUI _timerValue = null;
+    [SerializeField] private TextMeshProUGUI _timerValue = null, _timerMillisecondsValue = null;
     [SerializeField] private TextMeshProUGUI _positionValue = null;
     [SerializeField] private TextMeshProUGUI _boltCounterValue = null;
     private CharacterController _player;
@@ -33,25 +34,36 @@ public class StatsMenu : MonoBehaviour
     private bool _playerMoved = false;
     private bool _gamePaused = false;
 
+    private bool _hasMovementAchievement;
+
     private void Start()
     {
         // add listeners
         //UIEvents.current.OnCastBolt += UpdatePlayerMoved;
         UIEvents.current.OnRestartLevel += ResetTimer;
-        UIEvents.current.OnAcquireWarpScroll += () => _timerRunning = false;
-        UIEvents.current.OnAcquireResidueScroll += () => _timerRunning = false;
-        UIEvents.current.OnAcquireGameEndScroll += () => _timerRunning = false;
+        UIEvents.current.OnAcquireWarpScroll += StopTimer;
+        UIEvents.current.OnAcquireResidueScroll += StopTimer;
+        UIEvents.current.OnAcquireGameEndScroll += StopTimer;
         UIEvents.current.OnPauseGame += b => _gamePaused = b;
+
+        UIEvents.current.OnShowFpsCounter += ShowFPS;
+        UIEvents.current.OnShowSpeedometer += ShowSpeedometer;
+        UIEvents.current.OnShowTimer += ShowTimer;
         
         // reset colors
         _fpsValue.color = Color.white;
         _timerValue.color = Color.white;
+        _timerMillisecondsValue.color = Color.white;
         _speedometerValue.color = Color.white;
         
         // find player object
         _player = FindObjectOfType<CharacterController>();
         if (_player == null)
             _positionValue.text = "[Player Not Found]";
+        
+        // check if the player already has the movement achievement
+        _hasMovementAchievement = AchievementManager.current.isUnlocked(
+            AchievementManager.Achievements.Reach14Speed);
     }
 
     private void Awake()
@@ -78,13 +90,17 @@ public class StatsMenu : MonoBehaviour
         // update speedometer
         _playerVelocity = _player.velocity;
         _playerVelocity.y = 0;
-        _speedometerValue.text = _playerVelocity.magnitude.ToString("F2") + " ups";
+        _speedometerValue.text = _playerVelocity.magnitude.ToString("F2") + "<size=50%> m/s";
+        if (!_hasMovementAchievement && _playerVelocity.magnitude >= 14)
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.Reach14Speed);
         
+        /*
         // update position
         _playerPosition = _player.transform.position;
         _positionValue.text = "X:" + _playerPosition.x.ToString("F3") 
                                    + "\nY:" + _playerPosition.y.ToString("F3") 
                                    + "\nZ:" + _playerPosition.z.ToString("F3");
+        */
         
         // Start the timer if the player has pressed any button
         if (!_playerMoved) 
@@ -99,12 +115,34 @@ public class StatsMenu : MonoBehaviour
 
     }
 
+    public void ShowSpeedometer(bool isShown)
+    {
+        _speedometerValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
+    }
+
+    public void ShowTimer(bool isShown)
+    {
+        _timerValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
+    }
+
+    public void ShowFPS(bool isShown)
+    {
+        _fpsValue.gameObject.GetComponentInParent<Canvas>().enabled = isShown;
+    }
+
     // TODO: Fixme, currently called by Reset Level button. Should reset on reload level but not on respawn
     public void ResetTimer()
     {
         _currentTime = 0;
         _timerRunning = false;
         _playerMoved = false;
+    }
+
+    // Stop the speedrun timer and check for speedrun achievements
+    private void StopTimer()
+    {
+        _timerRunning = false;
+        AchievementManager.current.CheckSpeedrunTime(_currentTime);
     }
 
     private void UpdateBoltCounter(bool boltSucceeded)
@@ -120,7 +158,8 @@ public class StatsMenu : MonoBehaviour
         float min = Mathf.FloorToInt(_currentTime / 60);
         float sec = Mathf.FloorToInt(_currentTime % 60);
         float ms = (_currentTime % 1) * 1000;
-        _timerValue.text = $"{min:00}:{sec:00}.{ms:000}";
+        _timerValue.text = $"<mspace=0.6em>{min:00}</mspace>:<mspace=0.6em>{sec:00}</mspace>";
+        _timerMillisecondsValue.text = $".<mspace=0.6em>{ms:000}</mspace>";
     }
 
     private void GetFPS()
@@ -133,7 +172,7 @@ public class StatsMenu : MonoBehaviour
             frameCount = 0;
             dt -= 1.0/updateRate;
             
-            _fpsValue.text = Math.Floor(fps) + "";
+            _fpsValue.text = Math.Floor(fps) + " <size=70%>FPS";
             
             // This could be optimized
             if (fps < 60)
