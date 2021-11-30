@@ -48,6 +48,27 @@ public class UIEvents : MonoBehaviour
         OnHideDebugHud?.Invoke();
     }
 
+    public event Action<bool> OnShowFpsCounter;
+
+    public void ShowFpsCounter(bool isShown)
+    {
+        OnShowFpsCounter?.Invoke(isShown);
+    }
+
+    public event Action<bool> OnShowSpeedometer;
+
+    public void ShowSpeedometer(bool isShown)
+    {
+        OnShowSpeedometer?.Invoke(isShown);
+    }
+
+    public event Action<bool> OnShowTimer;
+
+    public void ShowTimer(bool isShown)
+    {
+        OnShowTimer?.Invoke(isShown);
+    }
+
     public event Action<string, string> OnNotifyChapter;
 
     public void NotifyChapter(string chapterNumber, string title)
