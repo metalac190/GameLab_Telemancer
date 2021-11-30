@@ -21,6 +21,7 @@ namespace Mechanics.Player.Feedback.Options
         [SerializeField] private PlayerOptionsSlider _boltMoveSpeed = null;
         [SerializeField] private PlayerOptionSelector _mortalTed = null;
         [SerializeField] private PlayerOptionSelector _improvedWaterfalls = null;
+        [SerializeField] private PlayerOptionSelector _tedRocks = null;
 
         public PlayerLevelSelector LevelSelector => _levelSelector;
         public PlayerOptionSelector Invincibility => _invincibility;
@@ -35,6 +36,7 @@ namespace Mechanics.Player.Feedback.Options
         public PlayerOptionsSlider BoltMoveSpeed => _boltMoveSpeed;
         public PlayerOptionSelector MortalTed => _mortalTed;
         public PlayerOptionSelector ImprovedWaterfalls => _improvedWaterfalls;
+        public PlayerOptionSelector TedRocks => _tedRocks;
 
         public event Action OnDisable = delegate { };
 
@@ -61,6 +63,7 @@ namespace Mechanics.Player.Feedback.Options
             _boltMoveSpeed.Refresh();
             _mortalTed.Refresh();
             _improvedWaterfalls.Refresh();
+            _tedRocks.Refresh();
         }
 
         public void Disable()
