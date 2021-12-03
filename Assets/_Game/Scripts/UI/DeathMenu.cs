@@ -14,5 +14,5 @@ public class DeathMenu : MonoBehaviour {
     public void IsEnabled(bool isEnabled) {
         animator.SetBool("Enabled", isEnabled);
     }
-
+    
 }

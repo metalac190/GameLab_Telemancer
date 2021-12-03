@@ -141,6 +141,39 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 9141096131443980886}
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 678068666349678548}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3016128922500019486}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &414025948835124881
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,6 +505,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   currentSpeaker: 
+  onSpeakerChanged:
+    m_PersistentCalls:
+      m_Calls: []
   onLineFinishDisplaying:
     m_PersistentCalls:
       m_Calls:
@@ -1268,8 +1304,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -18, y: 0}
-  m_SizeDelta: {x: -84, y: -46}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -48, y: -46}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5440985425538849725
 CanvasRenderer:
@@ -1614,8 +1650,7 @@ GameObject:
   - component: {fileID: 2548337737979906169}
   - component: {fileID: 6838066050109010533}
   m_Layer: 5
-  m_Name: TMP SubMeshUI [LiberationSansDialogue SDF Material + LiberationSans SDF
-    Atlas]
+  m_Name: TMP SubMeshUI [SGARounded Atlas Material + LiberationSans SDF Atlas]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1672,7 +1707,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 0
+  m_padding: 1.25
   m_canvasRenderer: {fileID: 2548337737979906169}
   m_TextComponent: {fileID: 1254183419462269469}
   m_materialReferenceIndex: 1
@@ -1744,8 +1779,9 @@ MonoBehaviour:
   m_text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b752fe1122eff2341a1019984a1fd504, type: 2}
+  m_sharedMaterial: {fileID: -4114942804275392612, guid: b752fe1122eff2341a1019984a1fd504,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2104,6 +2140,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   currentSpeaker: 
+  onSpeakerChanged:
+    m_PersistentCalls:
+      m_Calls: []
   onLineFinishDisplaying:
     m_PersistentCalls:
       m_Calls: []
