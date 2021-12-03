@@ -12,6 +12,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _continueButton = null;
     [SerializeField] private GameObject _submenu = null;
     private bool hasSave;
+    [SerializeField] Image fade = null;
+    [SerializeField] float fadeDuration = 3;
+    Color transparent = new Color(0, 0, 0, 0);
+    Color opaque = new Color(0, 0, 0, 1);
 
     public void Awake()
     {
@@ -26,6 +30,7 @@ public class MainMenu : MonoBehaviour
         _continueButton.interactable = hasSave;
         _continueButton.GetComponentInChildren<TextMeshProUGUI>().alpha = hasSave ? 1f : 0.4f;
         */
+        StartCoroutine(FadeToTransparent());
     }
 
     private void Update()
@@ -83,5 +88,19 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    private IEnumerator FadeToTransparent()
+    {
+        float time = 0;
+        fade.color = opaque;
+        yield return new WaitForEndOfFrame();
+
+        while (time < fadeDuration)
+        {
+            fade.color = Color.Lerp(opaque, transparent, time / fadeDuration);
+            time += Time.deltaTime;
+            yield return null;
+        }
     }
 }

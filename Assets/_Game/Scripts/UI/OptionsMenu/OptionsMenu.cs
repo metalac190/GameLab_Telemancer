@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class OptionsMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _optionsMenu = null; 
+    [SerializeField] private GameObject _optionsMenu = null;
+    [SerializeField] bool shouldFlickerOpen = false;
     // TODO: find best object for attaching the options menu script
     // Henry - 9/18:
     // It seems obvious that you'd want to put the OptionsMenu script on the Options Menu Object,
@@ -28,6 +30,7 @@ public class OptionsMenu : MonoBehaviour
         _prefs.Add("VSync", 0f);
         _prefs.Add("Fullscreen", 1f);
         _prefs.Add("AntiAliasing", 0f);
+        _prefs.Add("DynamicResolution", 1f);
         _prefs.Add("Resolution", -1f);
         _prefs.Add("SimplifiedVisuals", 0f);
         _prefs.Add("ViewBobbing", 0f);
@@ -38,9 +41,12 @@ public class OptionsMenu : MonoBehaviour
         // Add listener
         UIEvents.current.OnOpenOptionsMenu += OnMenuOpen;
         UIEvents.current.OnPauseGame += delegate(bool b) { if (!b) OnMenuClose(); };
-        
+
         // Ensure menu is hidden
-        _optionsMenu.SetActive(false);
+        if (shouldFlickerOpen)
+            StartCoroutine(FlickerOpen());
+        else
+            _optionsMenu.SetActive(false);
     }
 
     private void OnMenuOpen()
@@ -80,5 +86,12 @@ public class OptionsMenu : MonoBehaviour
         }
         
         UIEvents.current.ReloadSettings();
+    }
+
+    IEnumerator FlickerOpen()
+    {
+        _optionsMenu.SetActive(true);
+        yield return new WaitForEndOfFrame();
+        _optionsMenu.SetActive(false);
     }
 }
