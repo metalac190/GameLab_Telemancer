@@ -202,7 +202,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     public void DialogueCompleted()
     {
-        sfxTedAudioSource.Stop();
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
         UpdateIsTalking(false, false);
         if (hasStory && !storyFinished)
         {
@@ -219,7 +219,10 @@ public class NPC : MonoBehaviour, IHoverInteractable
     {
         int index = PlayerPrefs.GetInt("TedTalkIndex");
         if (index + 1 == talks.Length)
+        {
             PlayerPrefs.SetInt("TedTalkIndex", 0);
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.AllDialogue);
+        }
         else
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
         return int.Parse(talks[index]);

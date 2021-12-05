@@ -10,6 +10,7 @@ public abstract class OptionSelector : MonoBehaviour
         Tutorials,
         GraphicsQuality,
         VSync,
+        DynamicResolution,
         Fullscreen,
         AntiAliasing,
         SimplifiedVisuals,

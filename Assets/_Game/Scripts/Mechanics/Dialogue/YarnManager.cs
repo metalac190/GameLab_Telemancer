@@ -46,9 +46,13 @@ public class YarnManager : MonoBehaviour
         UIEvents.current.OnHideTutorials += () => DisplayTutorials(false);
     }
 
+    private void OnEnable()
+    {
+        DisplayTutorials(PlayerPrefs.GetFloat("Tutorials") == 1 ? true : false);
+    }
+
     private void DisplayTutorials(bool isEnabled)
     {
-        Debug.Log("Changed");
         tipContainer.SetActive(isEnabled);
     }
 
