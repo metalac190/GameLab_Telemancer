@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,6 +30,11 @@ public class TransitionManager : MonoBehaviour
         // PlayerPrefs.Save();
         // SceneManager.LoadScene(1);
         StartCoroutine(LoadLevel(lvl));
+    }
+
+    public void Start()
+    {
+        //StartCoroutine(FadeToTransparent());
     }
 
     private IEnumerator LoadLevel(int lvl)
@@ -63,9 +69,10 @@ public class TransitionManager : MonoBehaviour
         // UIEvents.current.NotifyChapter(chapterNumber, title);
     }
 
-    private IEnumerator FadeToTransparent()
+    public IEnumerator FadeToTransparent()
     {
         float time = 0;
+        fade.color = Color.black;
 
         while (time < fadeDuration)
         {
@@ -73,6 +80,8 @@ public class TransitionManager : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+
+        fade.color = transparent;
     }
 
     private IEnumerator FadeToBlack()

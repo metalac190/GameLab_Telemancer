@@ -127,6 +127,10 @@ public class HUD : MonoBehaviour
         _scrollAcquiredScreen.SetActive(false);
         _spottedIndicatorPnl.SetActive(false);
         _debugStatsPnl.SetActive(true);
+        
+        // fade in from black
+        StartCoroutine(TransitionManager.tm.FadeToTransparent());
+
     }
 
     private void DisplayDebugHUD(bool isEnabled)

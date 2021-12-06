@@ -58,7 +58,9 @@ public class MainMenu : MonoBehaviour
         //SceneManager.LoadScene(1);
 
         // alternate method using loading screen
-
+        PlayerPrefs.DeleteKey("Level1Time");
+        PlayerPrefs.DeleteKey("Level2Time");
+        PlayerPrefs.DeleteKey("Level3Time");
         PlayerPrefs.SetInt("CurrentLevel", 2);
         PlayerPrefs.SetInt("Checkpoint", 1);
         PlayerPrefs.SetInt("Level", 2);

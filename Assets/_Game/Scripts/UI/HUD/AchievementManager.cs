@@ -250,16 +250,19 @@ public class AchievementManager : MonoBehaviour
         {
             case 2:
                 //lvl 1
+                PlayerPrefs.SetFloat("Level1Time", t);
                 if (sec <= 45)
                     unlockAchievement(Achievements.ParTimeLvl1);
                 break;
             case 3:
                 //lvl 2
+                PlayerPrefs.SetFloat("Level2Time", t);
                 if (sec <= 60)
                     unlockAchievement(Achievements.ParTimeLvl2);
                 break;
             case 4:
                 //lvl 3
+                PlayerPrefs.SetFloat("Level3Time", t);
                 if (sec <= 70)
                     unlockAchievement(Achievements.ParTimeLvl3);
                 break;
