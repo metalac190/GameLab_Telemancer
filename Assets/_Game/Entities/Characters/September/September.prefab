@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1022407838}
   - component: {fileID: 1022407837}
   - component: {fileID: 1188336602086157525}
+  - component: {fileID: 8568904406590566589}
   m_Layer: 0
   m_Name: Player_Camera
   m_TagString: MainCamera
@@ -71,7 +72,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
   m_AllowMSAA: 0
-  m_AllowDynamicResolution: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -157,7 +158,7 @@ MonoBehaviour:
     m_Anamorphism: 0
   flipYMode: 0
   fullscreenPassthrough: 0
-  allowDynamicResolution: 0
+  allowDynamicResolution: 1
   customRenderingSettings: 0
   invertFaceCulling: 0
   probeLayerMask:
@@ -188,6 +189,19 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022407835}
   m_Enabled: 1
+--- !u!114 &8568904406590566589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022407835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00736c4a030bbe4bb389685e1c5fcf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateRate: 0.5
 --- !u!1 &164376680602125355
 GameObject:
   m_ObjectHideFlags: 0

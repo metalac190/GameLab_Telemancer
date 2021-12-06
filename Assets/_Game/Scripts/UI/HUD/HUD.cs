@@ -56,6 +56,7 @@ public class HUD : MonoBehaviour
     [Header("Debug HUD")]
     [SerializeField] private GameObject _debugSpellsPnl;
     [SerializeField] private GameObject _debugStatsPnl = null;
+    [SerializeField] private StatsMenu _statsMenu;
 
     [Header("Debug HUD Ability Colors")]
     [SerializeField] private Color _readyToUseColor = new Color(0.8f, 0.7f, 0.4f, 0.6f);
@@ -110,14 +111,22 @@ public class HUD : MonoBehaviour
         UIEvents.current.OnNotifyChapter += (i, s) =>
             StartCoroutine(PlayChapterNotification(i, s));
 
-        int showDebugHud = (int)PlayerPrefs.GetFloat("FpsCounter", 0f);
-        _debugMode = showDebugHud == 1;
-
+        int showFPS = (int)PlayerPrefs.GetFloat("FpsCounter", 0f);
+        _statsMenu.ShowFPS(showFPS == 1);
+        
+        int showSpeed = (int)PlayerPrefs.GetFloat("Speedometer", 0f);
+        _statsMenu.ShowSpeedometer(showSpeed == 1);
+        
+        int showTimer = (int)PlayerPrefs.GetFloat("SpeedrunTimer", 0f);
+        _statsMenu.ShowTimer(showTimer == 1);
+        
+        
         DisplayDebugHUD(_debugMode);
         //_respawnMenu.SetActive(false);
         _respawnMenu.GetComponent<DeathMenu>().IsEnabled(false);
         _scrollAcquiredScreen.SetActive(false);
         _spottedIndicatorPnl.SetActive(false);
+        _debugStatsPnl.SetActive(true);
     }
 
     private void DisplayDebugHUD(bool isEnabled)
