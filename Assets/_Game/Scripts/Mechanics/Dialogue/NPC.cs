@@ -17,7 +17,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private int offset, randNum, talk;
     private string[] talks, levelTalks;
     private int talkLimit;
-    private int maxTalks = 40;
+    private int maxTalks = 4;
     private bool levelTalksComplete = false;
 
     public GameObject interactablePopup, storyPopup, currentPopup;
@@ -57,7 +57,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
-        Debug.Log(PlayerPrefs.GetString("TedTalks"));
+
         if (PlayerPrefs.GetString("LevelTedTalks") != "")
             levelTalks = PlayerPrefs.GetString("LevelTedTalks").Split(',');
 
@@ -265,7 +265,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
             index += 1;
         }
-        Debug.Log(index);
         return int.Parse(talks[index]);
     }
 
