@@ -20,7 +20,7 @@ public class DialogueAdvancer : MonoBehaviour
         {
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                dialogueUI.DialogueComplete();
+                dialogueUI.DialogueExited();
                 dialogueRunner.IsDialogueRunning = false;
             }
 

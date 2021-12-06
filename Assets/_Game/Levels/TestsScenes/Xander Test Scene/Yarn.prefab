@@ -120,7 +120,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5442903821036073645}
-        m_MethodName: DialogueComplete
+        m_MethodName: DialogueExited
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -476,6 +476,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onDialogueExited:
+    m_PersistentCalls:
+      m_Calls: []
   onLineStart:
     m_PersistentCalls:
       m_Calls:
@@ -2109,6 +2112,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueExited:
     m_PersistentCalls:
       m_Calls: []
   onLineStart:
