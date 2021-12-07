@@ -17,12 +17,12 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private int offset, randNum, talk;
     private string[] talks, levelTalks;
     private int talkLimit;
-    private int maxTalks = 4;
+    private int maxTalks = 3;
     private bool levelTalksComplete = false;
 
     public GameObject interactablePopup, storyPopup, currentPopup;
     private bool hasStory = false, storyFinished = false, firstInteract = true;
-    public bool dialogueFinished = false;
+    public bool dialogueFinished = true;
     private bool currentSpeaker = false;
     public bool CurrentSpeaker
     {
