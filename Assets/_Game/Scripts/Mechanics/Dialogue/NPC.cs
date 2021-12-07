@@ -4,6 +4,7 @@ using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
 using AudioSystem;
+using UnityEngine.SceneManagement;
 
 public class NPC : MonoBehaviour, IHoverInteractable
 {
@@ -14,15 +15,15 @@ public class NPC : MonoBehaviour, IHoverInteractable
     private DialogueRunner runner;
     private CustomDialogueUI dialogueUI;
     private int offset, randNum, talk;
-    private string[] talks;
+    private string[] talks, levelTalks;
     private int talkLimit;
-    private int maxTalks = 3;
+    private int maxTalks = 4;
+    private bool levelTalksComplete = false;
 
     public GameObject interactablePopup, storyPopup, currentPopup;
     private bool hasStory = false, storyFinished = false, firstInteract = true;
-    public bool dialogueFinished = true;
+    public bool dialogueFinished = false;
     private bool currentSpeaker = false;
-    private bool test = false;
     public bool CurrentSpeaker
     {
         get { return currentSpeaker; }
@@ -34,6 +35,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
             UpdateIsTalking(inConversation, currentSpeaker);
         }
     }
+    private int currentLevel;
+
 
     [Header("SFX Hookup")]
     [SerializeField] SFXLoop voiceOfTed = null;
@@ -47,12 +50,16 @@ public class NPC : MonoBehaviour, IHoverInteractable
     void Start()
     {
         talkLimit = 0;
+        currentLevel = SceneManager.GetActiveScene().buildIndex - 1;
 
         runner = FindObjectOfType<YarnManager>().dialogueRunner;
         dialogueUI = runner.GetComponent<CustomDialogueUI>();
 
         if (PlayerPrefs.GetString("TedTalks") != "")
             talks = PlayerPrefs.GetString("TedTalks").Split(',');
+
+        if (PlayerPrefs.GetString("LevelTedTalks") != "")
+            levelTalks = PlayerPrefs.GetString("LevelTedTalks").Split(',');
 
         if (characterName == "Ted")
             hasStory = true;
@@ -62,8 +69,10 @@ public class NPC : MonoBehaviour, IHoverInteractable
         else
             currentPopup = interactablePopup;
 
+        sfxTedAudioSource = voiceOfTed.Play(transform.position);
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+
         currentPopup.SetActive(true);
-        dialogueUI.onSpeakerChanged?.AddListener(TedSounds);
     }
 
     void Update()
@@ -71,7 +80,7 @@ public class NPC : MonoBehaviour, IHoverInteractable
         if (runner.IsDialogueRunning)
         {
 
-            if (dialogueUI.currentSpeaker == characterName)
+            if (dialogueUI.currentSpeaker == "Ted")
             {
                 currentSpeaker = true;
                 UpdateIsTalking(true, true);
@@ -84,7 +93,6 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                dialogueFinished = false;
                 UpdateIsTalking(false, false);
             }
         }
@@ -138,9 +146,9 @@ public class NPC : MonoBehaviour, IHoverInteractable
 
     private void TedSounds()
     {
-        if (dialogueUI.currentSpeaker == characterName)
+        if (dialogueUI.currentSpeaker == "Ted")
         {
-            // sfxTedAudioSource.Play();
+            sfxTedAudioSource.Play();
         }
         else { if (sfxTedAudioSource) sfxTedAudioSource.Stop(); }
     }
@@ -149,13 +157,15 @@ public class NPC : MonoBehaviour, IHoverInteractable
     {
         if (!runner.IsDialogueRunning)
         {
-
             if (firstInteract)
-            {
                 firstInteract = false;
-                runner.onDialogueComplete.AddListener(DialogueCompleted);
 
-            }
+            int index = PlayerPrefs.GetInt("Level" + currentLevel + "TedTalkIndex");
+            if (index == levelTalks.Length) { levelTalksComplete = true; }
+
+            runner.onDialogueComplete.AddListener(DialogueCompleted);
+            dialogueUI.onDialogueExited.AddListener(DialogueExited);
+            dialogueUI.onSpeakerChanged?.AddListener(TedSounds);
 
             currentPopup.SetActive(false);
 
@@ -168,6 +178,8 @@ public class NPC : MonoBehaviour, IHoverInteractable
             // Else kick off dialogue at random Ted Talk
             else if (!hasStory || storyFinished)
                 runner.StartDialogue(RandomTedTalk());
+
+            TedSounds();
 
         }
 
@@ -186,23 +198,44 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public string RandomTedTalk()
     {
         string nodeString = "TedTalk";
-        if (talkLimit < maxTalks)
+        if (talkLimit <= maxTalks)
         {
-            nodeString += GetNextTalk();
+            if (levelTalksComplete)
+            {
+                if (dialogueFinished)
+                    nodeString += GetNextTalk();
+                else
+                    nodeString += GetCurrentTalk();
+            }
+            else
+            {
+                nodeString += currentLevel + "-" + GetNextLevelTalk();
+            }
         }
         else
         {
             sfxTedExhaustedCue = false;
             nodeString = "Exhausted";
-            runner.onDialogueComplete.RemoveListener(DialogueCompleted);
-            dialogueUI.onSpeakerChanged.RemoveListener(TedSounds);
         }
         return nodeString;
     }
 
+    void DialogueExited()
+    {
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+        UpdateIsTalking(false, false);
+        dialogueUI.onSpeakerChanged?.RemoveListener(TedSounds);
+        runner.onDialogueComplete.RemoveListener(DialogueCompleted);
+        dialogueFinished = false;
+        OnBeginHover();
+    }
+
     public void DialogueCompleted()
     {
-        sfxTedAudioSource.Stop();
+        if (sfxTedAudioSource) sfxTedAudioSource.Stop();
+        dialogueUI.onSpeakerChanged?.RemoveListener(TedSounds);
+        dialogueUI.onDialogueEnd?.RemoveListener(DialogueExited);
+        runner.onDialogueComplete.RemoveListener(DialogueCompleted);
         UpdateIsTalking(false, false);
         if (hasStory && !storyFinished)
         {
@@ -218,11 +251,35 @@ public class NPC : MonoBehaviour, IHoverInteractable
     public int GetNextTalk()
     {
         int index = PlayerPrefs.GetInt("TedTalkIndex");
-        if (index + 1 == talks.Length)
+        if (index + 1 >= talks.Length)
+        {
             PlayerPrefs.SetInt("TedTalkIndex", 0);
+            PlayerPrefs.SetInt("Level1TedTalkIndex", 0);
+            PlayerPrefs.SetInt("Level2TedTalkIndex", 0);
+            PlayerPrefs.SetInt("Level3TedTalkIndex", 0);
+            index = 0;
+            AchievementManager.current.unlockAchievement(AchievementManager.Achievements.AllDialogue);
+        }
         else
+        {
             PlayerPrefs.SetInt("TedTalkIndex", index + 1);
+            index += 1;
+        }
         return int.Parse(talks[index]);
+    }
+
+    public int GetNextLevelTalk()
+    {
+        int index = PlayerPrefs.GetInt("Level" + currentLevel + "TedTalkIndex");
+        if (index == levelTalks.Length)
+        {
+            levelTalksComplete = true;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Level" + currentLevel + "TedTalkIndex", index + 1);
+        }
+        return int.Parse(levelTalks[index]);
     }
 
     public int GetCurrentTalk()
