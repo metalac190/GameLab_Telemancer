@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using Yarn.Unity;
 using UnityEngine.InputSystem;
@@ -8,6 +7,7 @@ public class DialogueAdvancer : MonoBehaviour
 {
     private CustomDialogueUI dialogueUI;
     private DialogueRunner dialogueRunner;
+    private bool firstDialogue = true;
     void Start()
     {
         dialogueUI = GetComponent<CustomDialogueUI>();
@@ -20,13 +20,28 @@ public class DialogueAdvancer : MonoBehaviour
         {
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                dialogueUI.DialogueComplete();
+                dialogueUI.DialogueExited();
                 dialogueRunner.IsDialogueRunning = false;
             }
-            if (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)
+
+            if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                dialogueUI.MarkLineComplete();
+                if (!firstDialogue)
+                {
+                    dialogueUI.MarkLineComplete();
+                }
+                else
+                {
+                    firstDialogue = false;
+                    dialogueUI.onDialogueEnd.AddListener(ResetDialogue);
+                }
             }
         }
+    }
+
+    void ResetDialogue()
+    {
+        firstDialogue = true;
+        dialogueUI.onDialogueEnd.RemoveListener(ResetDialogue);
     }
 }

@@ -42,6 +42,9 @@ public class LevelSelect : MonoBehaviour
 
     public void LoadLevel(int lvl)
     {
+        PlayerPrefs.DeleteKey("Level1Time");
+        PlayerPrefs.DeleteKey("Level2Time");
+        PlayerPrefs.DeleteKey("Level3Time");
         Debug.Log("Loading Level " + lvl);
         SceneManager.LoadScene(lvl + 1);
     }

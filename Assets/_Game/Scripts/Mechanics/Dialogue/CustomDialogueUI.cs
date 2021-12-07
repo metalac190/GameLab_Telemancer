@@ -124,6 +124,7 @@ namespace Yarn.Unity {
         /// elements, and enable any non-dialogue UI and gameplay elements.
         /// </remarks>
         public UnityEngine.Events.UnityEvent onDialogueEnd;  
+        public UnityEngine.Events.UnityEvent onDialogueExited;
 
         /// <summary>
         /// A <see cref="UnityEngine.Events.UnityEvent"/> that is called
@@ -510,6 +511,19 @@ namespace Yarn.Unity {
         /// <inheritdoc/>
         public override void DialogueComplete ()
         {
+            onDialogueEnd?.Invoke();
+
+            // Hide the dialogue interface.
+            if (dialogueContainer != null)
+                dialogueContainer.SetActive(false);
+            
+        }
+
+        /// Called when the dialogue system has exited early.
+        /// <inheritdoc/>
+        public void DialogueExited ()
+        {
+            onDialogueExited?.Invoke();
             onDialogueEnd?.Invoke();
 
             // Hide the dialogue interface.
